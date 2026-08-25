@@ -17,20 +17,21 @@
         .sheet-info { display: flex; align-items: center; gap: 15px; }
         .buttons-group { display: flex; gap: 10px; align-items: center; }
         
-        /* Miniaturka dla zdjęcia */
         .thumb-img { width: 60px; height: 80px; object-fit: cover; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; transition: transform 0.2s; }
         .thumb-img:hover { transform: scale(1.1); border-color: #007bff; }
         
-        /* Przycisk Pobierz */
         .download-btn { background-color: #28a745; color: white; padding: 10px 18px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; }
         .download-btn:hover { background-color: #218838; }
         
-        /* Przycisk Podglądu */
         .preview-btn { background-color: #6c757d; color: white; padding: 10px 15px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
         .preview-btn:hover { background-color: #5a6268; }
 
-        /* Czytnik PDF - domyślnie ukryty */
         .pdf-viewer { width: 100%; height: 600px; border: 1px solid #ccc; border-radius: 5px; margin-top: 15px; display: none; }
+
+        .request-form { display: flex; flex-direction: column; gap: 15px; margin-top: 15px; }
+        .request-form input, .request-form textarea { padding: 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 15px; width: 100%; box-sizing: border-box; }
+        .submit-btn { background-color: #ff9900; color: white; padding: 12px; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .submit-btn:hover { background-color: #e68a00; }
     </style>
 </head>
 <body>
@@ -43,6 +44,7 @@
 <nav>
     <button onclick="openTab('fortepian')">Fortepian</button>
     <button onclick="openTab('saksofon')">Saksofon</button>
+    <button onclick="openTab('propozycje')" style="background-color: #ff9900;">✍ Poproś o nuty</button>
 </nav>
 
 <!-- ZAKŁADKA FORTEPIAN -->
@@ -61,8 +63,6 @@
                 <a href="FlyMeToTheMoon-Fortepian.pdf" class="download-btn" download>Pobierz PDF</a>
             </div>
         </div>
-        
-        <!-- Podgląd PDF ukryty w rozwijanym oknie -->
         <iframe id="pdf-flyme" src="FlyMeToTheMoon-Fortepian.pdf" class="pdf-viewer"></iframe>
     </div>
 </div>
@@ -88,8 +88,33 @@
     </div>
 </div>
 
+<!-- ZAKŁADKA PROPOZYCJE -->
+<div id="propozycje" class="tab-content">
+    <h2>Zaproponuj utwór!</h2>
+    <p>Chcesz, abym opracował i dodał nowe nuty? Wpisz tytuł utworu poniżej:</p>
+    
+    <form action="https://formspree.io/f/mqpzvrbg" method="POST" class="request-form">
+        <div>
+            <label><strong>Twoje imię / Nick:</strong></label>
+            <input type="text" name="name" placeholder="np. Jan" required>
+        </div>
+        <div>
+            <label><strong>Tytuł utworu i kompozytor:</strong></label>
+            <input type="text" name="song" placeholder="np. Sto lat / Chopin - Preludium e-moll" required>
+        </div>
+        <div>
+            <label><strong>Instrument:</strong></label>
+            <input type="text" name="instrument" placeholder="np. Fortepian / Saksofon" required>
+        </div>
+        <div>
+            <label><strong>Dodatkowa wiadomość (opcjonalnie):</strong></label>
+            <textarea name="message" rows="4" placeholder="np. Zależy mi na prostej wersji dla początkujących..."></textarea>
+        </div>
+        <button type="submit" class="submit-btn">🚀 Wyślij propozycję</button>
+    </form>
+</div>
+
 <script>
-    // Funkcja do przełączania zakładek
     function openTab(tabName) {
         var contents = document.getElementsByClassName("tab-content");
         for (var i = 0; i < contents.length; i++) {
@@ -98,7 +123,6 @@
         document.getElementById(tabName).classList.add("active");
     }
 
-    // Funkcja do pokazywania/ukrywania czytnika PDF
     function togglePdf(pdfId) {
         var pdfViewer = document.getElementById(pdfId);
         if (pdfViewer.style.display === "block") {
