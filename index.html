@@ -13,18 +13,24 @@
         .tab-content { display: none; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto; }
         .active { display: block; }
         .sheet-item { border-bottom: 2px solid #eee; padding: 20px 0; margin-bottom: 20px; }
-        .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .sheet-header { display: flex; justify-content: space-between; align-items: center; }
         .sheet-info { display: flex; align-items: center; gap: 15px; }
+        .buttons-group { display: flex; gap: 10px; align-items: center; }
         
         /* Miniaturka dla zdjęcia */
         .thumb-img { width: 60px; height: 80px; object-fit: cover; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; transition: transform 0.2s; }
         .thumb-img:hover { transform: scale(1.1); border-color: #007bff; }
         
+        /* Przycisk Pobierz */
         .download-btn { background-color: #28a745; color: white; padding: 10px 18px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; }
         .download-btn:hover { background-color: #218838; }
         
-        /* Okno czytnika PDF */
-        .pdf-viewer { width: 100%; height: 600px; border: 1px solid #ccc; border-radius: 5px; margin-top: 15px; }
+        /* Przycisk Podglądu */
+        .preview-btn { background-color: #6c757d; color: white; padding: 10px 15px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .preview-btn:hover { background-color: #5a6268; }
+
+        /* Czytnik PDF - domyślnie ukryty */
+        .pdf-viewer { width: 100%; height: 600px; border: 1px solid #ccc; border-radius: 5px; margin-top: 15px; display: none; }
     </style>
 </head>
 <body>
@@ -42,7 +48,7 @@
 <!-- ZAKŁADKA FORTEPIAN -->
 <div id="fortepian" class="tab-content active">
     <h2>Nuty na Fortepian</h2>
-    <p>Przeglądaj wszystkie strony nut poniżej lub pobierz pełny plik PDF:</p>
+    <p>Pobierz darmowe nuty lub rozwiń podgląd PDF:</p>
     
     <div class="sheet-item">
         <div class="sheet-header">
@@ -50,11 +56,14 @@
                 <strong style="font-size: 18px;">Fly Me To The Moon</strong><br>
                 <small>arr. Thomas L.S. Pang / Bart Howard</small>
             </div>
-            <a href="FlyMeToTheMoon-Fortepian.pdf" class="download-btn" download>Pobierz PDF</a>
+            <div class="buttons-group">
+                <button class="preview-btn" onclick="togglePdf('pdf-flyme')">👁 Podgląd</button>
+                <a href="FlyMeToTheMoon-Fortepian.pdf" class="download-btn" download>Pobierz PDF</a>
+            </div>
         </div>
         
-        <!-- Podgląd wszystkich 4 stron PDF -->
-        <iframe src="FlyMeToTheMoon-Fortepian.pdf" class="pdf-viewer"></iframe>
+        <!-- Podgląd PDF ukryty w rozwijanym oknie -->
+        <iframe id="pdf-flyme" src="FlyMeToTheMoon-Fortepian.pdf" class="pdf-viewer"></iframe>
     </div>
 </div>
 
@@ -80,12 +89,23 @@
 </div>
 
 <script>
+    // Funkcja do przełączania zakładek
     function openTab(tabName) {
         var contents = document.getElementsByClassName("tab-content");
         for (var i = 0; i < contents.length; i++) {
             contents[i].classList.remove("active");
         }
         document.getElementById(tabName).classList.add("active");
+    }
+
+    // Funkcja do pokazywania/ukrywania czytnika PDF
+    function togglePdf(pdfId) {
+        var pdfViewer = document.getElementById(pdfId);
+        if (pdfViewer.style.display === "block") {
+            pdfViewer.style.display = "none";
+        } else {
+            pdfViewer.style.display = "block";
+        }
     }
 </script>
 
