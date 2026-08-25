@@ -8,13 +8,15 @@
         body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f9f9f9; color: #333; }
         header { text-align: center; padding: 20px 0; background: #222; color: #fff; border-radius: 8px; }
         nav { text-align: center; margin: 20px 0; }
-        nav button { font-size: 16px; padding: 10px 20px; margin: 5px; border: none; background-color: #007bff; color: white; border-radius: 5px; cursor: pointer; }
+        nav button { font-size: 16px; padding: 10px 20px; margin: 5px; border: none; background-color: #007bff; color: white; border-radius: 5px; cursor: pointer; font-weight: bold; }
         nav button:hover { background-color: #0056b3; }
         .tab-content { display: none; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto; }
         .active { display: block; }
-        .sheet-item { border-bottom: 1px solid #eee; padding: 15px 0; display: flex; justify-content: space-between; align-items: center; }
-        .download-btn { background-color: #28a745; color: white; padding: 8px 15px; text-decoration: none; border-radius: 5px; font-weight: bold; }
+        .sheet-item { border-bottom: 2px solid #eee; padding: 20px 0; margin-bottom: 20px; }
+        .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .download-btn { background-color: #28a745; color: white; padding: 10px 18px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; }
         .download-btn:hover { background-color: #218838; }
+        .sheet-img { max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
@@ -32,29 +34,38 @@
 <!-- ZAKŁADKA FORTEPIAN -->
 <div id="fortepian" class="tab-content active">
     <h2>Nuty na Fortepian</h2>
+    <p>Wybierz utwór i pobierz darmowe nuty:</p>
     
-    <!-- TUTAJ DODAJESZ KOLEJNE UTWORY NA FORTEPIAN -->
+    <!-- MIEJSCE NA NOWE UTWORY NA FORTEPIAN -->
     <div class="sheet-item">
-        <div>
-            <strong>Przykładowy Utwór nr 1</strong><br>
-            <small>Kompozytor / Poprawka</small>
+        <div class="sheet-header">
+            <div>
+                <strong>Przykładowy Utwór nr 1</strong><br>
+                <small>Kompozytor: Aleksander Frontczak</small>
+            </div>
+            <a href="nazwa-pliku-1.pdf" class="download-btn" download>Pobierz PDF</a>
         </div>
-        <a href="nazwa-pliku-1.pdf" class="download-btn" download>Pobierz PDF</a>
     </div>
-
 </div>
 
 <!-- ZAKŁADKA SAKSOFON -->
 <div id="saksofon" class="tab-content">
     <h2>Nuty na Saksofon</h2>
+    <p>Wybierz utwór, zobacz podgląd i pobierz darmowe nuty:</p>
     
-    <!-- TUTAJ DODAJESZ KOLEJNE UTWORY NA SAKSOFON -->
+    <!-- TWÓJ UTWÓR: FLY ME TO THE MOON -->
     <div class="sheet-item">
-        <div>
-            <strong>Przykładowy Utwór nr 1</strong><br>
-            <small>Kompozytor / Poprawka</small>
+        <div class="sheet-header">
+            <div>
+                <strong style="font-size: 18px;">Fly Me To The Moon</strong><br>
+                <small>Words and Music by: BART HOWARD</small>
+            </div>
+            <a href="Flymetothemoon.jpg" class="download-btn" download>Pobierz JPG</a>
         </div>
-        <a href="nazwa-pliku-saksofon.pdf" class="download-btn" download>Pobierz PDF</a>
+        <!-- Podgląd obrazka z nutami -->
+        <div style="text-align: center; margin-top: 10px;">
+            <img src="Flymetothemoon.jpg" alt="Fly Me To The Moon - Nuty" class="sheet-img">
+        </div>
     </div>
 
 </div>
