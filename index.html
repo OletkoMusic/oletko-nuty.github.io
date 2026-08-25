@@ -32,10 +32,6 @@
         .badge-medium { background-color: #ff9900; }
         .badge-hard { background-color: #dc3545; }
 
-        /* Przycisk polubień */
-        .like-btn { background: #fff0f2; border: 1px solid #ff4d6d; color: #ff4d6d; padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        .like-btn:hover { background: #ff4d6d; color: white; }
-
         .thumb-img { width: 60px; height: 80px; object-fit: cover; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; transition: transform 0.2s; }
         .thumb-img:hover { transform: scale(1.1); border-color: #007bff; }
         
@@ -87,7 +83,6 @@
                 <span class="badge badge-medium">Średnio-zaawansowany</span>
             </div>
             <div class="buttons-group">
-                <button class="like-btn" onclick="addLike(this)">❤️ <span class="like-count">12</span></button>
                 <button class="preview-btn" onclick="togglePdf('pdf-flyme')">👁 Podgląd</button>
                 <a href="FlyMeToTheMoon-Fortepian.pdf" class="download-btn" download>Pobierz PDF</a>
             </div>
@@ -114,7 +109,6 @@
                 </div>
             </div>
             <div class="buttons-group">
-                <button class="like-btn" onclick="addLike(this)">❤️ <span class="like-count">8</span></button>
                 <a href="Flymetothemoon.jpg" class="download-btn" download>Pobierz JPG</a>
             </div>
         </div>
@@ -163,15 +157,6 @@
         } else {
             pdfViewer.style.display = "block";
         }
-    }
-
-    // Funkcja dodawania polubień
-    function addLike(button) {
-        var countSpan = button.querySelector('.like-count');
-        var currentLikes = parseInt(countSpan.innerText);
-        countSpan.innerText = currentLikes + 1;
-        button.disabled = true;
-        button.style.opacity = "0.7";
     }
 
     // Funkcja wyszukiwarki
