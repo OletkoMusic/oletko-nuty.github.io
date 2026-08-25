@@ -12,15 +12,19 @@
         nav button:hover { background-color: #0056b3; }
         .tab-content { display: none; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto; }
         .active { display: block; }
-        .sheet-item { border-bottom: 2px solid #eee; padding: 15px 0; display: flex; justify-content: space-between; align-items: center; }
+        .sheet-item { border-bottom: 2px solid #eee; padding: 20px 0; margin-bottom: 20px; }
+        .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .sheet-info { display: flex; align-items: center; gap: 15px; }
         
-        /* Styl dla małej miniaturki */
+        /* Miniaturka dla zdjęcia */
         .thumb-img { width: 60px; height: 80px; object-fit: cover; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; transition: transform 0.2s; }
         .thumb-img:hover { transform: scale(1.1); border-color: #007bff; }
         
-        .download-btn { background-color: #28a745; color: white; padding: 10px 18px; text-decoration: none; border-radius: 5px; font-weight: bold; }
+        .download-btn { background-color: #28a745; color: white; padding: 10px 18px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block; }
         .download-btn:hover { background-color: #218838; }
+        
+        /* Okno czytnika PDF */
+        .pdf-viewer { width: 100%; height: 600px; border: 1px solid #ccc; border-radius: 5px; margin-top: 15px; }
     </style>
 </head>
 <body>
@@ -38,16 +42,19 @@
 <!-- ZAKŁADKA FORTEPIAN -->
 <div id="fortepian" class="tab-content active">
     <h2>Nuty na Fortepian</h2>
-    <p>Wybierz utwór i pobierz darmowe nuty (PDF):</p>
+    <p>Przeglądaj wszystkie strony nut poniżej lub pobierz pełny plik PDF:</p>
     
     <div class="sheet-item">
-        <div class="sheet-info">
+        <div class="sheet-header">
             <div>
                 <strong style="font-size: 18px;">Fly Me To The Moon</strong><br>
                 <small>arr. Thomas L.S. Pang / Bart Howard</small>
             </div>
+            <a href="FlyMeToTheMoon-Fortepian.pdf" class="download-btn" download>Pobierz PDF</a>
         </div>
-        <a href="FlyMeToTheMoon-Fortepian.pdf" class="download-btn" download>Pobierz PDF</a>
+        
+        <!-- Podgląd wszystkich 4 stron PDF -->
+        <iframe src="FlyMeToTheMoon-Fortepian.pdf" class="pdf-viewer"></iframe>
     </div>
 </div>
 
@@ -57,17 +64,18 @@
     <p>Kliknij w miniaturkę, aby powiększyć zdjęcie nut:</p>
     
     <div class="sheet-item">
-        <div class="sheet-info">
-            <!-- Miniaturka otwierająca zdjęcie w nowej karcie w pełnym rozmiarze -->
-            <a href="Flymetothemoon.jpg" target="_blank" title="Kliknij, aby powiększyć">
-                <img src="Flymetothemoon.jpg" alt="Miniaturka" class="thumb-img">
-            </a>
-            <div>
-                <strong style="font-size: 18px;">Fly Me To The Moon</strong><br>
-                <small>Words and Music by: BART HOWARD</small>
+        <div class="sheet-header">
+            <div class="sheet-info">
+                <a href="Flymetothemoon.jpg" target="_blank" title="Kliknij, aby powiększyć">
+                    <img src="Flymetothemoon.jpg" alt="Miniaturka nut" class="thumb-img">
+                </a>
+                <div>
+                    <strong style="font-size: 18px;">Fly Me To The Moon</strong><br>
+                    <small>Words and Music by: BART HOWARD</small>
+                </div>
             </div>
+            <a href="Flymetothemoon.jpg" class="download-btn" download>Pobierz JPG</a>
         </div>
-        <a href="Flymetothemoon.jpg" class="download-btn" download>Pobierz JPG</a>
     </div>
 </div>
 
