@@ -158,15 +158,23 @@
             margin-top: 3px;
         }
 
+        /* Etykiety trudności z nową kolorystyką */
         .badge {
             display: inline-block;
-            background-color: #ffa500;
             color: white;
             font-size: 11px;
             padding: 3px 8px;
             border-radius: 4px;
             margin-top: 6px;
             font-weight: bold;
+        }
+
+        .badge-easy {
+            background-color: #28a745; /* ZIELONY dla Łatwy */
+        }
+
+        .badge-medium {
+            background-color: #ffa500; /* POMARAŃCZOWY dla Średnio-zaawansowany */
         }
 
         .action-buttons {
@@ -272,6 +280,27 @@
         .form-submit:hover {
             background-color: #cc8400;
         }
+
+        .form-status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 6px;
+            display: none;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .form-status.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .form-status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
     </style>
 </head>
 <body>
@@ -306,7 +335,7 @@
     <!-- Sekcja Nuty na Saksofon -->
     <div id="saxSection" style="display: none;">
         <h2 class="section-title">Nuty na Saksofon</h2>
-        <p class="section-desc">Kliknij w grafikę lub pobierz nuty w formacie JPG/PDF.</p>
+        <p class="section-desc">Kliknij w grafikę lub pobierz nuty w formacie JPG.</p>
         <div id="saxList"></div>
     </div>
 
@@ -315,7 +344,7 @@
         <h2 class="section-title" style="margin-bottom: 10px;">Zaproponuj utwór!</h2>
         <p class="section-desc">Chcesz, abym opracował i dodał nowe nuty? Wypełnij formularz poniżej.</p>
 
-        <form action="https://formspree.io/f/xbjnqpyz" method="POST">
+        <form id="requestForm" action="https://formspree.io/f/xbjnqpyz" method="POST">
             <div class="form-group">
                 <label>Twoje imię / Nick:</label>
                 <input type="text" name="name" required placeholder="np. Aleksander">
@@ -334,6 +363,7 @@
             </div>
             <button type="submit" class="form-submit">✉ Wyślij propozycję</button>
         </form>
+        <div id="formStatus" class="form-status"></div>
     </div>
 </div>
 
@@ -353,7 +383,7 @@
             title: "Fly Me To The Moon",
             author: "arr. Bart Howard",
             difficulty: "Łatwy",
-            file: "FlyMeToTheMoon_Sax.jpg",
+            file: "FlyMeToTheMoon.jpg",
             type: "jpg"
         },
         {
@@ -372,6 +402,14 @@
         }
     ];
 
+    // Funkcja do pobierania klasy koloru etykiety
+    function getBadgeClass(difficulty) {
+        if (difficulty.toLowerCase().includes("łatwy")) {
+            return "badge-easy";
+        }
+        return "badge-medium";
+    }
+
     // Funkcja generująca listę nut na Fortepian
     function renderPiano(list) {
         const container = document.getElementById('pianoList');
@@ -382,13 +420,14 @@
         }
 
         list.forEach((item, index) => {
+            const badgeClass = getBadgeClass(item.difficulty);
             container.innerHTML += `
                 <div class="sheet-card">
                     <div class="sheet-header">
                         <div class="sheet-info">
                             <h3>${item.title}</h3>
                             <p>${item.author}</p>
-                            <span class="badge">${item.difficulty}</span>
+                            <span class="badge ${badgeClass}">${item.difficulty}</span>
                         </div>
                         <div class="action-buttons">
                             <button class="btn-preview" onclick="togglePreview('piano-prev-${index}')">👁 Podgląd</button>
@@ -413,6 +452,7 @@
         }
 
         list.forEach((item, index) => {
+            const badgeClass = getBadgeClass(item.difficulty);
             const btnText = item.type === 'jpg' ? 'Pobierz JPG' : 'Pobierz PDF';
             container.innerHTML += `
                 <div class="sheet-card">
@@ -420,7 +460,7 @@
                         <div class="sheet-info">
                             <h3>${item.title}</h3>
                             <p>${item.author}</p>
-                            <span class="badge">${item.difficulty}</span>
+                            <span class="badge ${badgeClass}">${item.difficulty}</span>
                         </div>
                         <div class="action-buttons">
                             <button class="btn-preview" onclick="togglePreview('sax-prev-${index}')">👁 Podgląd</button>
@@ -484,6 +524,45 @@
             renderSax(filtered);
         }
     }
+
+    // Obsługa formularza propozycji przez AJAX (brak przeskoku na stronę Formspree)
+    const form = document.getElementById("requestForm");
+    const status = document.getElementById("formStatus");
+
+    form.addEventListener("submit", async function(event) {
+        event.preventDefault();
+        const data = new FormData(event.target);
+        
+        try {
+            const response = await fetch(event.target.action, {
+                method: form.method,
+                body: data,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+            
+            if (response.ok) {
+                status.className = "form-status success";
+                status.innerHTML = "Dziękuję! Twoja propozycja została pomyślnie wysłana.";
+                status.style.display = "block";
+                form.reset();
+            } else {
+                const result = await response.json();
+                status.className = "form-status error";
+                if (Object.hasOwn(result, 'errors')) {
+                    status.innerHTML = result["errors"].map(error => error["message"]).join(", ");
+                } else {
+                    status.innerHTML = "Wystąpił błąd podczas wysyłania formularza.";
+                }
+                status.style.display = "block";
+            }
+        } catch (error) {
+            status.className = "form-status error";
+            status.innerHTML = "Wystąpił problem z połączeniem.";
+            status.style.display = "block";
+        }
+    });
 
     // Inicjalne wywołanie
     renderPiano(pianoSheets);
