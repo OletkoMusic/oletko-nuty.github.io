@@ -309,7 +309,7 @@
 
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('piano')" id="tab-piano">Fortepian (2)</button>
-            <button class="tab-btn" onclick="switchTab('sax')" id="tab-sax">Saksofon (3)</button>
+            <button class="tab-btn" onclick="switchTab('sax')" id="tab-sax">Saksofon (4)</button>
             <button class="tab-btn request-btn" onclick="switchTab('request')" id="tab-request">🎁 Poproś o nuty</button>
         </div>
 
@@ -366,7 +366,7 @@
     </div>
 
     <script>
-        // Dane nut na Fortepian (dwa utwory)
+        // Dane nut na Fortepian
         const pianoSheets = [
             {
                 title: "Fly Me To The Moon",
@@ -382,13 +382,19 @@
             }
         ];
 
-        // Dane nut na Saksofon
+        // Dane nut na Saksofon (podział na Alt i Tenor)
         const saxSheets = [
             {
-                title: "Fly Me To The Moon",
+                title: "Fly Me To The Moon (Alt)",
+                author: "arr. Bart Howard",
+                types: ["Łatwy", "Es Alt"],
+                image: "Flymetothemoon.jpg"
+            },
+            {
+                title: "Fly Me To The Moon (Tenor)",
                 author: "arr. Bart Howard",
                 types: ["Tenor"],
-                image: "Flymetothemoon.jpg"
+                image: "Flymetothemoon-saxtenor.png"
             },
             {
                 title: "Czerwone Maki na Monte Cassino",
@@ -535,7 +541,7 @@
             }
         });
 
-        // Inicjalizacja przy startcie
+        // Inicjalizacja przy starcie
         renderPianoSheets(pianoSheets);
         renderSaxSheets(saxSheets);
     </script>
