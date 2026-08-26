@@ -302,16 +302,6 @@
             background-color: #e68a00;
         }
 
-        .form-message {
-            margin-top: 15px;
-            padding: 10px;
-            background: #d4edda;
-            color: #155724;
-            border-radius: 6px;
-            display: none;
-            text-align: center;
-        }
-
         footer {
             text-align: center;
             margin-top: 30px;
@@ -371,7 +361,7 @@
             <h2 class="section-title">Zaproponuj utwór!</h2>
             <p class="sub-desc">Chcesz, abym opracował i dodał nowe nuty? Wypełnij formularz poniżej.</p>
             
-            <form class="request-form" id="sheetRequestForm" action="https://formspree.io/f/xbldpzwq" method="POST">
+            <form class="request-form" action="https://formspree.io/f/xbldpzwq" method="POST">
                 <div class="form-group">
                     <label for="userName">Twoje imię / Nick:</label>
                     <input type="text" id="userName" name="name" placeholder="np. Aleksander" required>
@@ -393,7 +383,6 @@
                 </div>
 
                 <button type="submit" class="btn btn-submit">✉️ Wyślij propozycję</button>
-                <div class="form-message" id="formMessage">Dziękuję! Twoja propozycja została pomyślnie wysłana.</div>
             </form>
         </div>
 
@@ -431,9 +420,9 @@
             {
                 title: "Fly Me To The Moon (Tenor)",
                 author: "arr. Bart Howard",
-                types: ["Tenor"],
+                types: ["Łatwy", "Tenor"],
                 category: "tenor",
-                image: "Flymetothemoon-saxtenor.png"
+                image: "FlyMeToTheMoon-saxtenor.png"
             },
             {
                 title: "Czerwone Maki na Monte Cassino",
@@ -578,26 +567,6 @@
             renderPianoSheets(filteredPiano);
             renderSaxSheets(filteredSax);
         }
-
-        // Obsługa formularza Formspree przez AJAX
-        const form = document.getElementById('sheetRequestForm');
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const data = new FormData(form);
-            const response = await fetch(form.action, {
-                method: form.method,
-                body: data,
-                headers: {
-                    'Accept': 'application/json'
-                }
-            });
-            if (response.ok) {
-                document.getElementById('formMessage').style.display = 'block';
-                form.reset();
-            } else {
-                alert("Wystąpił błąd podczas wysyłania formularza. Spróbuj ponownie.");
-            }
-        });
 
         // Inicjalizacja przy starcie
         renderPianoSheets(pianoSheets);
