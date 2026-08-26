@@ -84,6 +84,36 @@
             background-color: #e68a00;
         }
 
+        /* Podfiltry dla saksofonu */
+        .sub-filters {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .sub-btn {
+            padding: 6px 14px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            color: #555;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sub-btn:hover {
+            background-color: #f0f0f0;
+        }
+
+        .sub-btn.active {
+            background-color: #17a2b8;
+            color: white;
+            border-color: #17a2b8;
+        }
+
         .search-box {
             position: relative;
             margin-bottom: 25px;
@@ -304,7 +334,7 @@
         <header>
             <h1>Oletko Nuty</h1>
             <p>Darmowe nuty na fortepian i saksofon</p>
-            <p style="margin-top: 8px; font-size: 0.85rem;">Cześć! Nazywam się <strong>Aleksander Frelczak</strong>. Tworzę i udostępniam darmowe opracowania nutowe dla pasjonatów muzyki. Pobieraj opracowania i graj swoje ulubione utwory!</p>
+            <p style="margin-top: 8px; font-size: 0.85rem;">Cześć! Nazywam się <strong>Aleksander Frątczak</strong>. Tworzę i udostępniam darmowe opracowania nutowe dla pasjonatów muzyki. Pobieraj opracowania i graj swoje ulubione utwory!</p>
         </header>
 
         <div class="tabs">
@@ -326,6 +356,13 @@
 
         <div id="sax" class="tab-content">
             <h2 class="section-title">Nuty na Saksofon</h2>
+            
+            <div class="sub-filters">
+                <button class="sub-btn active" onclick="filterSaxCategory('all', this)">Wszystkie</button>
+                <button class="sub-btn" onclick="filterSaxCategory('alt', this)">Saksofon Altowy</button>
+                <button class="sub-btn" onclick="filterSaxCategory('tenor', this)">Saksofon Tenorowy</button>
+            </div>
+
             <p class="sub-desc">Kliknij w grafikę lub pobierz nuty w formacie JPG.</p>
             <div id="sax-list"></div>
         </div>
@@ -361,7 +398,7 @@
         </div>
 
         <footer>
-            © 2026 Oletko Nuty — Twórca: Aleksander Frelczak
+            © 2026 Oletko Nuty — Twórca: Aleksander Frątczak
         </footer>
     </div>
 
@@ -382,33 +419,39 @@
             }
         ];
 
-        // Dane nut na Saksofon (podział na Alt i Tenor)
+        // Dane nut na Saksofon
         const saxSheets = [
             {
                 title: "Fly Me To The Moon (Alt)",
                 author: "arr. Bart Howard",
                 types: ["Łatwy", "Es Alt"],
+                category: "alt",
                 image: "Flymetothemoon.jpg"
             },
             {
                 title: "Fly Me To The Moon (Tenor)",
                 author: "arr. Bart Howard",
                 types: ["Tenor"],
+                category: "tenor",
                 image: "Flymetothemoon-saxtenor.png"
             },
             {
                 title: "Czerwone Maki na Monte Cassino",
                 author: "Alfred Schütz / Feliks Konarski",
                 types: ["Łatwy", "Es Alt"],
+                category: "alt",
                 image: "CzerwoneMakiNaMonteCasino.jpg"
             },
             {
                 title: "Pałacyk Michla",
                 author: "Józef Szczepański \"Ziutek\"",
                 types: ["Łatwy", "Es Alt"],
+                category: "alt",
                 image: "PałacykMichla.jpg"
             }
         ];
+
+        let currentSaxCategory = 'all';
 
         // Renderowanie listy nut na Fortepian
         function renderPianoSheets(sheets) {
@@ -445,6 +488,11 @@
             const container = document.getElementById('sax-list');
             container.innerHTML = '';
 
+            if (sheets.length === 0) {
+                container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">Brak nut w tej kategorii.</p>';
+                return;
+            }
+
             sheets.forEach((sheet, index) => {
                 const card = document.createElement('div');
                 card.className = 'sheet-card';
@@ -479,6 +527,14 @@
             });
         }
 
+        // Filtrowanie kategorialne saksofonu (Wszystkie / Alt / Tenor)
+        function filterSaxCategory(category, btnElement) {
+            currentSaxCategory = category;
+            document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+            filterSheets();
+        }
+
         // Przełączanie podglądu
         function togglePreview(id) {
             const preview = document.getElementById(id);
@@ -505,7 +561,7 @@
             }
         }
 
-        // Wyszukiwarka
+        // Wyszukiwarka i filtrowanie zbiorcze
         function filterSheets() {
             const query = document.getElementById('searchInput').value.toLowerCase();
 
@@ -513,9 +569,11 @@
                 s.title.toLowerCase().includes(query) || s.author.toLowerCase().includes(query)
             );
 
-            const filteredSax = saxSheets.filter(s => 
-                s.title.toLowerCase().includes(query) || s.author.toLowerCase().includes(query)
-            );
+            const filteredSax = saxSheets.filter(s => {
+                const matchesQuery = s.title.toLowerCase().includes(query) || s.author.toLowerCase().includes(query);
+                const matchesCategory = currentSaxCategory === 'all' || s.category === currentSaxCategory;
+                return matchesQuery && matchesCategory;
+            });
 
             renderPianoSheets(filteredPiano);
             renderSaxSheets(filteredSax);
