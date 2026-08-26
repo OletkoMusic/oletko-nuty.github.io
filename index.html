@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Oletko Nuty - Darmowe nuty na fortepian i saksofon</title>
-    <!-- Ikonka nutki w zakładce przeglądarki (Favicon) -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
     
     <style>
@@ -56,7 +55,7 @@
             display: flex;
             justify-content: center;
             gap: 10px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             flex-wrap: wrap;
         }
 
@@ -94,6 +93,36 @@
 
         .request-btn:hover {
             background-color: #cc8400;
+        }
+
+        /* Pod-filtry saksofonu */
+        .sub-filters {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .sub-btn {
+            background-color: #e9ecef;
+            color: #495057;
+            border: 1px solid #ced4da;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .sub-btn:hover {
+            background-color: #dee2e6;
+        }
+
+        .sub-btn.active {
+            background-color: #17a2b8;
+            color: white;
+            border-color: #17a2b8;
         }
 
         .search-container {
@@ -177,17 +206,10 @@
             font-weight: bold;
         }
 
-        .badge-easy {
-            background-color: #28a745;
-        }
-
-        .badge-medium {
-            background-color: #ffa500;
-        }
-
-        .badge-key {
-            background-color: #17a2b8;
-        }
+        .badge-easy { background-color: #28a745; }
+        .badge-medium { background-color: #ffa500; }
+        .badge-alt { background-color: #17a2b8; }
+        .badge-tenor { background-color: #6f42c1; }
 
         .action-buttons {
             display: flex;
@@ -203,15 +225,10 @@
             font-size: 13px;
             font-weight: bold;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
             text-decoration: none;
         }
 
-        .btn-preview:hover {
-            background-color: #5a6268;
-        }
+        .btn-preview:hover { background-color: #5a6268; }
 
         .btn-download {
             background-color: #28a745;
@@ -226,9 +243,7 @@
             display: inline-block;
         }
 
-        .btn-download:hover {
-            background-color: #218838;
-        }
+        .btn-download:hover { background-color: #218838; }
 
         .preview-box {
             margin-top: 15px;
@@ -257,17 +272,8 @@
             margin-top: 20px;
         }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 5px; }
         .form-group input, .form-group textarea {
             width: 100%;
             padding: 10px;
@@ -288,9 +294,7 @@
             width: 100%;
         }
 
-        .form-submit:hover {
-            background-color: #cc8400;
-        }
+        .form-submit:hover { background-color: #cc8400; }
 
         .form-status {
             margin-top: 15px;
@@ -301,17 +305,8 @@
             text-align: center;
         }
 
-        .form-status.success {
-            background-color: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .form-status.error {
-            background-color: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
+        .form-status.success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .form-status.error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
         .no-results {
             text-align: center;
@@ -321,11 +316,7 @@
             border: 1px dashed #ccc;
         }
 
-        .no-results p {
-            color: #666;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
+        .no-results p { color: #666; margin-bottom: 10px; font-size: 14px; }
 
         .btn-suggest-empty {
             background-color: #ffa500;
@@ -356,34 +347,35 @@
         Cześć! Nazywam się <strong>Aleksander Frątczak</strong>. Tworzę i udostępniam darmowe opracowania nutowe dla pasjonatów muzyki. Pobieraj opracowania i graj swoje ulubione utwory!
     </div>
 
-    <!-- Nawigacja -->
     <div class="nav-buttons">
         <button class="tab-btn active" id="btnPianoTab" onclick="switchTab('fortepian')">Fortepian (0)</button>
         <button class="tab-btn" id="btnSaxTab" onclick="switchTab('saksofon')">Saksofon (0)</button>
         <button class="request-btn" onclick="switchTab('formularz')">✉ Poproś o nuty</button>
     </div>
 
-    <!-- Wyszukiwarka -->
-    <div class="search-container" id="searchBox">
-        <span class="search-icon">🔍</span>
-        <input type="text" class="search-input" id="searchInput" placeholder="Szukaj utworu lub kompozytora..." oninput="filterSheets()">
+    <div class="sub-filters" id="saxSubFilters" style="display: none;">
+        <button class="sub-btn active" id="subBtnAll" onclick="filterSaxKey('all')">Wszystkie</button>
+        <button class="sub-btn" id="subBtnAlt" onclick="filterSaxKey('alt')">Alt (E♭)</button>
+        <button class="sub-btn" id="subBtnTenor" onclick="filterSaxKey('tenor')">Tenor (B♭)</button>
     </div>
 
-    <!-- Sekcja Nuty na Fortepian -->
+    <div class="search-container" id="searchBox">
+        <span class="search-icon">🔍</span>
+        <input type="text" class="search-input" id="searchInput" placeholder="Szukaj utworu, kompozytora lub stroju (np. Tenor)..." oninput="filterSheets()">
+    </div>
+
     <div id="pianoSection">
         <h2 class="section-title">Nuty na Fortepian</h2>
         <p class="section-desc">Pobierz darmowe nuty lub rozwiń podgląd PDF.</p>
         <div id="pianoList"></div>
     </div>
 
-    <!-- Sekcja Nuty na Saksofon -->
     <div id="saxSection" style="display: none;">
         <h2 class="section-title">Nuty na Saksofon</h2>
-        <p class="section-desc">Kliknij w grafikę lub pobierz nuty w formacie JPG.</p>
+        <p class="section-desc">Kliknij w grafikę lub pobierz nuty w formacie JPG/PNG.</p>
         <div id="saxList"></div>
     </div>
 
-    <!-- Sekcja Formularz Propozycji -->
     <div id="formSection" class="form-container">
         <h2 class="section-title" style="margin-bottom: 10px;">Zaproponuj utwór!</h2>
         <p class="section-desc">Chcesz, abym opracował i dodał nowe nuty? Wypełnij formularz poniżej.</p>
@@ -399,7 +391,7 @@
             </div>
             <div class="form-group">
                 <label>Instrument:</label>
-                <input type="text" name="instrument" placeholder="np. Saksofon / Fortepian">
+                <input type="text" name="instrument" placeholder="np. Saksofon Tenor / Fortepian">
             </div>
             <div class="form-group">
                 <label>Dodatkowa wiadomość (opcjonalnie):</label>
@@ -410,14 +402,12 @@
         <div id="formStatus" class="form-status"></div>
     </div>
 
-    <!-- Stopka -->
     <footer>
         © 2026 Oletko Nuty — Twórca: Aleksander Frątczak
     </footer>
 </div>
 
 <script>
-    // BAZA DANYCH NUT
     const pianoSheets = [
         {
             title: "Fly Me To The Moon",
@@ -432,9 +422,17 @@
             title: "Fly Me To The Moon",
             author: "arr. Bart Howard",
             difficulty: "Łatwy",
-            key: "E♭ Alt", // Dodany strój
+            key: "E♭ Alt",
             file: "Flymetothemoon.jpg",
             type: "jpg"
+        },
+        {
+            title: "Fly Me to the Moon",
+            author: "arr. Bart Howard",
+            difficulty: "Średnio-łatwy",
+            key: "B♭ Tenor",
+            file: "FlyMetothemoon-saxtenor.png",
+            type: "png"
         },
         {
             title: "Czerwone Maki na Monte Cassino",
@@ -454,15 +452,22 @@
         }
     ];
 
-    // Aktualizacja liczników przy przyciskach
+    let currentTab = 'fortepian';
+    let currentSaxFilter = 'all';
+
     document.getElementById('btnPianoTab').innerText = `Fortepian (${pianoSheets.length})`;
     document.getElementById('btnSaxTab').innerText = `Saksofon (${saxSheets.length})`;
 
-    function getBadgeClass(difficulty) {
-        if (difficulty.toLowerCase().includes("łatwy")) {
+    function getDifficultyBadge(difficulty) {
+        if (difficulty.toLowerCase().includes("łatwy") && !difficulty.toLowerCase().includes("średnio")) {
             return "badge-easy";
         }
         return "badge-medium";
+    }
+
+    function getKeyBadge(key) {
+        if (key.includes("Tenor")) return "badge-tenor";
+        return "badge-alt";
     }
 
     function renderPiano(list) {
@@ -478,8 +483,7 @@
         }
 
         list.forEach((item, index) => {
-            const badgeClass = getBadgeClass(item.difficulty);
-            
+            const badgeClass = getDifficultyBadge(item.difficulty);
             container.innerHTML += `
                 <div class="sheet-card">
                     <div class="sheet-header">
@@ -516,9 +520,9 @@
         }
 
         list.forEach((item, index) => {
-            const badgeClass = getBadgeClass(item.difficulty);
-            const btnText = item.type === 'jpg' ? 'Pobierz JPG' : 'Pobierz PDF';
-            const keyBadge = item.key ? `<span class="badge badge-key">${item.key}</span>` : '';
+            const diffClass = getDifficultyBadge(item.difficulty);
+            const keyClass = getKeyBadge(item.key);
+            const ext = item.type.toUpperCase();
 
             container.innerHTML += `
                 <div class="sheet-card">
@@ -527,13 +531,13 @@
                             <h3>${item.title}</h3>
                             <p>${item.author}</p>
                             <div class="badge-container">
-                                <span class="badge ${badgeClass}">${item.difficulty}</span>
-                                ${keyBadge}
+                                <span class="badge ${diffClass}">${item.difficulty}</span>
+                                <span class="badge ${keyClass}">${item.key}</span>
                             </div>
                         </div>
                         <div class="action-buttons">
                             <button class="btn-preview" onclick="togglePreview('sax-prev-${index}')">👁 Podgląd</button>
-                            <a href="${item.file}" download class="btn-download">${btnText}</a>
+                            <a href="${item.file}" download class="btn-download">Pobierz ${ext}</a>
                         </div>
                     </div>
                     <div class="preview-box" id="sax-prev-${index}">
@@ -546,14 +550,8 @@
 
     function togglePreview(id) {
         const box = document.getElementById(id);
-        if (box.style.display === "block") {
-            box.style.display = "none";
-        } else {
-            box.style.display = "block";
-        }
+        box.style.display = box.style.display === "block" ? "none" : "block";
     }
-
-    let currentTab = 'fortepian';
 
     function switchTab(tab) {
         currentTab = tab;
@@ -564,6 +562,7 @@
         document.getElementById('pianoSection').style.display = 'none';
         document.getElementById('saxSection').style.display = 'none';
         document.getElementById('formSection').style.display = 'none';
+        document.getElementById('saxSubFilters').style.display = 'none';
         document.getElementById('searchBox').style.display = 'block';
 
         if (tab === 'fortepian') {
@@ -572,6 +571,7 @@
         } else if (tab === 'saksofon') {
             buttons[1].classList.add('active');
             document.getElementById('saxSection').style.display = 'block';
+            document.getElementById('saxSubFilters').style.display = 'flex';
         } else if (tab === 'formularz') {
             document.getElementById('formSection').style.display = 'block';
             document.getElementById('searchBox').style.display = 'none';
@@ -579,14 +579,39 @@
         filterSheets();
     }
 
+    function filterSaxKey(keyFilter) {
+        currentSaxFilter = keyFilter;
+        document.getElementById('subBtnAll').classList.remove('active');
+        document.getElementById('subBtnAlt').classList.remove('active');
+        document.getElementById('subBtnTenor').classList.remove('active');
+
+        if (keyFilter === 'all') document.getElementById('subBtnAll').classList.add('active');
+        if (keyFilter === 'alt') document.getElementById('subBtnAlt').classList.add('active');
+        if (keyFilter === 'tenor') document.getElementById('subBtnTenor').classList.add('active');
+
+        filterSheets();
+    }
+
     function filterSheets() {
         const query = document.getElementById('searchInput').value.toLowerCase();
 
         if (currentTab === 'fortepian') {
-            const filtered = pianoSheets.filter(s => s.title.toLowerCase().includes(query) || s.author.toLowerCase().includes(query));
+            const filtered = pianoSheets.filter(s => 
+                s.title.toLowerCase().includes(query) || s.author.toLowerCase().includes(query)
+            );
             renderPiano(filtered);
         } else if (currentTab === 'saksofon') {
-            const filtered = saxSheets.filter(s => s.title.toLowerCase().includes(query) || s.author.toLowerCase().includes(query));
+            const filtered = saxSheets.filter(s => {
+                const matchesQuery = s.title.toLowerCase().includes(query) || 
+                                     s.author.toLowerCase().includes(query) || 
+                                     s.key.toLowerCase().includes(query);
+                
+                const matchesKey = currentSaxFilter === 'all' || 
+                                  (currentSaxFilter === 'alt' && s.key.includes('Alt')) || 
+                                  (currentSaxFilter === 'tenor' && s.key.includes('Tenor'));
+
+                return matchesQuery && matchesKey;
+            });
             renderSax(filtered);
         }
     }
@@ -602,9 +627,7 @@
             const response = await fetch(event.target.action, {
                 method: form.method,
                 body: data,
-                headers: {
-                    'Accept': 'application/json'
-                }
+                headers: { 'Accept': 'application/json' }
             });
             
             if (response.ok) {
@@ -613,13 +636,8 @@
                 status.style.display = "block";
                 form.reset();
             } else {
-                const result = await response.json();
                 status.className = "form-status error";
-                if (Object.hasOwn(result, 'errors')) {
-                    status.innerHTML = result["errors"].map(error => error["message"]).join(", ");
-                } else {
-                    status.innerHTML = "Wystąpił błąd podczas wysyłania formularza.";
-                }
+                status.innerHTML = "Wystąpił błąd podczas wysyłania formularza.";
                 status.style.display = "block";
             }
         } catch (error) {
