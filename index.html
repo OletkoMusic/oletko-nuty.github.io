@@ -381,7 +381,7 @@
             title: "Fly Me To The Moon",
             author: "arr. Bart Howard",
             difficulty: "Łatwy",
-            file: "FlyMeToTheMoon.jpg",
+            file: "Flymetothemoon.jpg", // Poprawiona nazwa pliku z wielką literą
             type: "jpg"
         },
         {
@@ -415,8 +415,12 @@
             return;
         }
 
+        const baseUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/') + 1);
+
         list.forEach((item, index) => {
             const badgeClass = getBadgeClass(item.difficulty);
+            const fullPdfUrl = encodeURIComponent(baseUrl + item.pdf);
+            
             container.innerHTML += `
                 <div class="sheet-card">
                     <div class="sheet-header">
@@ -431,7 +435,7 @@
                         </div>
                     </div>
                     <div class="preview-box" id="piano-prev-${index}">
-                        <iframe src="${item.pdf}"></iframe>
+                        <iframe src="https://docs.google.com/viewer?url=${fullPdfUrl}&embedded=true"></iframe>
                     </div>
                 </div>
             `;
