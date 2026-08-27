@@ -227,21 +227,12 @@
             background-color: #5a6268;
         }
 
-        .btn-download-pdf {
+        .btn-download-pdf, .btn-download-jpg {
             background-color: #28a745;
             color: white;
         }
 
-        .btn-download-pdf:hover {
-            background-color: #218838;
-        }
-
-        .btn-download-jpg {
-            background-color: #28a745;
-            color: white;
-        }
-
-        .btn-download-jpg:hover {
+        .btn-download-pdf:hover, .btn-download-jpg:hover {
             background-color: #218838;
         }
 
@@ -465,6 +456,11 @@
             container.innerHTML = '';
 
             sheets.forEach((sheet, index) => {
+                // Dobieranie koloru etykiety (zielona dla "Łatwy", żółta dla reszty)
+                let diffClass = 'medium';
+                if (sheet.difficulty === 'Łatwy') diffClass = 'easy';
+                if (sheet.difficulty === 'Trudny') diffClass = 'hard';
+
                 const card = document.createElement('div');
                 card.className = 'sheet-card';
                 card.innerHTML = `
@@ -473,7 +469,7 @@
                             <h3>${sheet.title}</h3>
                             <p>${sheet.author}</p>
                             <div class="tags">
-                                <span class="tag medium">${sheet.difficulty}</span>
+                                <span class="tag ${diffClass}">${sheet.difficulty}</span>
                             </div>
                         </div>
                     </div>
@@ -602,7 +598,7 @@
                     document.getElementById('formMessage').style.display = 'block';
                     form.reset();
                 } else {
-                    alert("Wystąpił błąd podczas wysyłania formularza. Upewnij się, że potwiedziłeś aktywację formularza w wiadomości e-mail od Formspree.");
+                    alert("Wystąpił błąd podczas wysyłania formularza. Upewnij się, że potwierdziłeś aktywację formularza w wiadomości e-mail od Formspree.");
                 }
             } catch (error) {
                 alert("Wystąpił błąd podczas połączenia. Spróbuj ponownie.");
