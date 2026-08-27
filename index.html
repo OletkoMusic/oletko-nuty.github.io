@@ -246,12 +246,12 @@
             background-color: #5a6268;
         }
 
-        .btn-download-pdf, .btn-download-jpg {
+        .btn-download-pdf, .btn-download-jpg, .btn-download-png {
             background-color: #28a745;
             color: white;
         }
 
-        .btn-download-pdf:hover, .btn-download-jpg:hover {
+        .btn-download-pdf:hover, .btn-download-jpg:hover, .btn-download-png:hover {
             background-color: #218838;
         }
 
@@ -358,7 +358,7 @@
 
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('piano')" id="tab-piano">Fortepian (3)</button>
-            <button class="tab-btn" onclick="switchTab('sax')" id="tab-sax">Saksofon (15)</button>
+            <button class="tab-btn" onclick="switchTab('sax')" id="tab-sax">Saksofon (17)</button>
             <button class="tab-btn" onclick="switchTab('trumpet')" id="tab-trumpet">Trąbka (3)</button>
             <button class="tab-btn request-btn" onclick="switchTab('request')" id="tab-request">🎁 Poproś o nuty</button>
         </div>
@@ -383,13 +383,13 @@
                 <button class="sub-btn" onclick="filterSaxCategory('tenor', this)">Saksofon Tenorowy</button>
             </div>
 
-            <p class="sub-desc">Kliknij w grafikę lub pobierz nuty w formacie JPG.</p>
+            <p class="sub-desc">Kliknij w grafikę lub pobierz nuty w formacie JPG/PNG.</p>
             <div id="sax-list"></div>
         </div>
 
         <div id="trumpet" class="tab-content">
             <h2 class="section-title">Nuty na Trąbkę</h2>
-            <p class="sub-desc">Pobieraj darmowe nuty na trąbkę (Bb / strojenie w G) w formacie JPG.</p>
+            <p class="sub-desc">Pobieraj darmowe nuty na trąbkę w formacie JPG.</p>
             <div id="trumpet-list"></div>
         </div>
 
@@ -451,6 +451,20 @@
         ];
 
         const saxSheets = [
+            {
+                title: "Sto lat",
+                author: "melodia tradycyjna",
+                types: ["Łatwy", "Es Alt"],
+                category: "alt",
+                image: "stolat-saxalt.png"
+            },
+            {
+                title: "Wlazł kotek na płotek",
+                author: "melodia ludowa",
+                types: ["Łatwy", "Es Alt"],
+                category: "alt",
+                image: "wlazłkoteknapłotek.png"
+            },
             {
                 title: "Fly Me To The Moon (Alt)",
                 author: "arr. Bart Howard",
@@ -653,6 +667,8 @@
                     tagsHTML += `<span class="${tagClass}">${type}</span> `;
                 });
 
+                const ext = sheet.image.split('.').pop().toUpperCase();
+
                 card.innerHTML = `
                     <div class="sheet-header">
                         <div class="sheet-info">
@@ -665,7 +681,7 @@
                     </div>
                     <div class="sheet-actions">
                         <button class="btn btn-preview" onclick="togglePreview('sax-preview-${index}')">👁 Podgląd</button>
-                        <a href="${sheet.image}" download class="btn btn-download-jpg">Pobierz JPG</a>
+                        <a href="${sheet.image}" download class="btn btn-download-jpg">Pobierz ${ext}</a>
                     </div>
                     <div class="preview-container" id="sax-preview-${index}">
                         <img src="${sheet.image}" alt="${sheet.title}">
