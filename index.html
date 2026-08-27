@@ -184,6 +184,7 @@
             display: flex;
             gap: 6px;
             margin-top: 6px;
+            flex-wrap: wrap;
         }
 
         .tag {
@@ -330,7 +331,7 @@
 
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('piano')" id="tab-piano">Fortepian (3)</button>
-            <button class="tab-btn" onclick="switchTab('sax')" id="tab-sax">Saksofon (6)</button>
+            <button class="tab-btn" onclick="switchTab('sax')" id="tab-sax">Saksofon (8)</button>
             <button class="tab-btn request-btn" onclick="switchTab('request')" id="tab-request">🎁 Poproś o nuty</button>
         </div>
 
@@ -459,6 +460,20 @@
                 types: ["Łatwy", "Es Alt"],
                 category: "alt",
                 image: "MyPierwszaBrygada.jpg"
+            },
+            {
+                title: "Misty (Tenor)",
+                author: "Erroll Garner",
+                types: ["Łatwy", "Tenor"],
+                category: "tenor",
+                image: "Misty-Saxtenor.jpg"
+            },
+            {
+                title: "The Entertainer (Tenor)",
+                author: "Scott Joplin",
+                types: ["Średnio-zaawansowany", "Tenor"],
+                category: "tenor",
+                image: "TheEnterTainer-SaxTenor.jpg"
             }
         ];
 
@@ -515,6 +530,8 @@
                 let tagsHTML = '';
                 sheet.types.forEach(type => {
                     let tagClass = 'tag easy';
+                    if (type.includes('Średnio')) tagClass = 'tag medium';
+                    if (type.includes('Trudny')) tagClass = 'tag hard';
                     if (type.includes('Alt')) tagClass = 'tag alt';
                     if (type.includes('Tenor')) tagClass = 'tag tenor';
                     tagsHTML += `<span class="${tagClass}">${type}</span> `;
