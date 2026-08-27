@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oletko Nuty - Darmowe nuty na fortepian i saksofon</title>
+    <title>Oletko Nuty - Darmowe nuty na fortepian, saksofon i trąbkę</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
     
     <style>
@@ -49,7 +49,7 @@
 
         .stats-badge {
             display: inline-flex;
-            gap: 12px;
+            gap: 10px;
             background: #eef2f7;
             border: 1px solid #d0d7de;
             padding: 8px 16px;
@@ -57,6 +57,8 @@
             margin-top: 12px;
             font-size: 0.85rem;
             color: #2c3e50;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .stats-badge strong {
@@ -72,7 +74,7 @@
         }
 
         .tab-btn {
-            padding: 10px 20px;
+            padding: 10px 18px;
             border: none;
             background-color: #e0e0e0;
             color: #333;
@@ -214,6 +216,7 @@
         .tag.hard { background: #ffebee; color: #c62828; }
         .tag.alt { background: #e3f2fd; color: #1565c0; }
         .tag.tenor { background: #e0f2f1; color: #00695c; }
+        .tag.trumpet { background: #fff3e0; color: #e65100; }
 
         .sheet-actions {
             display: flex;
@@ -339,21 +342,24 @@
     <div class="container">
         <header>
             <h1>Oletko Nuty</h1>
-            <p>Darmowe nuty na fortepian i saksofon</p>
+            <p>Darmowe nuty na fortepian, saksofon i trąbkę</p>
             <p style="margin-top: 8px; font-size: 0.85rem;">Cześć! Nazywam się <strong>Aleksander Frątczak</strong>. Tworzę i udostępniam darmowe opracowania nutowe dla pasjonatów muzyki. Pobieraj opracowania i graj swoje ulubione utwory!</p>
             
             <div class="stats-badge">
-                <span>📚 Łącznie opracowań: <strong id="total-count">0</strong></span>
+                <span>📚 Łącznie: <strong id="total-count">0</strong></span>
                 <span>•</span>
                 <span>🎹 Fortepian: <strong id="piano-count">0</strong></span>
                 <span>•</span>
                 <span>🎷 Saksofon: <strong id="sax-count">0</strong></span>
+                <span>•</span>
+                <span>🎺 Trąbka: <strong id="trumpet-count">0</strong></span>
             </div>
         </header>
 
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('piano')" id="tab-piano">Fortepian (3)</button>
             <button class="tab-btn" onclick="switchTab('sax')" id="tab-sax">Saksofon (15)</button>
+            <button class="tab-btn" onclick="switchTab('trumpet')" id="tab-trumpet">Trąbka (3)</button>
             <button class="tab-btn request-btn" onclick="switchTab('request')" id="tab-request">🎁 Poproś o nuty</button>
         </div>
 
@@ -381,6 +387,12 @@
             <div id="sax-list"></div>
         </div>
 
+        <div id="trumpet" class="tab-content">
+            <h2 class="section-title">Nuty na Trąbkę</h2>
+            <p class="sub-desc">Pobieraj darmowe nuty na trąbkę (Bb / strojenie w G) w formacie JPG.</p>
+            <div id="trumpet-list"></div>
+        </div>
+
         <div id="request" class="tab-content">
             <h2 class="section-title">Zaproponuj utwór!</h2>
             <p class="sub-desc">Chcesz, abym opracował i dodał nowe nuty? Wypełnij formularz poniżej.</p>
@@ -398,7 +410,7 @@
 
                 <div class="form-group">
                     <label for="instrument">Instrument:</label>
-                    <input type="text" id="instrument" name="instrument" placeholder="np. Saksofon / Fortepian" required>
+                    <input type="text" id="instrument" name="instrument" placeholder="np. Saksofon / Fortepian / Trąbka" required>
                 </div>
 
                 <div class="form-group">
@@ -546,19 +558,43 @@
             }
         ];
 
+        const trumpetSheets = [
+            {
+                title: "Rozkwitały pęki białych róż",
+                author: "Muz. Mieczysław Kozar-Słobódzki / Sł. Kazimierz Wroczyński",
+                types: ["Łatwy", "Trąbka"],
+                image: "G Rozkwitały pęki białych róż.jpg"
+            },
+            {
+                title: "Piechota (Maszerują strzelcy)",
+                author: "Bolesław Lubicz-Zahorski",
+                types: ["Łatwy", "Trąbka"],
+                image: "G Piechota.jpg"
+            },
+            {
+                title: "Czerwone Maki na Monte Cassino",
+                author: "Alfred Schütz / Feliks Konarski",
+                types: ["Łatwy", "Trąbka"],
+                image: "Czerwone maki.jpg"
+            }
+        ];
+
         let currentSaxCategory = 'all';
 
         function updateCounts() {
             const pianoCount = pianoSheets.length;
             const saxCount = saxSheets.length;
-            const totalCount = pianoCount + saxCount;
+            const trumpetCount = trumpetSheets.length;
+            const totalCount = pianoCount + saxCount + trumpetCount;
 
             document.getElementById('piano-count').textContent = pianoCount;
             document.getElementById('sax-count').textContent = saxCount;
+            document.getElementById('trumpet-count').textContent = trumpetCount;
             document.getElementById('total-count').textContent = totalCount;
 
             document.getElementById('tab-piano').textContent = `Fortepian (${pianoCount})`;
             document.getElementById('tab-sax').textContent = `Saksofon (${saxCount})`;
+            document.getElementById('tab-trumpet').textContent = `Trąbka (${trumpetCount})`;
         }
 
         function renderPianoSheets(sheets) {
@@ -639,6 +675,49 @@
             });
         }
 
+        function renderTrumpetSheets(sheets) {
+            const container = document.getElementById('trumpet-list');
+            container.innerHTML = '';
+
+            if (sheets.length === 0) {
+                container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">Brak nut dla trąbki.</p>';
+                return;
+            }
+
+            sheets.forEach((sheet, index) => {
+                const card = document.createElement('div');
+                card.className = 'sheet-card';
+
+                let tagsHTML = '';
+                sheet.types.forEach(type => {
+                    let tagClass = 'tag trumpet';
+                    if (type === 'Łatwy') tagClass = 'tag easy';
+                    if (type.includes('Średnio')) tagClass = 'tag medium';
+                    tagsHTML += `<span class="${tagClass}">${type}</span> `;
+                });
+
+                card.innerHTML = `
+                    <div class="sheet-header">
+                        <div class="sheet-info">
+                            <h3>${sheet.title}</h3>
+                            <p>${sheet.author}</p>
+                            <div class="tags">
+                                ${tagsHTML}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sheet-actions">
+                        <button class="btn btn-preview" onclick="togglePreview('trumpet-preview-${index}')">👁 Podgląd</button>
+                        <a href="${sheet.image}" download class="btn btn-download-jpg">Pobierz JPG</a>
+                    </div>
+                    <div class="preview-container" id="trumpet-preview-${index}">
+                        <img src="${sheet.image}" alt="${sheet.title}">
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
         function filterSaxCategory(category, btnElement) {
             currentSaxCategory = category;
             document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('active'));
@@ -683,8 +762,13 @@
                 return matchesQuery && matchesCategory;
             });
 
+            const filteredTrumpet = trumpetSheets.filter(s => 
+                s.title.toLowerCase().includes(query) || s.author.toLowerCase().includes(query)
+            );
+
             renderPianoSheets(filteredPiano);
             renderSaxSheets(filteredSax);
+            renderTrumpetSheets(filteredTrumpet);
         }
 
         const form = document.getElementById('sheetRequestForm');
@@ -713,6 +797,7 @@
         updateCounts();
         renderPianoSheets(pianoSheets);
         renderSaxSheets(saxSheets);
+        renderTrumpetSheets(trumpetSheets);
     </script>
 </body>
 </html>
