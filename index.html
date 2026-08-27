@@ -330,7 +330,7 @@
 
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('piano')" id="tab-piano">Fortepian (3)</button>
-            <button class="tab-btn" onclick="switchTab('sax')" id="tab-sax">Saksofon (4)</button>
+            <button class="tab-btn" onclick="switchTab('sax')" id="tab-sax">Saksofon (6)</button>
             <button class="tab-btn request-btn" onclick="switchTab('request')" id="tab-request">🎁 Poproś o nuty</button>
         </div>
 
@@ -445,6 +445,20 @@
                 types: ["Łatwy", "Es Alt"],
                 category: "alt",
                 image: "PałacykMichla.jpg"
+            },
+            {
+                title: "Bogurodzica",
+                author: "autor nieznany / pieśń religijna",
+                types: ["Łatwy", "Es Alt"],
+                category: "alt",
+                image: "Bogurodzica.jpg"
+            },
+            {
+                title: "My, Pierwsza Brygada",
+                author: "Andrzej Hałaciński / Tadeusz Biernacki",
+                types: ["Łatwy", "Es Alt"],
+                category: "alt",
+                image: "MyPierwszaBrygada.jpg"
             }
         ];
 
@@ -456,7 +470,6 @@
             container.innerHTML = '';
 
             sheets.forEach((sheet, index) => {
-                // Dobieranie koloru etykiety (zielona dla "Łatwy", żółta dla reszty)
                 let diffClass = 'medium';
                 if (sheet.difficulty === 'Łatwy') diffClass = 'easy';
                 if (sheet.difficulty === 'Trudny') diffClass = 'hard';
