@@ -47,6 +47,23 @@
             margin-top: 5px;
         }
 
+        /* Licznik utworów w nagłówku */
+        .stats-badge {
+            display: inline-flex;
+            gap: 12px;
+            background: #eef2f7;
+            border: 1px solid #d0d7de;
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: #2c3e50;
+        }
+
+        .stats-badge strong {
+            color: #007bff;
+        }
+
         .tabs {
             display: flex;
             justify-content: center;
@@ -327,6 +344,14 @@
             <h1>Oletko Nuty</h1>
             <p>Darmowe nuty na fortepian i saksofon</p>
             <p style="margin-top: 8px; font-size: 0.85rem;">Cześć! Nazywam się <strong>Aleksander Frątczak</strong>. Tworzę i udostępniam darmowe opracowania nutowe dla pasjonatów muzyki. Pobieraj opracowania i graj swoje ulubione utwory!</p>
+            
+            <div class="stats-badge">
+                <span>📚 Łącznie opracowań: <strong id="total-count">0</strong></span>
+                <span>•</span>
+                <span>🎹 Fortepian: <strong id="piano-count">0</strong></span>
+                <span>•</span>
+                <span>🎷 Saksofon: <strong id="sax-count">0</strong></span>
+            </div>
         </header>
 
         <div class="tabs">
@@ -478,6 +503,20 @@
         ];
 
         let currentSaxCategory = 'all';
+
+        // Aktualizacja liczników w nagłówku oraz w przyciskach zakładek
+        function updateCounts() {
+            const pianoCount = pianoSheets.length;
+            const saxCount = saxSheets.length;
+            const totalCount = pianoCount + saxCount;
+
+            document.getElementById('piano-count').textContent = pianoCount;
+            document.getElementById('sax-count').textContent = saxCount;
+            document.getElementById('total-count').textContent = totalCount;
+
+            document.getElementById('tab-piano').textContent = `Fortepian (${pianoCount})`;
+            document.getElementById('tab-sax').textContent = `Saksofon (${saxCount})`;
+        }
 
         // Renderowanie listy nut na Fortepian
         function renderPianoSheets(sheets) {
@@ -636,6 +675,7 @@
         });
 
         // Inicjalizacja przy starcie
+        updateCounts();
         renderPianoSheets(pianoSheets);
         renderSaxSheets(saxSheets);
     </script>
