@@ -363,7 +363,7 @@
             <button class="tab-btn active" onclick="switchTab('piano')" id="tab-piano">Fortepian (3)</button>
             <button class="tab-btn" onclick="switchTab('sax')" id="tab-sax">Saksofon (17)</button>
             <button class="tab-btn" onclick="switchTab('trumpet')" id="tab-trumpet">Trąbka (3)</button>
-            <button class="tab-btn" onclick="switchTab('accordion')" id="tab-accordion">Akordeon (2)</button>
+            <button class="tab-btn" onclick="switchTab('accordion')" id="tab-accordion">Akordeon (5)</button>
             <button class="tab-btn request-btn" onclick="switchTab('request')" id="tab-request">🎁 Poproś o nuty</button>
         </div>
 
@@ -399,7 +399,7 @@
 
         <div id="accordion" class="tab-content">
             <h2 class="section-title">Nuty na Akordeon</h2>
-            <p class="sub-desc">Pobieraj darmowe nuty na akordeon (Valse Musette) w formacie PDF.</p>
+            <p class="sub-desc">Pobieraj darmowe nuty na akordeon w formacie PDF.</p>
             <div id="accordion-list"></div>
         </div>
 
@@ -605,9 +605,15 @@
 
         const accordionSheets = [
             {
+                title: "Fale Dunaju (Donau-Wellen Walzer)",
+                author: "Iosif Ivanovici / opr. Stanisław Wiśniewski",
+                difficulty: "Średnio-zaawansowany",
+                pdf: "Fale dunaju akordeon.pdf"
+            },
+            {
                 title: "La Valse à Margaux (Walc Margaux)",
                 author: "Richard Galliano",
-                difficulty: "Średnio-zaawansowany",
+                difficulty: "Zaawansowany",
                 pdf: "Galliano - La valse a Margaux.pdf"
             },
             {
@@ -615,6 +621,18 @@
                 author: "Tony Murena & Joseph Colombo",
                 difficulty: "Średnio-zaawansowany",
                 pdf: "Galliano - Indifference.pdf"
+            },
+            {
+                title: "Divertissement (Дивертисмент)",
+                author: "André Astier & Maurice Denoux",
+                difficulty: "Zaawansowany",
+                pdf: "Astier - Divertisment.pdf"
+            },
+            {
+                title: "Asturia (Preludium)",
+                author: "Isaac Albéniz / arr. Friedrich Lips",
+                difficulty: "Zaawansowany",
+                pdf: "Asturia.pdf"
             }
         ];
 
@@ -646,7 +664,7 @@
             sheets.forEach((sheet, index) => {
                 let diffClass = 'medium';
                 if (sheet.difficulty === 'Łatwy') diffClass = 'easy';
-                if (sheet.difficulty === 'Trudny') diffClass = 'hard';
+                if (sheet.difficulty === 'Zaawansowany' || sheet.difficulty === 'Trudny') diffClass = 'hard';
 
                 const card = document.createElement('div');
                 card.className = 'sheet-card';
@@ -689,7 +707,7 @@
                 sheet.types.forEach(type => {
                     let tagClass = 'tag easy';
                     if (type.includes('Średnio')) tagClass = 'tag medium';
-                    if (type.includes('Trudny')) tagClass = 'tag hard';
+                    if (type.includes('Zaawansowany') || type.includes('Trudny')) tagClass = 'tag hard';
                     if (type.includes('Alt')) tagClass = 'tag alt';
                     if (type.includes('Tenor')) tagClass = 'tag tenor';
                     tagsHTML += `<span class="${tagClass}">${type}</span> `;
@@ -774,7 +792,7 @@
             sheets.forEach((sheet, index) => {
                 let diffClass = 'medium';
                 if (sheet.difficulty === 'Łatwy') diffClass = 'easy';
-                if (sheet.difficulty === 'Trudny') diffClass = 'hard';
+                if (sheet.difficulty === 'Zaawansowany' || sheet.difficulty === 'Trudny') diffClass = 'hard';
 
                 const card = document.createElement('div');
                 card.className = 'sheet-card';
