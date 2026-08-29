@@ -221,8 +221,9 @@
 
         .sheet-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-self: flex-end;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -267,6 +268,7 @@
             width: 100%;
             border-radius: 6px;
             border: 1px solid #ddd;
+            margin-bottom: 10px;
         }
 
         .preview-container iframe {
@@ -360,7 +362,7 @@
         </header>
 
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('piano')" id="tab-piano">Fortepian (3)</button>
+            <button class="tab-btn active" onclick="switchTab('piano')" id="tab-piano">Fortepian (6)</button>
             <button class="tab-btn" onclick="switchTab('sax')" id="tab-sax">Saksofon (17)</button>
             <button class="tab-btn" onclick="switchTab('trumpet')" id="tab-trumpet">Trąbka (3)</button>
             <button class="tab-btn" onclick="switchTab('accordion')" id="tab-accordion">Akordeon (5)</button>
@@ -374,7 +376,7 @@
 
         <div id="piano" class="tab-content active">
             <h2 class="section-title">Nuty na Fortepian</h2>
-            <p class="sub-desc">Pobieraj darmowe nuty lub rozwiń podgląd PDF!</p>
+            <p class="sub-desc">Pobieraj darmowe nuty lub rozwiń podgląd!</p>
             <div id="piano-list"></div>
         </div>
 
@@ -440,6 +442,24 @@
 
     <script>
         const pianoSheets = [
+            {
+                title: "Mędrcy świata, Monarchowie",
+                author: "Kolęda tradycyjna (prosty układ)",
+                difficulty: "Łatwy",
+                image: "Kolędy w prostym układzie na fortepian_page-0013.jpg"
+            },
+            {
+                title: "Triumfy Króla Niebieskiego",
+                author: "Kolęda tradycyjna (prosty układ)",
+                difficulty: "Łatwy",
+                image: "Kolędy w prostym układzie na fortepian_page-0014.jpg"
+            },
+            {
+                title: "Pirates Of The Caribbean - He's a Pirate",
+                author: "Klaus Badelt",
+                difficulty: "Średnio-zaawansowany",
+                pdf: "Pirates Of The Caraibben - Hes A Pirate.pdf"
+            },
             {
                 title: "Fly Me To The Moon",
                 author: "arr. Thomas L.S. Pang / Bart Howard",
@@ -666,6 +686,23 @@
                 if (sheet.difficulty === 'Łatwy') diffClass = 'easy';
                 if (sheet.difficulty === 'Zaawansowany' || sheet.difficulty === 'Trudny') diffClass = 'hard';
 
+                let actionsHTML = '';
+                let previewHTML = '';
+
+                if (sheet.pdf) {
+                    actionsHTML = `
+                        <button class="btn btn-preview" onclick="togglePreview('piano-preview-${index}')">👁 Podgląd</button>
+                        <a href="${sheet.pdf}" download class="btn btn-download-pdf">Pobierz PDF</a>
+                    `;
+                    previewHTML = `<iframe src="${sheet.pdf}"></iframe>`;
+                } else if (sheet.image) {
+                    actionsHTML = `
+                        <button class="btn btn-preview" onclick="togglePreview('piano-preview-${index}')">👁 Podgląd</button>
+                        <a href="${sheet.image}" download class="btn btn-download-jpg">Pobierz JPG</a>
+                    `;
+                    previewHTML = `<img src="${sheet.image}" alt="${sheet.title}">`;
+                }
+
                 const card = document.createElement('div');
                 card.className = 'sheet-card';
                 card.innerHTML = `
@@ -679,11 +716,10 @@
                         </div>
                     </div>
                     <div class="sheet-actions">
-                        <button class="btn btn-preview" onclick="togglePreview('piano-preview-${index}')">👁 Podgląd</button>
-                        <a href="${sheet.pdf}" download class="btn btn-download-pdf">Pobierz PDF</a>
+                        ${actionsHTML}
                     </div>
                     <div class="preview-container" id="piano-preview-${index}">
-                        <iframe src="${sheet.pdf}"></iframe>
+                        ${previewHTML}
                     </div>
                 `;
                 container.appendChild(card);
