@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oletko Nuty - Darmowe nuty na fortepian, saksofon i trąbkę</title>
+    <title>Oletko Nuty - Darmowe nuty na fortepian, saksofon, trąbkę i akordeon</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
     
     <style>
@@ -217,6 +217,7 @@
         .tag.alt { background: #e3f2fd; color: #1565c0; }
         .tag.tenor { background: #e0f2f1; color: #00695c; }
         .tag.trumpet { background: #fff3e0; color: #e65100; }
+        .tag.accordion { background: #f3e5f5; color: #7b1fa2; }
 
         .sheet-actions {
             display: flex;
@@ -342,7 +343,7 @@
     <div class="container">
         <header>
             <h1>Oletko Nuty</h1>
-            <p>Darmowe nuty na fortepian, saksofon i trąbkę</p>
+            <p>Darmowe nuty na fortepian, saksofon, trąbkę i akordeon</p>
             <p style="margin-top: 8px; font-size: 0.85rem;">Cześć! Nazywam się <strong>Aleksander Frątczak</strong>. Tworzę i udostępniam darmowe opracowania nutowe dla pasjonatów muzyki. Pobieraj opracowania i graj swoje ulubione utwory!</p>
             
             <div class="stats-badge">
@@ -353,6 +354,8 @@
                 <span>🎷 Saksofon: <strong id="sax-count">0</strong></span>
                 <span>•</span>
                 <span>🎺 Trąbka: <strong id="trumpet-count">0</strong></span>
+                <span>•</span>
+                <span>🪗 Akordeon: <strong id="accordion-count">0</strong></span>
             </div>
         </header>
 
@@ -360,6 +363,7 @@
             <button class="tab-btn active" onclick="switchTab('piano')" id="tab-piano">Fortepian (3)</button>
             <button class="tab-btn" onclick="switchTab('sax')" id="tab-sax">Saksofon (17)</button>
             <button class="tab-btn" onclick="switchTab('trumpet')" id="tab-trumpet">Trąbka (3)</button>
+            <button class="tab-btn" onclick="switchTab('accordion')" id="tab-accordion">Akordeon (2)</button>
             <button class="tab-btn request-btn" onclick="switchTab('request')" id="tab-request">🎁 Poproś o nuty</button>
         </div>
 
@@ -393,6 +397,12 @@
             <div id="trumpet-list"></div>
         </div>
 
+        <div id="accordion" class="tab-content">
+            <h2 class="section-title">Nuty na Akordeon</h2>
+            <p class="sub-desc">Pobieraj darmowe nuty na akordeon (Valse Musette) w formacie PDF.</p>
+            <div id="accordion-list"></div>
+        </div>
+
         <div id="request" class="tab-content">
             <h2 class="section-title">Zaproponuj utwór!</h2>
             <p class="sub-desc">Chcesz, abym opracował i dodał nowe nuty? Wypełnij formularz poniżej.</p>
@@ -410,7 +420,7 @@
 
                 <div class="form-group">
                     <label for="instrument">Instrument:</label>
-                    <input type="text" id="instrument" name="instrument" placeholder="np. Saksofon / Fortepian / Trąbka" required>
+                    <input type="text" id="instrument" name="instrument" placeholder="np. Saksofon / Fortepian / Trąbka / Akordeon" required>
                 </div>
 
                 <div class="form-group">
@@ -593,22 +603,40 @@
             }
         ];
 
+        const accordionSheets = [
+            {
+                title: "La Valse à Margaux (Walc Margaux)",
+                author: "Richard Galliano",
+                difficulty: "Średnio-zaawansowany",
+                pdf: "Galliano - La valse a Margaux.pdf"
+            },
+            {
+                title: "Indifférence (Valse Musette)",
+                author: "Tony Murena & Joseph Colombo",
+                difficulty: "Średnio-zaawansowany",
+                pdf: "Galliano - Indifference.pdf"
+            }
+        ];
+
         let currentSaxCategory = 'all';
 
         function updateCounts() {
             const pianoCount = pianoSheets.length;
             const saxCount = saxSheets.length;
             const trumpetCount = trumpetSheets.length;
-            const totalCount = pianoCount + saxCount + trumpetCount;
+            const accordionCount = accordionSheets.length;
+            const totalCount = pianoCount + saxCount + trumpetCount + accordionCount;
 
             document.getElementById('piano-count').textContent = pianoCount;
             document.getElementById('sax-count').textContent = saxCount;
             document.getElementById('trumpet-count').textContent = trumpetCount;
+            document.getElementById('accordion-count').textContent = accordionCount;
             document.getElementById('total-count').textContent = totalCount;
 
             document.getElementById('tab-piano').textContent = `Fortepian (${pianoCount})`;
             document.getElementById('tab-sax').textContent = `Saksofon (${saxCount})`;
             document.getElementById('tab-trumpet').textContent = `Trąbka (${trumpetCount})`;
+            document.getElementById('tab-accordion').textContent = `Akordeon (${accordionCount})`;
         }
 
         function renderPianoSheets(sheets) {
@@ -734,6 +762,45 @@
             });
         }
 
+        function renderAccordionSheets(sheets) {
+            const container = document.getElementById('accordion-list');
+            container.innerHTML = '';
+
+            if (sheets.length === 0) {
+                container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">Brak nut dla akordeonu.</p>';
+                return;
+            }
+
+            sheets.forEach((sheet, index) => {
+                let diffClass = 'medium';
+                if (sheet.difficulty === 'Łatwy') diffClass = 'easy';
+                if (sheet.difficulty === 'Trudny') diffClass = 'hard';
+
+                const card = document.createElement('div');
+                card.className = 'sheet-card';
+                card.innerHTML = `
+                    <div class="sheet-header">
+                        <div class="sheet-info">
+                            <h3>${sheet.title}</h3>
+                            <p>${sheet.author}</p>
+                            <div class="tags">
+                                <span class="tag accordion">Akordeon</span>
+                                <span class="tag ${diffClass}">${sheet.difficulty}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sheet-actions">
+                        <button class="btn btn-preview" onclick="togglePreview('acc-preview-${index}')">👁 Podgląd</button>
+                        <a href="${sheet.pdf}" download class="btn btn-download-pdf">Pobierz PDF</a>
+                    </div>
+                    <div class="preview-container" id="acc-preview-${index}">
+                        <iframe src="${sheet.pdf}"></iframe>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
         function filterSaxCategory(category, btnElement) {
             currentSaxCategory = category;
             document.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('active'));
@@ -782,9 +849,14 @@
                 s.title.toLowerCase().includes(query) || s.author.toLowerCase().includes(query)
             );
 
+            const filteredAccordion = accordionSheets.filter(s => 
+                s.title.toLowerCase().includes(query) || s.author.toLowerCase().includes(query)
+            );
+
             renderPianoSheets(filteredPiano);
             renderSaxSheets(filteredSax);
             renderTrumpetSheets(filteredTrumpet);
+            renderAccordionSheets(filteredAccordion);
         }
 
         const form = document.getElementById('sheetRequestForm');
@@ -814,6 +886,7 @@
         renderPianoSheets(pianoSheets);
         renderSaxSheets(saxSheets);
         renderTrumpetSheets(trumpetSheets);
+        renderAccordionSheets(accordionSheets);
     </script>
 </body>
 </html>
