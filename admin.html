@@ -36,7 +36,7 @@
         <p style="text-align: center; margin-bottom: 20px;"><a href="index.html" style="color: #007bff;">← Powrót do strony głównej</a></p>
 
         <div style="margin-bottom: 20px; text-align: center;">
-            <button class="btn" style="background: #dc3545;" onclick="resetAndUploadData()">🔄 Wyczyść bazę i wgraj powtórnie (36 nut)</button>
+            <button class="btn" style="background: #dc3545;" onclick="resetAndUploadData()">🔄 Wyczyść bazę i wgraj WSZYSTKIE 36 nut</button>
         </div>
 
         <form id="addSheetForm">
@@ -75,7 +75,7 @@
                 </select>
             </div>
             <div class="form-group">
-                <label>Nazwa pliku na GitHubie (np. `DlaElizy.pdf` lub `stolat.jpg`):</label>
+                <label>Nazwa pliku na GitHubie (np. `DlaElizy-Fortepian.pdf` lub `stolat-saxalt.png`):</label>
                 <input type="text" id="fileUrl" placeholder="Wpisz dokładną nazwę pliku" required>
             </div>
             <button type="submit" class="btn">➕ Dodaj nowe nuty</button>
@@ -111,7 +111,7 @@
             { title: "Fly Me To The Moon", author: "arr. Thomas L.S. Pang / Bart Howard", difficulty: "Średnio-zaawansowany", instrument: "piano", fileUrl: "FlyMeToTheMoon-Fortepian.pdf" },
             { title: "Dla Elizy (Für Elise)", author: "Ludwig van Beethoven", difficulty: "Średnio-zaawansowany", instrument: "piano", fileUrl: "DlaElizy-Fortepian.pdf" },
             { title: "Mazurek Dąbrowskiego (Hymn Polski)", author: "Józef Wybicki / melodia ludowa", difficulty: "Łatwy", instrument: "piano", fileUrl: "MazurekDabrowskiego-Fortepian.pdf" },
-            
+
             // SAKSOFON (18)
             { title: "Sto lat", author: "melodia tradycyjna", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "stolat-saxalt.png" },
             { title: "Wlazł kotek na płotek", author: "melodia ludowa", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "wlazłkoteknapłotek.png" },
@@ -136,12 +136,12 @@
             { title: "Back To The Future", author: "Alan Silvestri", difficulty: "Łatwy", instrument: "trumpet", subCategory: "b", fileUrl: "Najlepsze kawałki muzyki filmowej Trąbka Bb_page-0002.jpg" },
             { title: "Forrest Gump - Main Title", author: "Alan Silvestri", difficulty: "Łatwy", instrument: "trumpet", subCategory: "b", fileUrl: "Najlepsze kawałki muzyki filmowej Trąbka Bb_page-0003.jpg" },
             { title: "The John Dunbar Theme", author: "John Barry", difficulty: "Łatwy", instrument: "trumpet", subCategory: "b", fileUrl: "Najlepsze kawałki muzyki filmowej Trąbka Bb_page-0005.jpg" },
-            { title: "Rozkwitały pęki białych róż", author: "Mieczysław Kozar-Słobódzki", difficulty: "Łatwy", instrument: "trumpet", subCategory: "b", fileUrl: "G Rozkwitały pęki białych róż.jpg" },
+            { title: "Rozkwitały pęki białych róż", author: "Mieczysław Kozar-Słobódzki / Kazimierz Wroczyński", difficulty: "Łatwy", instrument: "trumpet", subCategory: "b", fileUrl: "G Rozkwitały pęki białych róż.jpg" },
             { title: "Piechota (Maszerują strzelcy)", author: "Bolesław Lubicz-Zahorski", difficulty: "Łatwy", instrument: "trumpet", subCategory: "b", fileUrl: "G Piechota.jpg" },
             { title: "Czerwone Maki na Monte Cassino", author: "Alfred Schütz / Feliks Konarski", difficulty: "Łatwy", instrument: "trumpet", subCategory: "b", fileUrl: "Czerwone maki.jpg" },
 
             // AKORDEON (5)
-            { title: "Fale Dunaju (Donau-Wellen Walzer)", author: "Iosif Ivanovici", difficulty: "Średnio-zaawansowany", instrument: "accordion", fileUrl: "Fale dunaju akordeon.pdf" },
+            { title: "Fale Dunaju (Donau-Wellen Walzer)", author: "Iosif Ivanovici / opr. Stanisław Wiśniewski", difficulty: "Średnio-zaawansowany", instrument: "accordion", fileUrl: "Fale dunaju akordeon.pdf" },
             { title: "La Valse à Margaux (Walc Margaux)", author: "Richard Galliano", difficulty: "Zaawansowany", instrument: "accordion", fileUrl: "Galliano - La valse a Margaux.pdf" },
             { title: "Indifférence (Valse Musette)", author: "Tony Murena & Joseph Colombo", difficulty: "Średnio-zaawansowany", instrument: "accordion", fileUrl: "Galliano - Indifference.pdf" },
             { title: "Divertissement (Дивертисмент)", author: "André Astier & Maurice Denoux", difficulty: "Zaawansowany", instrument: "accordion", fileUrl: "Astier - Divertisment.pdf" },
@@ -149,7 +149,7 @@
         ];
 
         window.resetAndUploadData = async function() {
-            if (confirm("Czy chcesz WYCZYŚCIĆ całą bazę danych i wgrać ponownie poprawne 36 nut?")) {
+            if (confirm("Czy chcesz WYCZYŚCIĆ całą bazę danych i wgrać ponownie kompletne 36 nut?")) {
                 const querySnapshot = await getDocs(collection(db, "sheets"));
                 for (const documentSnap of querySnapshot.docs) {
                     await deleteDoc(doc(db, "sheets", documentSnap.id));
@@ -157,7 +157,7 @@
                 for (const item of initialSheets) {
                     await addDoc(collection(db, "sheets"), item);
                 }
-                alert("Baza została wyczyszczona i wgrano dokładnie 36 unikalnych nut!");
+                alert("Baza została wyczyszczona i załadowano pomyślnie wszystkie 36 unikalnych nut!");
                 loadAdminSheets();
             }
         };
