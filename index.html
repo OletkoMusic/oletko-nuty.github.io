@@ -85,6 +85,7 @@
             cursor: pointer;
             font-size: 0.85rem;
             font-weight: bold;
+            text-decoration: none;
         }
 
         .ctrl-btn:hover {
@@ -311,14 +312,8 @@
             gap: 5px;
         }
 
-        .btn-preview {
-            background-color: #6c757d;
-            color: white;
-        }
-
-        .btn-preview:hover {
-            background-color: #5a6268;
-        }
+        .btn-preview { background-color: #6c757d; color: white; }
+        .btn-preview:hover { background-color: #5a6268; }
 
         .btn-download-pdf, .btn-download-jpg, .btn-download-png {
             background-color: #28a745;
@@ -354,9 +349,7 @@
             border: 1px solid var(--border-color);
         }
 
-        .form-group {
-            margin-bottom: 15px;
-        }
+        .form-group { margin-bottom: 15px; }
 
         .form-group label {
             display: block;
@@ -384,9 +377,7 @@
             font-size: 1rem;
         }
 
-        .btn-submit:hover {
-            background-color: #e68a00;
-        }
+        .btn-submit:hover { background-color: #e68a00; }
 
         .form-message {
             margin-top: 15px;
@@ -410,19 +401,16 @@
             color: var(--text-sub);
         }
 
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .loading-text { text-align: center; padding: 20px; color: var(--text-sub); }
     </style>
 </head>
 <body>
 
     <div class="container">
         <div class="top-controls">
+            <a href="admin.html" class="ctrl-btn">⚙️ Admin</a>
             <button class="ctrl-btn" id="langToggle" onclick="toggleLanguage()">🌐 EN</button>
             <button class="ctrl-btn" id="themeToggle" onclick="toggleTheme()">🌙 Ciemny tryb</button>
         </div>
@@ -446,10 +434,10 @@
         </header>
 
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('piano')" id="tab-piano">Fortepian (7)</button>
-            <button class="tab-btn" onclick="switchTab('sax')" id="tab-sax">Saksofon (18)</button>
-            <button class="tab-btn" onclick="switchTab('trumpet')" id="tab-trumpet">Trąbka (6)</button>
-            <button class="tab-btn" onclick="switchTab('accordion')" id="tab-accordion">Akordeon (5)</button>
+            <button class="tab-btn active" onclick="switchTab('piano')" id="tab-piano">Fortepian (0)</button>
+            <button class="tab-btn" onclick="switchTab('sax')" id="tab-sax">Saksofon (0)</button>
+            <button class="tab-btn" onclick="switchTab('trumpet')" id="tab-trumpet">Trąbka (0)</button>
+            <button class="tab-btn" onclick="switchTab('accordion')" id="tab-accordion">Akordeon (0)</button>
             <button class="tab-btn request-btn" onclick="switchTab('request')" id="tab-request">🎁 Poproś o nuty</button>
         </div>
 
@@ -461,39 +449,35 @@
         <div id="piano" class="tab-content active">
             <h2 class="section-title" id="title-piano">Nuty na Fortepian</h2>
             <p class="sub-desc" id="desc-piano">Pobieraj darmowe nuty lub rozwiń podgląd!</p>
-            <div id="piano-list"></div>
+            <div id="piano-list" class="loading-text">Ładowanie nut z bazy danych...</div>
         </div>
 
         <div id="sax" class="tab-content">
             <h2 class="section-title" id="title-sax">Nuty na Saksofon</h2>
-            
             <div class="sub-filters">
                 <button class="sub-btn active" onclick="filterSaxCategory('all', this)" id="sax-cat-all">Wszystkie</button>
                 <button class="sub-btn" onclick="filterSaxCategory('alt', this)" id="sax-cat-alt">Saksofon Altowy</button>
                 <button class="sub-btn" onclick="filterSaxCategory('tenor', this)" id="sax-cat-tenor">Saksofon Tenorowy</button>
             </div>
-
             <p class="sub-desc" id="desc-sax">Kliknij w grafikę lub pobierz nuty w formacie JPG/PNG.</p>
-            <div id="sax-list"></div>
+            <div id="sax-list" class="loading-text">Ładowanie nut z bazy danych...</div>
         </div>
 
         <div id="trumpet" class="tab-content">
             <h2 class="section-title" id="title-trumpet">Nuty na Trąbkę</h2>
-            
             <div class="sub-filters">
                 <button class="sub-btn active" onclick="filterTrumpetCategory('all', this)" id="trumpet-cat-all">Wszystkie</button>
                 <button class="sub-btn" onclick="filterTrumpetCategory('b', this)" id="trumpet-cat-b">Trąbka B♭</button>
                 <button class="sub-btn" onclick="filterTrumpetCategory('es', this)" id="trumpet-cat-es">Trąbka E♭</button>
             </div>
-
             <p class="sub-desc" id="desc-trumpet">Pobieraj darmowe nuty na trąbkę w formacie JPG.</p>
-            <div id="trumpet-list"></div>
+            <div id="trumpet-list" class="loading-text">Ładowanie nut z bazy danych...</div>
         </div>
 
         <div id="accordion" class="tab-content">
             <h2 class="section-title" id="title-accordion">Nuty na Akordeon</h2>
             <p class="sub-desc" id="desc-accordion">Pobieraj darmowe nuty na akordeon w formacie PDF.</p>
-            <div id="accordion-list"></div>
+            <div id="accordion-list" class="loading-text">Ładowanie nut z bazy danych...</div>
         </div>
 
         <div id="request" class="tab-content">
@@ -530,6 +514,54 @@
             © 2026 Oletko Nuty — <span id="footer-author">Twórca</span>: Aleksander Frątczak
         </footer>
     </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyCqT-Se0QudEnaHgImvFXSR2bEWONBKUoI",
+          authDomain: "oletko-nuty.firebaseapp.com",
+          projectId: "oletko-nuty",
+          storageBucket: "oletko-nuty.firebasestorage.app",
+          messagingSenderId: "1019311578281",
+          appId: "1:1019311578281:web:37924727b9fc316b632548",
+          measurementId: "G-PLTPXGX37V"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let allSheets = [];
+        window.pianoSheets = [];
+        window.saxSheets = [];
+        window.trumpetSheets = [];
+        window.accordionSheets = [];
+
+        async function loadSheetsFromFirebase() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "sheets"));
+                allSheets = [];
+                querySnapshot.forEach((doc) => {
+                    allSheets.push({ id: doc.id, ...doc.data() });
+                });
+
+                window.pianoSheets = allSheets.filter(s => s.instrument === 'piano');
+                window.saxSheets = allSheets.filter(s => s.instrument === 'sax');
+                window.trumpetSheets = allSheets.filter(s => s.instrument === 'trumpet');
+                window.accordionSheets = allSheets.filter(s => s.instrument === 'accordion');
+
+                updateCounts();
+                filterSheets();
+            } catch (error) {
+                console.error("Błąd podczas pobierania nut z Firebase:", error);
+            }
+        }
+
+        window.loadSheetsFromFirebase = loadSheetsFromFirebase;
+        loadSheetsFromFirebase();
+    </script>
 
     <script>
         let currentLang = localStorage.getItem('lang') || 'pl';
@@ -686,258 +718,6 @@
             document.body.classList.add('dark-mode');
         }
 
-        const pianoSheets = [
-            {
-                title: "Wiązanka piosenek urodzinowych (Sto lat!, Niech mu gwiazdka, Sto lat, sto lat...)",
-                author: "Melodie tradycyjne (prosty układ)",
-                difficulty: "Łatwy",
-                image: "Screenshot 2026-09-25 142405.png"
-            },
-            {
-                title: "Triumfy Króla Niebieskiego",
-                author: "Kolęda tradycyjna (prosty układ)",
-                difficulty: "Łatwy",
-                image: "Kolędy w prostym układzie na fortepian_page-0013.jpg"
-            },
-            {
-                title: "Mędrcy świata, Monarchowie",
-                author: "Kolęda tradycyjna (prosty układ)",
-                difficulty: "Łatwy",
-                image: "Kolędy w prostym układzie na fortepian_page-0014.jpg"
-            },
-            {
-                title: "Pirates Of The Caribbean - He's a Pirate",
-                author: "Klaus Badelt",
-                difficulty: "Średnio-zaawansowany",
-                pdf: "Pirates Of The Caraibben - Hes A Pirate.pdf"
-            },
-            {
-                title: "Fly Me To The Moon",
-                author: "arr. Thomas L.S. Pang / Bart Howard",
-                difficulty: "Średnio-zaawansowany",
-                pdf: "FlyMeToTheMoon-Fortepian.pdf"
-            },
-            {
-                title: "Dla Elizy (Für Elise)",
-                author: "Ludwig van Beethoven",
-                difficulty: "Średnio-zaawansowany",
-                pdf: "DlaElizy-Fortepian.pdf"
-            },
-            {
-                title: "Mazurek Dąbrowskiego (Hymn Polski)",
-                author: "Józef Wybicki / melodia ludowa",
-                difficulty: "Łatwy",
-                pdf: "MazurekDabrowskiego-Fortepian.pdf"
-            }
-        ];
-
-        const saxSheets = [
-            {
-                title: "Sto lat",
-                author: "melodia tradycyjna",
-                types: ["Łatwy", "Es Alt"],
-                category: "alt",
-                image: "stolat-saxalt.png"
-            },
-            {
-                title: "Wlazł kotek na płotek",
-                author: "melodia ludowa",
-                types: ["Łatwy", "Es Alt"],
-                category: "alt",
-                image: "wlazłkoteknapłotek.png"
-            },
-            {
-                title: "Fly Me To The Moon (Alt)",
-                author: "arr. Bart Howard",
-                types: ["Łatwy", "Es Alt"],
-                category: "alt",
-                image: "Flymetothemoon.jpg"
-            },
-            {
-                title: "Fly Me To The Moon (Tenor)",
-                author: "arr. Bart Howard",
-                types: ["Łatwy", "Tenor"],
-                category: "tenor",
-                image: "FlyMetothemoon-saxtenor.png"
-            },
-            {
-                title: "One Note Samba (Tenor)",
-                author: "Antônio Carlos Jobim",
-                types: ["Łatwy", "Tenor"],
-                category: "tenor",
-                image: "Sax Tenor - Solo_page-0026.jpg"
-            },
-            {
-                title: "Czerwone Maki na Monte Cassino",
-                author: "Alfred Schütz / Feliks Konarski",
-                types: ["Łatwy", "Es Alt"],
-                category: "alt",
-                image: "CzerwoneMakiNaMonteCasino.jpg"
-            },
-            {
-                title: "Pałacyk Michla",
-                author: "Józef Szczepański \"Ziutek\"",
-                types: ["Łatwy", "Es Alt"],
-                category: "alt",
-                image: "PałacykMichla.jpg"
-            },
-            {
-                title: "Bogurodzica",
-                author: "autor nieznany / pieśń religijna",
-                types: ["Łatwy", "Es Alt"],
-                category: "alt",
-                image: "Bogurodzica.jpg"
-            },
-            {
-                title: "My, Pierwsza Brygada",
-                author: "Andrzej Hałaciński / Tadeusz Biernacki",
-                types: ["Łatwy", "Es Alt"],
-                category: "alt",
-                image: "MyPierwszaBrygada.jpg"
-            },
-            {
-                title: "Deszcz, jesienny deszcz",
-                author: "Marian Matuszkiewicz / pieśń wojskowa",
-                types: ["Łatwy", "Es Alt"],
-                category: "alt",
-                image: "Deszczjesiennydeszcz.jpg"
-            },
-            {
-                title: "Idzie żołnierz",
-                author: "melodia ludowa / tradycyjna",
-                types: ["Łatwy", "Es Alt"],
-                category: "alt",
-                image: "Idziezolnierz.jpg"
-            },
-            {
-                title: "Piechota (Maszerują strzelcy)",
-                author: "Bolesław Lubicz-Zahorski",
-                types: ["Łatwy", "Es Alt"],
-                category: "alt",
-                image: "Piechota.jpg"
-            },
-            {
-                title: "Przybyli ułani pod okienko",
-                author: "Feliks Gwiżdż / pieśń wojskowa",
-                types: ["Łatwy", "Es Alt"],
-                category: "alt",
-                image: "Przybyliulanipodokienko.jpg"
-            },
-            {
-                title: "O mój Rozmarynie",
-                author: "Wacław Denhoff-Czarnocki / tradycyjna",
-                types: ["Łatwy", "Es Alt"],
-                category: "alt",
-                image: "Rozmaryn.jpg"
-            },
-            {
-                title: "Serce w plecaku",
-                author: "Michał Zieliński",
-                types: ["Łatwy", "Es Alt"],
-                category: "alt",
-                image: "Sercewplecaku.jpg"
-            },
-            {
-                title: "Wojenko, wojenko",
-                author: "autor nieznany / pieśń legionowa",
-                types: ["Łatwy", "Es Alt"],
-                category: "alt",
-                image: "Wojenkowojenko.jpg"
-            },
-            {
-                title: "Misty (Tenor)",
-                author: "Erroll Garner",
-                types: ["Łatwy", "Tenor"],
-                category: "tenor",
-                image: "Misty-Saxtenor.jpg"
-            },
-            {
-                title: "The Entertainer (Tenor)",
-                author: "Scott Joplin",
-                types: ["Średnio-zaawansowany", "Tenor"],
-                category: "tenor",
-                image: "TheEnterTainer-SaxTenor.jpg"
-            }
-        ];
-
-        const trumpetSheets = [
-            {
-                title: "Back To The Future",
-                author: "Alan Silvestri",
-                types: ["Łatwy", "Trąbka B♭"],
-                category: "b",
-                image: "Najlepsze kawałki muzyki filmowej Trąbka Bb_page-0002.jpg"
-            },
-            {
-                title: "Forrest Gump - Main Title",
-                author: "Alan Silvestri",
-                types: ["Łatwy", "Trąbka B♭"],
-                category: "b",
-                image: "Najlepsze kawałki muzyki filmowej Trąbka Bb_page-0003.jpg"
-            },
-            {
-                title: "The John Dunbar Theme",
-                author: "John Barry",
-                types: ["Łatwy", "Trąbka B♭"],
-                category: "b",
-                image: "Najlepsze kawałki muzyki filmowej Trąbka Bb_page-0005.jpg"
-            },
-            {
-                title: "Rozkwitały pęki białych róż",
-                author: "Muz. Mieczysław Kozar-Słobódzki / Sł. Kazimierz Wroczyński",
-                types: ["Łatwy", "Trąbka B♭"],
-                category: "b",
-                image: "G Rozkwitały pęki białych róż.jpg"
-            },
-            {
-                title: "Piechota (Maszerują strzelcy)",
-                author: "Bolesław Lubicz-Zahorski",
-                types: ["Łatwy", "Trąbka B♭"],
-                category: "b",
-                image: "G Piechota.jpg"
-            },
-            {
-                title: "Czerwone Maki na Monte Cassino",
-                author: "Alfred Schütz / Feliks Konarski",
-                types: ["Łatwy", "Trąbka B♭"],
-                category: "b",
-                image: "Czerwone maki.jpg"
-            }
-        ];
-
-        const accordionSheets = [
-            {
-                title: "Fale Dunaju (Donau-Wellen Walzer)",
-                author: "Iosif Ivanovici / opr. Stanisław Wiśniewski",
-                difficulty: "Średnio-zaawansowany",
-                pdf: "Fale dunaju akordeon.pdf"
-            },
-            {
-                title: "La Valse à Margaux (Walc Margaux)",
-                author: "Richard Galliano",
-                difficulty: "Zaawansowany",
-                pdf: "Galliano - La valse a Margaux.pdf"
-            },
-            {
-                title: "Indifférence (Valse Musette)",
-                author: "Tony Murena & Joseph Colombo",
-                difficulty: "Średnio-zaawansowany",
-                pdf: "Galliano - Indifference.pdf"
-            },
-            {
-                title: "Divertissement (Дивертисмент)",
-                author: "André Astier & Maurice Denoux",
-                difficulty: "Zaawansowany",
-                pdf: "Astier - Divertisment.pdf"
-            },
-            {
-                title: "Asturia (Preludium)",
-                author: "Isaac Albéniz / arr. Friedrich Lips",
-                difficulty: "Zaawansowany",
-                pdf: "Asturia.pdf"
-            }
-        ];
-
         let currentSaxCategory = 'all';
         let currentTrumpetCategory = 'all';
 
@@ -951,10 +731,10 @@
 
         function updateCounts() {
             const t = translations[currentLang];
-            const pianoCount = pianoSheets.length;
-            const saxCount = saxSheets.length;
-            const trumpetCount = trumpetSheets.length;
-            const accordionCount = accordionSheets.length;
+            const pianoCount = (window.pianoSheets || []).length;
+            const saxCount = (window.saxSheets || []).length;
+            const trumpetCount = (window.trumpetSheets || []).length;
+            const accordionCount = (window.accordionSheets || []).length;
             const totalCount = pianoCount + saxCount + trumpetCount + accordionCount;
 
             document.getElementById('piano-count').textContent = pianoCount;
@@ -975,6 +755,11 @@
             container.innerHTML = '';
             const t = translations[currentLang];
 
+            if (sheets.length === 0) {
+                container.innerHTML = `<p style="color: var(--text-sub); text-align: center; padding: 20px;">${t.noResults}</p>`;
+                return;
+            }
+
             sheets.forEach((sheet, index) => {
                 let diffClass = 'medium';
                 if (sheet.difficulty === 'Łatwy') diffClass = 'easy';
@@ -983,19 +768,19 @@
                 let actionsHTML = '';
                 let previewHTML = '';
 
-                if (sheet.pdf) {
+                if (sheet.fileUrl && sheet.fileUrl.endsWith('.pdf')) {
                     actionsHTML = `
                         <button class="btn btn-preview" onclick="togglePreview('piano-preview-${index}')">${t.btnPreview}</button>
-                        <a href="${sheet.pdf}" download class="btn btn-download-pdf">${t.btnDownload} PDF</a>
+                        <a href="${sheet.fileUrl}" download class="btn btn-download-pdf">${t.btnDownload} PDF</a>
                     `;
-                    previewHTML = `<iframe src="${sheet.pdf}"></iframe>`;
-                } else if (sheet.image) {
-                    const ext = sheet.image.split('.').pop().toUpperCase();
+                    previewHTML = `<iframe src="${sheet.fileUrl}"></iframe>`;
+                } else if (sheet.fileUrl) {
+                    const ext = sheet.fileUrl.split('.').pop().toUpperCase();
                     actionsHTML = `
                         <button class="btn btn-preview" onclick="togglePreview('piano-preview-${index}')">${t.btnPreview}</button>
-                        <a href="${sheet.image}" download class="btn btn-download-jpg">${t.btnDownload} ${ext}</a>
+                        <a href="${sheet.fileUrl}" download class="btn btn-download-jpg">${t.btnDownload} ${ext}</a>
                     `;
-                    previewHTML = `<img src="${sheet.image}" alt="${sheet.title}">`;
+                    previewHTML = `<img src="${sheet.fileUrl}" alt="${sheet.title}">`;
                 }
 
                 const card = document.createElement('div');
@@ -1035,34 +820,26 @@
                 const card = document.createElement('div');
                 card.className = 'sheet-card';
 
-                let tagsHTML = '';
-                sheet.types.forEach(type => {
-                    let tagClass = 'tag easy';
-                    if (type.includes('Średnio')) tagClass = 'tag medium';
-                    if (type.includes('Zaawansowany') || type.includes('Trudny')) tagClass = 'tag hard';
-                    if (type.includes('Alt')) tagClass = 'tag alt';
-                    if (type.includes('Tenor')) tagClass = 'tag tenor';
-                    tagsHTML += `<span class="${tagClass}">${getDiffTranslation(type)}</span> `;
-                });
+                let tagsHTML = `<span class="tag easy">${getDiffTranslation(sheet.difficulty)}</span> `;
+                if (sheet.subCategory === 'alt') tagsHTML += `<span class="tag alt">Saksofon Altowy</span>`;
+                if (sheet.subCategory === 'tenor') tagsHTML += `<span class="tag tenor">Saksofon Tenorowy</span>`;
 
-                const ext = sheet.image.split('.').pop().toUpperCase();
+                const ext = sheet.fileUrl ? sheet.fileUrl.split('.').pop().toUpperCase() : 'JPG';
 
                 card.innerHTML = `
                     <div class="sheet-header">
                         <div class="sheet-info">
                             <h3>${sheet.title}</h3>
                             <p>${sheet.author}</p>
-                            <div class="tags">
-                                ${tagsHTML}
-                            </div>
+                            <div class="tags">${tagsHTML}</div>
                         </div>
                     </div>
                     <div class="sheet-actions">
                         <button class="btn btn-preview" onclick="togglePreview('sax-preview-${index}')">${t.btnPreview}</button>
-                        <a href="${sheet.image}" download class="btn btn-download-jpg">${t.btnDownload} ${ext}</a>
+                        <a href="${sheet.fileUrl}" download class="btn btn-download-jpg">${t.btnDownload} ${ext}</a>
                     </div>
                     <div class="preview-container" id="sax-preview-${index}">
-                        <img src="${sheet.image}" alt="${sheet.title}">
+                        <img src="${sheet.fileUrl}" alt="${sheet.title}">
                     </div>
                 `;
                 container.appendChild(card);
@@ -1083,30 +860,22 @@
                 const card = document.createElement('div');
                 card.className = 'sheet-card';
 
-                let tagsHTML = '';
-                sheet.types.forEach(type => {
-                    let tagClass = 'tag trumpet';
-                    if (type === 'Łatwy') tagClass = 'tag easy';
-                    if (type.includes('Średnio')) tagClass = 'tag medium';
-                    tagsHTML += `<span class="${tagClass}">${getDiffTranslation(type)}</span> `;
-                });
+                let tagsHTML = `<span class="tag trumpet">${getDiffTranslation(sheet.difficulty)}</span> `;
 
                 card.innerHTML = `
                     <div class="sheet-header">
                         <div class="sheet-info">
                             <h3>${sheet.title}</h3>
                             <p>${sheet.author}</p>
-                            <div class="tags">
-                                ${tagsHTML}
-                            </div>
+                            <div class="tags">${tagsHTML}</div>
                         </div>
                     </div>
                     <div class="sheet-actions">
                         <button class="btn btn-preview" onclick="togglePreview('trumpet-preview-${index}')">${t.btnPreview}</button>
-                        <a href="${sheet.image}" download class="btn btn-download-jpg">${t.btnDownload} JPG</a>
+                        <a href="${sheet.fileUrl}" download class="btn btn-download-jpg">${t.btnDownload} JPG</a>
                     </div>
                     <div class="preview-container" id="trumpet-preview-${index}">
-                        <img src="${sheet.image}" alt="${sheet.title}">
+                        <img src="${sheet.fileUrl}" alt="${sheet.title}">
                     </div>
                 `;
                 container.appendChild(card);
@@ -1143,10 +912,10 @@
                     </div>
                     <div class="sheet-actions">
                         <button class="btn btn-preview" onclick="togglePreview('acc-preview-${index}')">${t.btnPreview}</button>
-                        <a href="${sheet.pdf}" download class="btn btn-download-pdf">${t.btnDownload} PDF</a>
+                        <a href="${sheet.fileUrl}" download class="btn btn-download-pdf">${t.btnDownload} PDF</a>
                     </div>
                     <div class="preview-container" id="acc-preview-${index}">
-                        <iframe src="${sheet.pdf}"></iframe>
+                        <iframe src="${sheet.fileUrl}"></iframe>
                     </div>
                 `;
                 container.appendChild(card);
@@ -1194,23 +963,23 @@
         function filterSheets() {
             const query = document.getElementById('searchInput').value.toLowerCase();
 
-            const filteredPiano = pianoSheets.filter(s => 
+            const filteredPiano = (window.pianoSheets || []).filter(s => 
                 s.title.toLowerCase().includes(query) || s.author.toLowerCase().includes(query)
             );
 
-            const filteredSax = saxSheets.filter(s => {
+            const filteredSax = (window.saxSheets || []).filter(s => {
                 const matchesQuery = s.title.toLowerCase().includes(query) || s.author.toLowerCase().includes(query);
-                const matchesCategory = currentSaxCategory === 'all' || s.category === currentSaxCategory;
+                const matchesCategory = currentSaxCategory === 'all' || s.subCategory === currentSaxCategory;
                 return matchesQuery && matchesCategory;
             });
 
-            const filteredTrumpet = trumpetSheets.filter(s => {
+            const filteredTrumpet = (window.trumpetSheets || []).filter(s => {
                 const matchesQuery = s.title.toLowerCase().includes(query) || s.author.toLowerCase().includes(query);
-                const matchesCategory = currentTrumpetCategory === 'all' || s.category === currentTrumpetCategory;
+                const matchesCategory = currentTrumpetCategory === 'all' || s.subCategory === currentTrumpetCategory;
                 return matchesQuery && matchesCategory;
             });
 
-            const filteredAccordion = accordionSheets.filter(s => 
+            const filteredAccordion = (window.accordionSheets || []).filter(s => 
                 s.title.toLowerCase().includes(query) || s.author.toLowerCase().includes(query)
             );
 
@@ -1219,29 +988,6 @@
             renderTrumpetSheets(filteredTrumpet);
             renderAccordionSheets(filteredAccordion);
         }
-
-        const form = document.getElementById('sheetRequestForm');
-        form.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const data = new FormData(form);
-            try {
-                const response = await fetch(form.action, {
-                    method: form.method,
-                    body: data,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
-                if (response.ok) {
-                    document.getElementById('formMessage').style.display = 'block';
-                    form.reset();
-                } else {
-                    alert("Wystąpił błąd podczas wysyłania formularza.");
-                }
-            } catch (error) {
-                alert("Wystąpił błąd podczas połączenia. Spróbuj ponownie.");
-            }
-        });
 
         applyLanguage();
     </script>
