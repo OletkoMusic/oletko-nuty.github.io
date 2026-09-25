@@ -728,6 +728,13 @@
             return diffStr;
         }
 
+        function getDiffClass(diffStr) {
+            if (diffStr === 'Łatwy') return 'easy';
+            if (diffStr === 'Średnio-zaawansowany') return 'medium';
+            if (diffStr === 'Zaawansowany' || diffStr === 'Trudny') return 'hard';
+            return 'easy';
+        }
+
         function updateCounts() {
             const t = translations[currentLang];
             const pianoCount = (window.pianoSheets || []).length;
@@ -764,10 +771,7 @@
             }
 
             sheets.forEach((sheet, index) => {
-                let diffClass = 'medium';
-                if (sheet.difficulty === 'Łatwy') diffClass = 'easy';
-                if (sheet.difficulty === 'Zaawansowany' || sheet.difficulty === 'Trudny') diffClass = 'hard';
-
+                const diffClass = getDiffClass(sheet.difficulty);
                 const fileUrl = encodePath(sheet.fileUrl);
                 let actionsHTML = '';
                 let previewHTML = '';
@@ -824,7 +828,8 @@
                 const card = document.createElement('div');
                 card.className = 'sheet-card';
 
-                let tagsHTML = `<span class="tag easy">${getDiffTranslation(sheet.difficulty)}</span> `;
+                const diffClass = getDiffClass(sheet.difficulty);
+                let tagsHTML = `<span class="tag ${diffClass}">${getDiffTranslation(sheet.difficulty)}</span> `;
                 if (sheet.subCategory === 'alt') tagsHTML += `<span class="tag alt">Saksofon Altowy</span>`;
                 if (sheet.subCategory === 'tenor') tagsHTML += `<span class="tag tenor">Saksofon Tenorowy</span>`;
 
@@ -865,7 +870,8 @@
                 const card = document.createElement('div');
                 card.className = 'sheet-card';
 
-                let tagsHTML = `<span class="tag trumpet">${getDiffTranslation(sheet.difficulty)}</span> `;
+                const diffClass = getDiffClass(sheet.difficulty);
+                let tagsHTML = `<span class="tag ${diffClass}">${getDiffTranslation(sheet.difficulty)}</span> `;
                 if (sheet.subCategory === 'b') tagsHTML += `<span class="tag trumpet">Trąbka B♭</span>`;
                 if (sheet.subCategory === 'es') tagsHTML += `<span class="tag trumpet">Trąbka E♭</span>`;
 
@@ -902,10 +908,7 @@
             }
 
             sheets.forEach((sheet, index) => {
-                let diffClass = 'medium';
-                if (sheet.difficulty === 'Łatwy') diffClass = 'easy';
-                if (sheet.difficulty === 'Zaawansowany' || sheet.difficulty === 'Trudny') diffClass = 'hard';
-
+                const diffClass = getDiffClass(sheet.difficulty);
                 const fileUrl = encodePath(sheet.fileUrl);
 
                 const card = document.createElement('div');
