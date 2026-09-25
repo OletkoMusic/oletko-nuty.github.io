@@ -17,7 +17,7 @@
         .btn-danger { background: #dc3545; margin-top: 5px; padding: 6px 10px; font-size: 0.8rem; width: auto; }
         .btn-danger:hover { background: #c82333; }
         .sheet-item { display: flex; justify-content: space-between; align-items: center; background: #282828; padding: 10px; border-radius: 6px; margin-bottom: 8px; border: 1px solid #333; }
-        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #121212; display: flex; justify-content: center; align-items: center; }
+        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #121212; display: flex; justify-content: center; align-items: center; z-index: 999; }
         .login-box { background: #1e1e1e; padding: 30px; border-radius: 8px; border: 1px solid #333; text-align: center; width: 300px; }
     </style>
 </head>
@@ -34,6 +34,10 @@
     <div class="container">
         <h1>⚙️ Zarządzanie Nutami</h1>
         <p style="text-align: center; margin-bottom: 20px;"><a href="index.html" style="color: #007bff;">← Powrót do strony głównej</a></p>
+
+        <div style="margin-bottom: 20px; text-align: center;">
+            <button class="btn" style="background: #17a2b8;" onclick="uploadInitialData()">⚡ Wgraj wszystkie startowe nuty do bazy</button>
+        </div>
 
         <form id="addSheetForm">
             <div class="form-group">
@@ -54,10 +58,12 @@
                 </select>
             </div>
             <div class="form-group" id="subCatGroup" style="display: none;">
-                <label>Kategoria podrzędna:</label>
+                <label>Kategoria podrzędna / Wariant:</label>
                 <select id="subCategory">
-                    <option value="alt">Saksofon Altowy / B♭</option>
-                    <option value="tenor">Saksofon Tenorowy / E♭</option>
+                    <option value="alt">Saksofon Altowy</option>
+                    <option value="tenor">Saksofon Tenorowy</option>
+                    <option value="b">Trąbka B♭</option>
+                    <option value="es">Trąbka E♭</option>
                 </select>
             </div>
             <div class="form-group">
@@ -70,7 +76,7 @@
             </div>
             <div class="form-group">
                 <label>Nazwa pliku na GitHubie (np. `DlaElizy.pdf` lub `stolat.jpg`):</label>
-                <input type="text" id="fileUrl" placeholder="Wpisz pełną nazwę pliku opublikowanego na GitHub" required>
+                <input type="text" id="fileUrl" placeholder="Wpisz dokładną nazwę pliku" required>
             </div>
             <button type="submit" class="btn">➕ Dodaj nowe nuty</button>
         </form>
@@ -95,6 +101,62 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
+
+        const initialSheets = [
+            // FORTEPIAN
+            { title: "Wiązanka piosenek urodzinowych (Sto lat!, Niech mu gwiazdka, Sto lat, sto lat...)", author: "Melodie tradycyjne (prosty układ)", difficulty: "Łatwy", instrument: "piano", fileUrl: "Screenshot 2026-09-25 142405.png" },
+            { title: "Triumfy Króla Niebieskiego", author: "Kolęda tradycyjna (prosty układ)", difficulty: "Łatwy", instrument: "piano", fileUrl: "Kolędy w prostym układzie na fortepian_page-0013.jpg" },
+            { title: "Mędrcy świata, Monarchowie", author: "Kolęda tradycyjna (prosty układ)", difficulty: "Łatwy", instrument: "piano", fileUrl: "Kolędy w prostym układzie na fortepian_page-0014.jpg" },
+            { title: "Pirates Of The Caribbean - He's a Pirate", author: "Klaus Badelt", difficulty: "Średnio-zaawansowany", instrument: "piano", fileUrl: "Pirates Of The Caraibben - Hes A Pirate.pdf" },
+            { title: "Fly Me To The Moon", author: "arr. Thomas L.S. Pang / Bart Howard", difficulty: "Średnio-zaawansowany", instrument: "piano", fileUrl: "FlyMeToTheMoon-Fortepian.pdf" },
+            { title: "Dla Elizy (Für Elise)", author: "Ludwig van Beethoven", difficulty: "Średnio-zaawansowany", instrument: "piano", fileUrl: "DlaElizy-Fortepian.pdf" },
+            { title: "Mazurek Dąbrowskiego (Hymn Polski)", author: "Józef Wybicki / melodia ludowa", difficulty: "Łatwy", instrument: "piano", fileUrl: "MazurekDabrowskiego-Fortepian.pdf" },
+            
+            // SAKSOFON
+            { title: "Sto lat", author: "melodia tradycyjna", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "stolat-saxalt.png" },
+            { title: "Wlazł kotek na płotek", author: "melodia ludowa", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "wlazłkoteknapłotek.png" },
+            { title: "Fly Me To The Moon (Alt)", author: "arr. Bart Howard", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "Flymetothemoon.jpg" },
+            { title: "Fly Me To The Moon (Tenor)", author: "arr. Bart Howard", difficulty: "Łatwy", instrument: "sax", subCategory: "tenor", fileUrl: "FlyMetothemoon-saxtenor.png" },
+            { title: "One Note Samba (Tenor)", author: "Antônio Carlos Jobim", difficulty: "Łatwy", instrument: "sax", subCategory: "tenor", fileUrl: "Sax Tenor - Solo_page-0026.jpg" },
+            { title: "Czerwone Maki na Monte Cassino", author: "Alfred Schütz / Feliks Konarski", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "CzerwoneMakiNaMonteCasino.jpg" },
+            { title: "Pałacyk Michla", author: "Józef Szczepański \"Ziutek\"", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "PałacykMichla.jpg" },
+            { title: "Bogurodzica", author: "autor nieznany / pieśń religijna", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "Bogurodzica.jpg" },
+            { title: "My, Pierwsza Brygada", author: "Andrzej Hałaciński / Tadeusz Biernacki", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "MyPierwszaBrygada.jpg" },
+            { title: "Deszcz, jesienny deszcz", author: "Marian Matuszkiewicz / pieśń wojskowa", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "Deszczjesiennydeszcz.jpg" },
+            { title: "Idzie żołnierz", author: "melodia ludowa / tradycyjna", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "Idziezolnierz.jpg" },
+            { title: "Piechota (Maszerują strzelcy)", author: "Bolesław Lubicz-Zahorski", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "Piechota.jpg" },
+            { title: "Przybyli ułani pod okienko", author: "Feliks Gwiżdż / pieśń wojskowa", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "Przybyliulanipodokienko.jpg" },
+            { title: "O mój Rozmarynie", author: "Wacław Denhoff-Czarnocki / tradycyjna", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "Rozmaryn.jpg" },
+            { title: "Serce w plecaku", author: "Michał Zieliński", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "Sercewplecaku.jpg" },
+            { title: "Wojenko, wojenko", author: "autor nieznany / pieśń legionowa", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "Wojenkowojenko.jpg" },
+            { title: "Misty (Tenor)", author: "Erroll Garner", difficulty: "Łatwy", instrument: "sax", subCategory: "tenor", fileUrl: "Misty-Saxtenor.jpg" },
+            { title: "The Entertainer (Tenor)", author: "Scott Joplin", difficulty: "Średnio-zaawansowany", instrument: "sax", subCategory: "tenor", fileUrl: "TheEnterTainer-SaxTenor.jpg" },
+
+            // TRĄBKA
+            { title: "Back To The Future", author: "Alan Silvestri", difficulty: "Łatwy", instrument: "trumpet", subCategory: "b", fileUrl: "Najlepsze kawałki muzyki filmowej Trąbka Bb_page-0002.jpg" },
+            { title: "Forrest Gump - Main Title", author: "Alan Silvestri", difficulty: "Łatwy", instrument: "trumpet", subCategory: "b", fileUrl: "Najlepsze kawałki muzyki filmowej Trąbka Bb_page-0003.jpg" },
+            { title: "The John Dunbar Theme", author: "John Barry", difficulty: "Łatwy", instrument: "trumpet", subCategory: "b", fileUrl: "Najlepsze kawałki muzyki filmowej Trąbka Bb_page-0005.jpg" },
+            { title: "Rozkwitały pęki białych róż", author: "Mieczysław Kozar-Słobódzki", difficulty: "Łatwy", instrument: "trumpet", subCategory: "b", fileUrl: "G Rozkwitały pęki białych róż.jpg" },
+            { title: "Piechota (Maszerują strzelcy)", author: "Bolesław Lubicz-Zahorski", difficulty: "Łatwy", instrument: "trumpet", subCategory: "b", fileUrl: "G Piechota.jpg" },
+            { title: "Czerwone Maki na Monte Cassino", author: "Alfred Schütz / Feliks Konarski", difficulty: "Łatwy", instrument: "trumpet", subCategory: "b", fileUrl: "Czerwone maki.jpg" },
+
+            // AKORDEON
+            { title: "Fale Dunaju (Donau-Wellen Walzer)", author: "Iosif Ivanovici", difficulty: "Średnio-zaawansowany", instrument: "accordion", fileUrl: "Fale dunaju akordeon.pdf" },
+            { title: "La Valse à Margaux (Walc Margaux)", author: "Richard Galliano", difficulty: "Zaawansowany", instrument: "accordion", fileUrl: "Galliano - La valse a Margaux.pdf" },
+            { title: "Indifférence (Valse Musette)", author: "Tony Murena & Joseph Colombo", difficulty: "Średnio-zaawansowany", instrument: "accordion", fileUrl: "Galliano - Indifference.pdf" },
+            { title: "Divertissement (Дивертисмент)", author: "André Astier & Maurice Denoux", difficulty: "Zaawansowany", instrument: "accordion", fileUrl: "Astier - Divertisment.pdf" },
+            { title: "Asturia (Preludium)", author: "Isaac Albéniz / arr. Friedrich Lips", difficulty: "Zaawansowany", instrument: "accordion", fileUrl: "Asturia.pdf" }
+        ];
+
+        window.uploadInitialData = async function() {
+            if (confirm("Czy chcesz wysłać 36 startowych utworów do bazy Firebase? Wykonaj to tylko raz!")) {
+                for (const item of initialSheets) {
+                    await addDoc(collection(db, "sheets"), item);
+                }
+                alert("Pomyślnie załadowano 36 utworów do Firebase!");
+                loadAdminSheets();
+            }
+        };
 
         window.checkAuth = function() {
             const pass = document.getElementById('adminPass').value;
