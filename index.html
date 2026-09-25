@@ -69,13 +69,14 @@
             position: relative;
         }
 
-        .theme-toggle-container {
+        .top-controls {
             display: flex;
             justify-content: flex-end;
+            gap: 10px;
             margin-bottom: 10px;
         }
 
-        .theme-toggle-btn {
+        .ctrl-btn {
             background: var(--badge-bg);
             color: var(--text-main);
             border: 1px solid var(--badge-border);
@@ -86,7 +87,7 @@
             font-weight: bold;
         }
 
-        .theme-toggle-btn:hover {
+        .ctrl-btn:hover {
             opacity: 0.8;
         }
 
@@ -421,25 +422,26 @@
 <body>
 
     <div class="container">
-        <div class="theme-toggle-container">
-            <button class="theme-toggle-btn" id="themeToggle" onclick="toggleTheme()">🌙 Ciemny tryb</button>
+        <div class="top-controls">
+            <button class="ctrl-btn" id="langToggle" onclick="toggleLanguage()">🌐 EN</button>
+            <button class="ctrl-btn" id="themeToggle" onclick="toggleTheme()">🌙 Ciemny tryb</button>
         </div>
 
         <header>
             <h1>Oletko Nuty</h1>
-            <p>Darmowe nuty na fortepian, saksofon, trąbkę i akordeon</p>
-            <p style="margin-top: 8px; font-size: 0.85rem;">Cześć! Nazywam się <strong>Aleksander Frątczak</strong>. Tworzę i udostępniam darmowe opracowania nutowe dla pasjonatów muzyki. Pobieraj opracowania i graj swoje ulubione utwory!</p>
+            <p id="header-subtitle">Darmowe nuty na fortepian, saksofon, trąbkę i akordeon</p>
+            <p id="header-bio" style="margin-top: 8px; font-size: 0.85rem;">Cześć! Nazywam się <strong>Aleksander Frątczak</strong>. Tworzę i udostępniam darmowe opracowania nutowe dla pasjonatów muzyki. Pobieraj opracowania i graj swoje ulubione utwory!</p>
             
             <div class="stats-badge">
-                <span>📚 Łącznie: <strong id="total-count">0</strong></span>
+                <span>📚 <span id="lbl-total">Łącznie</span>: <strong id="total-count">0</strong></span>
                 <span>•</span>
-                <span>🎹 Fortepian: <strong id="piano-count">0</strong></span>
+                <span>🎹 <span id="lbl-piano">Fortepian</span>: <strong id="piano-count">0</strong></span>
                 <span>•</span>
-                <span>🎷 Saksofon: <strong id="sax-count">0</strong></span>
+                <span>🎷 <span id="lbl-sax">Saksofon</span>: <strong id="sax-count">0</strong></span>
                 <span>•</span>
-                <span>🎺 Trąbka: <strong id="trumpet-count">0</strong></span>
+                <span>🎺 <span id="lbl-trumpet">Trąbka</span>: <strong id="trumpet-count">0</strong></span>
                 <span>•</span>
-                <span>🪗 Akordeon: <strong id="accordion-count">0</strong></span>
+                <span>🪗 <span id="lbl-accordion">Akordeon</span>: <strong id="accordion-count">0</strong></span>
             </div>
         </header>
 
@@ -457,96 +459,231 @@
         </div>
 
         <div id="piano" class="tab-content active">
-            <h2 class="section-title">Nuty na Fortepian</h2>
-            <p class="sub-desc">Pobieraj darmowe nuty lub rozwiń podgląd!</p>
+            <h2 class="section-title" id="title-piano">Nuty na Fortepian</h2>
+            <p class="sub-desc" id="desc-piano">Pobieraj darmowe nuty lub rozwiń podgląd!</p>
             <div id="piano-list"></div>
         </div>
 
         <div id="sax" class="tab-content">
-            <h2 class="section-title">Nuty na Saksofon</h2>
+            <h2 class="section-title" id="title-sax">Nuty na Saksofon</h2>
             
             <div class="sub-filters">
-                <button class="sub-btn active" onclick="filterSaxCategory('all', this)">Wszystkie</button>
-                <button class="sub-btn" onclick="filterSaxCategory('alt', this)">Saksofon Altowy</button>
-                <button class="sub-btn" onclick="filterSaxCategory('tenor', this)">Saksofon Tenorowy</button>
+                <button class="sub-btn active" onclick="filterSaxCategory('all', this)" id="sax-cat-all">Wszystkie</button>
+                <button class="sub-btn" onclick="filterSaxCategory('alt', this)" id="sax-cat-alt">Saksofon Altowy</button>
+                <button class="sub-btn" onclick="filterSaxCategory('tenor', this)" id="sax-cat-tenor">Saksofon Tenorowy</button>
             </div>
 
-            <p class="sub-desc">Kliknij w grafikę lub pobierz nuty w formacie JPG/PNG.</p>
+            <p class="sub-desc" id="desc-sax">Kliknij w grafikę lub pobierz nuty w formacie JPG/PNG.</p>
             <div id="sax-list"></div>
         </div>
 
         <div id="trumpet" class="tab-content">
-            <h2 class="section-title">Nuty na Trąbkę</h2>
+            <h2 class="section-title" id="title-trumpet">Nuty na Trąbkę</h2>
             
             <div class="sub-filters">
-                <button class="sub-btn active" onclick="filterTrumpetCategory('all', this)">Wszystkie</button>
-                <button class="sub-btn" onclick="filterTrumpetCategory('b', this)">Trąbka B♭</button>
-                <button class="sub-btn" onclick="filterTrumpetCategory('es', this)">Trąbka E♭</button>
+                <button class="sub-btn active" onclick="filterTrumpetCategory('all', this)" id="trumpet-cat-all">Wszystkie</button>
+                <button class="sub-btn" onclick="filterTrumpetCategory('b', this)" id="trumpet-cat-b">Trąbka B♭</button>
+                <button class="sub-btn" onclick="filterTrumpetCategory('es', this)" id="trumpet-cat-es">Trąbka E♭</button>
             </div>
 
-            <p class="sub-desc">Pobieraj darmowe nuty na trąbkę w formacie JPG.</p>
+            <p class="sub-desc" id="desc-trumpet">Pobieraj darmowe nuty na trąbkę w formacie JPG.</p>
             <div id="trumpet-list"></div>
         </div>
 
         <div id="accordion" class="tab-content">
-            <h2 class="section-title">Nuty na Akordeon</h2>
-            <p class="sub-desc">Pobieraj darmowe nuty na akordeon w formacie PDF.</p>
+            <h2 class="section-title" id="title-accordion">Nuty na Akordeon</h2>
+            <p class="sub-desc" id="desc-accordion">Pobieraj darmowe nuty na akordeon w formacie PDF.</p>
             <div id="accordion-list"></div>
         </div>
 
         <div id="request" class="tab-content">
-            <h2 class="section-title">Zaproponuj utwór!</h2>
-            <p class="sub-desc">Chcesz, abym opracował i dodał nowe nuty? Wypełnij formularz poniżej.</p>
+            <h2 class="section-title" id="title-request">Zaproponuj utwór!</h2>
+            <p class="sub-desc" id="desc-request">Chcesz, abym opracował i dodał nowe nuty? Wypełnij formularz poniżej.</p>
             
             <form class="request-form" id="sheetRequestForm" action="https://formspree.io/f/mqpzvrbg" method="POST">
                 <div class="form-group">
-                    <label for="userName">Twoje imię / Nick:</label>
+                    <label for="userName" id="lbl-form-name">Twoje imię / Nick:</label>
                     <input type="text" id="userName" name="name" placeholder="np. Aleksander" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="songTitle">Tytuł utworu i kompozytor:</label>
+                    <label for="songTitle" id="lbl-form-song">Tytuł utworu i kompozytor:</label>
                     <input type="text" id="songTitle" name="song" placeholder="np. Sto Lat" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="instrument">Instrument:</label>
+                    <label for="instrument" id="lbl-form-instr">Instrument:</label>
                     <input type="text" id="instrument" name="instrument" placeholder="np. Saksofon / Fortepian / Trąbka / Akordeon" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="additionalInfo">Dodatkowa wiadomość (opcjonalnie):</label>
+                    <label for="additionalInfo" id="lbl-form-msg">Dodatkowa wiadomość (opcjonalnie):</label>
                     <textarea id="additionalInfo" name="message" rows="3" placeholder="np. Łatwe opracowanie"></textarea>
                 </div>
 
-                <button type="submit" class="btn btn-submit">✉️ Wyślij propozycję</button>
+                <button type="submit" class="btn btn-submit" id="btn-form-submit">✉️ Wyślij propozycję</button>
                 <div class="form-message" id="formMessage">Dziękuję! Twoja propozycja została pomyślnie wysłana.</div>
             </form>
         </div>
 
         <footer>
-            © 2026 Oletko Nuty — Twórca: Aleksander Frątczak
+            © 2026 Oletko Nuty — <span id="footer-author">Twórca</span>: Aleksander Frątczak
         </footer>
     </div>
 
     <script>
+        let currentLang = localStorage.getItem('lang') || 'pl';
+
+        const translations = {
+            pl: {
+                subtitle: "Darmowe nuty na fortepian, saksofon, trąbkę i akordeon",
+                bio: "Cześć! Nazywam się <strong>Aleksander Frątczak</strong>. Tworzę i udostępniam darmowe opracowania nutowe dla pasjonatów muzyki. Pobieraj opracowania i graj swoje ulubione utwory!",
+                total: "Łącznie",
+                piano: "Fortepian",
+                sax: "Saksofon",
+                trumpet: "Trąbka",
+                accordion: "Akordeon",
+                requestTab: "🎁 Poproś o nuty",
+                searchPlaceholder: "Szukaj utworu lub kompozytora...",
+                titlePiano: "Nuty na Fortepian",
+                descPiano: "Pobieraj darmowe nuty lub rozwiń podgląd!",
+                titleSax: "Nuty na Saksofon",
+                descSax: "Kliknij w grafikę lub pobierz nuty w formacie JPG/PNG.",
+                titleTrumpet: "Nuty na Trąbkę",
+                descTrumpet: "Pobieraj darmowe nuty na trąbkę w formacie JPG.",
+                titleAccordion: "Nuty na Akordeon",
+                descAccordion: "Pobieraj darmowe nuty na akordeon w formacie PDF.",
+                titleRequest: "Zaproponuj utwór!",
+                descRequest: "Chcesz, abym opracował i dodał nowe nuty? Wypełnij formularz poniżej.",
+                catAll: "Wszystkie",
+                catAlt: "Saksofon Altowy",
+                catTenor: "Saksofon Tenorowy",
+                catBb: "Trąbka B♭",
+                catEb: "Trąbka E♭",
+                formName: "Twoje imię / Nick:",
+                formSong: "Tytuł utworu i kompozytor:",
+                formInstr: "Instrument:",
+                formMsg: "Dodatkowa wiadomość (opcjonalnie):",
+                btnSubmit: "✉️ Wyślij propozycję",
+                formSuccess: "Dziękuję! Twoja propozycja została pomyślnie wysłana.",
+                btnPreview: "👁 Podgląd",
+                btnDownload: "Pobierz",
+                footerAuthor: "Twórca",
+                darkMode: "🌙 Ciemny tryb",
+                lightMode: "☀️ Jasny tryb",
+                noResults: "Brak nut w tej kategorii.",
+                diffEasy: "Łatwy",
+                diffMedium: "Średnio-zaawansowany",
+                diffHard: "Zaawansowany"
+            },
+            en: {
+                subtitle: "Free sheet music for piano, saxophone, trumpet, and accordion",
+                bio: "Hi! My name is <strong>Aleksander Frątczak</strong>. I create and share free sheet music arrangements for music enthusiasts. Download sheet music and play your favorite songs!",
+                total: "Total",
+                piano: "Piano",
+                sax: "Saxophone",
+                trumpet: "Trumpet",
+                accordion: "Accordion",
+                requestTab: "🎁 Request Sheet",
+                searchPlaceholder: "Search song or composer...",
+                titlePiano: "Piano Sheet Music",
+                descPiano: "Download free sheet music or toggle preview!",
+                titleSax: "Saxophone Sheet Music",
+                descSax: "Click on image or download sheet music as JPG/PNG.",
+                titleTrumpet: "Trumpet Sheet Music",
+                descTrumpet: "Download free trumpet sheet music as JPG.",
+                titleAccordion: "Accordion Sheet Music",
+                descAccordion: "Download free accordion sheet music as PDF.",
+                titleRequest: "Suggest a Song!",
+                descRequest: "Want me to arrange and add new sheet music? Fill out the form below.",
+                catAll: "All",
+                catAlt: "Alto Saxophone",
+                catTenor: "Tenor Saxophone",
+                catBb: "B♭ Trumpet",
+                catEb: "E♭ Trumpet",
+                formName: "Your Name / Nick:",
+                formSong: "Song Title & Composer:",
+                formInstr: "Instrument:",
+                formMsg: "Additional Message (optional):",
+                btnSubmit: "✉️ Send Suggestion",
+                formSuccess: "Thank you! Your suggestion has been sent successfully.",
+                btnPreview: "👁 Preview",
+                btnDownload: "Download",
+                footerAuthor: "Created by",
+                darkMode: "🌙 Dark Mode",
+                lightMode: "☀️ Light Mode",
+                noResults: "No sheet music found in this category.",
+                diffEasy: "Easy",
+                diffMedium: "Intermediate",
+                diffHard: "Advanced"
+            }
+        };
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'pl' ? 'en' : 'pl';
+            localStorage.setItem('lang', currentLang);
+            applyLanguage();
+        }
+
+        function applyLanguage() {
+            const t = translations[currentLang];
+            document.getElementById('langToggle').textContent = currentLang === 'pl' ? '🌐 EN' : '🌐 PL';
+            document.getElementById('header-subtitle').textContent = t.subtitle;
+            document.getElementById('header-bio').innerHTML = t.bio;
+            document.getElementById('lbl-total').textContent = t.total;
+            document.getElementById('lbl-piano').textContent = t.piano;
+            document.getElementById('lbl-sax').textContent = t.sax;
+            document.getElementById('lbl-trumpet').textContent = t.trumpet;
+            document.getElementById('lbl-accordion').textContent = t.accordion;
+
+            document.getElementById('searchInput').placeholder = t.searchPlaceholder;
+
+            document.getElementById('title-piano').textContent = t.titlePiano;
+            document.getElementById('desc-piano').textContent = t.descPiano;
+            document.getElementById('title-sax').textContent = t.titleSax;
+            document.getElementById('desc-sax').textContent = t.descSax;
+            document.getElementById('title-trumpet').textContent = t.titleTrumpet;
+            document.getElementById('desc-trumpet').textContent = t.descTrumpet;
+            document.getElementById('title-accordion').textContent = t.titleAccordion;
+            document.getElementById('desc-accordion').textContent = t.descAccordion;
+            document.getElementById('title-request').textContent = t.titleRequest;
+            document.getElementById('desc-request').textContent = t.descRequest;
+
+            document.getElementById('sax-cat-all').textContent = t.catAll;
+            document.getElementById('sax-cat-alt').textContent = t.catAlt;
+            document.getElementById('sax-cat-tenor').textContent = t.catTenor;
+            document.getElementById('trumpet-cat-all').textContent = t.catAll;
+            document.getElementById('trumpet-cat-b').textContent = t.catBb;
+            document.getElementById('trumpet-cat-es').textContent = t.catEb;
+
+            document.getElementById('lbl-form-name').textContent = t.formName;
+            document.getElementById('lbl-form-song').textContent = t.formSong;
+            document.getElementById('lbl-form-instr').textContent = t.formInstr;
+            document.getElementById('lbl-form-msg').textContent = t.formMsg;
+            document.getElementById('btn-form-submit').textContent = t.btnSubmit;
+            document.getElementById('formMessage').textContent = t.formSuccess;
+
+            document.getElementById('footer-author').textContent = t.footerAuthor;
+
+            const isDark = document.body.classList.contains('dark-mode');
+            document.getElementById('themeToggle').textContent = isDark ? t.lightMode : t.darkMode;
+
+            updateCounts();
+            filterSheets();
+        }
+
         function toggleTheme() {
             const body = document.body;
-            const btn = document.getElementById('themeToggle');
             body.classList.toggle('dark-mode');
+            const isDark = body.classList.contains('dark-mode');
+            const t = translations[currentLang];
 
-            if (body.classList.contains('dark-mode')) {
-                btn.textContent = '☀️ Jasny tryb';
-                localStorage.setItem('theme', 'dark');
-            } else {
-                btn.textContent = '🌙 Ciemny tryb';
-                localStorage.setItem('theme', 'light');
-            }
+            document.getElementById('themeToggle').textContent = isDark ? t.lightMode : t.darkMode;
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
         }
 
         if (localStorage.getItem('theme') === 'dark') {
             document.body.classList.add('dark-mode');
-            document.getElementById('themeToggle').textContent = '☀️ Jasny tryb';
         }
 
         const pianoSheets = [
@@ -804,7 +941,16 @@
         let currentSaxCategory = 'all';
         let currentTrumpetCategory = 'all';
 
+        function getDiffTranslation(diffStr) {
+            const t = translations[currentLang];
+            if (diffStr === 'Łatwy') return t.diffEasy;
+            if (diffStr === 'Średnio-zaawansowany') return t.diffMedium;
+            if (diffStr === 'Zaawansowany' || diffStr === 'Trudny') return t.diffHard;
+            return diffStr;
+        }
+
         function updateCounts() {
+            const t = translations[currentLang];
             const pianoCount = pianoSheets.length;
             const saxCount = saxSheets.length;
             const trumpetCount = trumpetSheets.length;
@@ -817,15 +963,17 @@
             document.getElementById('accordion-count').textContent = accordionCount;
             document.getElementById('total-count').textContent = totalCount;
 
-            document.getElementById('tab-piano').textContent = `Fortepian (${pianoCount})`;
-            document.getElementById('tab-sax').textContent = `Saksofon (${saxCount})`;
-            document.getElementById('tab-trumpet').textContent = `Trąbka (${trumpetCount})`;
-            document.getElementById('tab-accordion').textContent = `Akordeon (${accordionCount})`;
+            document.getElementById('tab-piano').textContent = `${t.piano} (${pianoCount})`;
+            document.getElementById('tab-sax').textContent = `${t.sax} (${saxCount})`;
+            document.getElementById('tab-trumpet').textContent = `${t.trumpet} (${trumpetCount})`;
+            document.getElementById('tab-accordion').textContent = `${t.accordion} (${accordionCount})`;
+            document.getElementById('tab-request').textContent = t.requestTab;
         }
 
         function renderPianoSheets(sheets) {
             const container = document.getElementById('piano-list');
             container.innerHTML = '';
+            const t = translations[currentLang];
 
             sheets.forEach((sheet, index) => {
                 let diffClass = 'medium';
@@ -837,15 +985,15 @@
 
                 if (sheet.pdf) {
                     actionsHTML = `
-                        <button class="btn btn-preview" onclick="togglePreview('piano-preview-${index}')">👁 Podgląd</button>
-                        <a href="${sheet.pdf}" download class="btn btn-download-pdf">Pobierz PDF</a>
+                        <button class="btn btn-preview" onclick="togglePreview('piano-preview-${index}')">${t.btnPreview}</button>
+                        <a href="${sheet.pdf}" download class="btn btn-download-pdf">${t.btnDownload} PDF</a>
                     `;
                     previewHTML = `<iframe src="${sheet.pdf}"></iframe>`;
                 } else if (sheet.image) {
                     const ext = sheet.image.split('.').pop().toUpperCase();
                     actionsHTML = `
-                        <button class="btn btn-preview" onclick="togglePreview('piano-preview-${index}')">👁 Podgląd</button>
-                        <a href="${sheet.image}" download class="btn btn-download-jpg">Pobierz ${ext}</a>
+                        <button class="btn btn-preview" onclick="togglePreview('piano-preview-${index}')">${t.btnPreview}</button>
+                        <a href="${sheet.image}" download class="btn btn-download-jpg">${t.btnDownload} ${ext}</a>
                     `;
                     previewHTML = `<img src="${sheet.image}" alt="${sheet.title}">`;
                 }
@@ -858,7 +1006,7 @@
                             <h3>${sheet.title}</h3>
                             <p>${sheet.author}</p>
                             <div class="tags">
-                                <span class="tag ${diffClass}">${sheet.difficulty}</span>
+                                <span class="tag ${diffClass}">${getDiffTranslation(sheet.difficulty)}</span>
                             </div>
                         </div>
                     </div>
@@ -876,9 +1024,10 @@
         function renderSaxSheets(sheets) {
             const container = document.getElementById('sax-list');
             container.innerHTML = '';
+            const t = translations[currentLang];
 
             if (sheets.length === 0) {
-                container.innerHTML = '<p style="color: var(--text-sub); text-align: center; padding: 20px;">Brak nut w tej kategorii.</p>';
+                container.innerHTML = `<p style="color: var(--text-sub); text-align: center; padding: 20px;">${t.noResults}</p>`;
                 return;
             }
 
@@ -893,7 +1042,7 @@
                     if (type.includes('Zaawansowany') || type.includes('Trudny')) tagClass = 'tag hard';
                     if (type.includes('Alt')) tagClass = 'tag alt';
                     if (type.includes('Tenor')) tagClass = 'tag tenor';
-                    tagsHTML += `<span class="${tagClass}">${type}</span> `;
+                    tagsHTML += `<span class="${tagClass}">${getDiffTranslation(type)}</span> `;
                 });
 
                 const ext = sheet.image.split('.').pop().toUpperCase();
@@ -909,8 +1058,8 @@
                         </div>
                     </div>
                     <div class="sheet-actions">
-                        <button class="btn btn-preview" onclick="togglePreview('sax-preview-${index}')">👁 Podgląd</button>
-                        <a href="${sheet.image}" download class="btn btn-download-jpg">Pobierz ${ext}</a>
+                        <button class="btn btn-preview" onclick="togglePreview('sax-preview-${index}')">${t.btnPreview}</button>
+                        <a href="${sheet.image}" download class="btn btn-download-jpg">${t.btnDownload} ${ext}</a>
                     </div>
                     <div class="preview-container" id="sax-preview-${index}">
                         <img src="${sheet.image}" alt="${sheet.title}">
@@ -923,9 +1072,10 @@
         function renderTrumpetSheets(sheets) {
             const container = document.getElementById('trumpet-list');
             container.innerHTML = '';
+            const t = translations[currentLang];
 
             if (sheets.length === 0) {
-                container.innerHTML = '<p style="color: var(--text-sub); text-align: center; padding: 20px;">Brak nut w tej kategorii.</p>';
+                container.innerHTML = `<p style="color: var(--text-sub); text-align: center; padding: 20px;">${t.noResults}</p>`;
                 return;
             }
 
@@ -938,7 +1088,7 @@
                     let tagClass = 'tag trumpet';
                     if (type === 'Łatwy') tagClass = 'tag easy';
                     if (type.includes('Średnio')) tagClass = 'tag medium';
-                    tagsHTML += `<span class="${tagClass}">${type}</span> `;
+                    tagsHTML += `<span class="${tagClass}">${getDiffTranslation(type)}</span> `;
                 });
 
                 card.innerHTML = `
@@ -952,8 +1102,8 @@
                         </div>
                     </div>
                     <div class="sheet-actions">
-                        <button class="btn btn-preview" onclick="togglePreview('trumpet-preview-${index}')">👁 Podgląd</button>
-                        <a href="${sheet.image}" download class="btn btn-download-jpg">Pobierz JPG</a>
+                        <button class="btn btn-preview" onclick="togglePreview('trumpet-preview-${index}')">${t.btnPreview}</button>
+                        <a href="${sheet.image}" download class="btn btn-download-jpg">${t.btnDownload} JPG</a>
                     </div>
                     <div class="preview-container" id="trumpet-preview-${index}">
                         <img src="${sheet.image}" alt="${sheet.title}">
@@ -966,9 +1116,10 @@
         function renderAccordionSheets(sheets) {
             const container = document.getElementById('accordion-list');
             container.innerHTML = '';
+            const t = translations[currentLang];
 
             if (sheets.length === 0) {
-                container.innerHTML = '<p style="color: var(--text-sub); text-align: center; padding: 20px;">Brak nut dla akordeonu.</p>';
+                container.innerHTML = `<p style="color: var(--text-sub); text-align: center; padding: 20px;">${t.noResults}</p>`;
                 return;
             }
 
@@ -985,14 +1136,14 @@
                             <h3>${sheet.title}</h3>
                             <p>${sheet.author}</p>
                             <div class="tags">
-                                <span class="tag accordion">Akordeon</span>
-                                <span class="tag ${diffClass}">${sheet.difficulty}</span>
+                                <span class="tag accordion">${t.accordion}</span>
+                                <span class="tag ${diffClass}">${getDiffTranslation(sheet.difficulty)}</span>
                             </div>
                         </div>
                     </div>
                     <div class="sheet-actions">
-                        <button class="btn btn-preview" onclick="togglePreview('acc-preview-${index}')">👁 Podgląd</button>
-                        <a href="${sheet.pdf}" download class="btn btn-download-pdf">Pobierz PDF</a>
+                        <button class="btn btn-preview" onclick="togglePreview('acc-preview-${index}')">${t.btnPreview}</button>
+                        <a href="${sheet.pdf}" download class="btn btn-download-pdf">${t.btnDownload} PDF</a>
                     </div>
                     <div class="preview-container" id="acc-preview-${index}">
                         <iframe src="${sheet.pdf}"></iframe>
@@ -1092,11 +1243,7 @@
             }
         });
 
-        updateCounts();
-        renderPianoSheets(pianoSheets);
-        renderSaxSheets(saxSheets);
-        renderTrumpetSheets(trumpetSheets);
-        renderAccordionSheets(accordionSheets);
+        applyLanguage();
     </script>
 </body>
 </html>
