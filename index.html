@@ -546,7 +546,6 @@
                     allSheets.push({ id: doc.id, ...doc.data() });
                 });
 
-                // Ścisłe rozdzielenie po polu "instrument" z bazy
                 window.pianoSheets = allSheets.filter(s => s.instrument === 'piano');
                 window.saxSheets = allSheets.filter(s => s.instrument === 'sax');
                 window.trumpetSheets = allSheets.filter(s => s.instrument === 'trumpet');
@@ -750,6 +749,10 @@
             document.getElementById('tab-request').textContent = t.requestTab;
         }
 
+        function encodePath(url) {
+            return encodeURIComponent(url).replace(/%2F/g, "/");
+        }
+
         function renderPianoSheets(sheets) {
             const container = document.getElementById('piano-list');
             container.innerHTML = '';
@@ -765,22 +768,23 @@
                 if (sheet.difficulty === 'Łatwy') diffClass = 'easy';
                 if (sheet.difficulty === 'Zaawansowany' || sheet.difficulty === 'Trudny') diffClass = 'hard';
 
+                const fileUrl = encodePath(sheet.fileUrl);
                 let actionsHTML = '';
                 let previewHTML = '';
 
                 if (sheet.fileUrl && sheet.fileUrl.toLowerCase().endsWith('.pdf')) {
                     actionsHTML = `
                         <button class="btn btn-preview" onclick="togglePreview('piano-preview-${index}')">${t.btnPreview}</button>
-                        <a href="${sheet.fileUrl}" download class="btn btn-download-pdf">${t.btnDownload} PDF</a>
+                        <a href="${fileUrl}" download class="btn btn-download-pdf">${t.btnDownload} PDF</a>
                     `;
-                    previewHTML = `<iframe src="${sheet.fileUrl}"></iframe>`;
+                    previewHTML = `<iframe src="${fileUrl}"></iframe>`;
                 } else if (sheet.fileUrl) {
                     const ext = sheet.fileUrl.split('.').pop().toUpperCase();
                     actionsHTML = `
                         <button class="btn btn-preview" onclick="togglePreview('piano-preview-${index}')">${t.btnPreview}</button>
-                        <a href="${sheet.fileUrl}" download class="btn btn-download-jpg">${t.btnDownload} ${ext}</a>
+                        <a href="${fileUrl}" download class="btn btn-download-jpg">${t.btnDownload} ${ext}</a>
                     `;
-                    previewHTML = `<img src="${sheet.fileUrl}" alt="${sheet.title}">`;
+                    previewHTML = `<img src="${fileUrl}" alt="${sheet.title}">`;
                 }
 
                 const card = document.createElement('div');
@@ -824,6 +828,7 @@
                 if (sheet.subCategory === 'alt') tagsHTML += `<span class="tag alt">Saksofon Altowy</span>`;
                 if (sheet.subCategory === 'tenor') tagsHTML += `<span class="tag tenor">Saksofon Tenorowy</span>`;
 
+                const fileUrl = encodePath(sheet.fileUrl);
                 const ext = sheet.fileUrl ? sheet.fileUrl.split('.').pop().toUpperCase() : 'JPG';
 
                 card.innerHTML = `
@@ -836,10 +841,10 @@
                     </div>
                     <div class="sheet-actions">
                         <button class="btn btn-preview" onclick="togglePreview('sax-preview-${index}')">${t.btnPreview}</button>
-                        <a href="${sheet.fileUrl}" download class="btn btn-download-jpg">${t.btnDownload} ${ext}</a>
+                        <a href="${fileUrl}" download class="btn btn-download-jpg">${t.btnDownload} ${ext}</a>
                     </div>
                     <div class="preview-container" id="sax-preview-${index}">
-                        <img src="${sheet.fileUrl}" alt="${sheet.title}">
+                        <img src="${fileUrl}" alt="${sheet.title}">
                     </div>
                 `;
                 container.appendChild(card);
@@ -864,6 +869,8 @@
                 if (sheet.subCategory === 'b') tagsHTML += `<span class="tag trumpet">Trąbka B♭</span>`;
                 if (sheet.subCategory === 'es') tagsHTML += `<span class="tag trumpet">Trąbka E♭</span>`;
 
+                const fileUrl = encodePath(sheet.fileUrl);
+
                 card.innerHTML = `
                     <div class="sheet-header">
                         <div class="sheet-info">
@@ -874,10 +881,10 @@
                     </div>
                     <div class="sheet-actions">
                         <button class="btn btn-preview" onclick="togglePreview('trumpet-preview-${index}')">${t.btnPreview}</button>
-                        <a href="${sheet.fileUrl}" download class="btn btn-download-jpg">${t.btnDownload} JPG</a>
+                        <a href="${fileUrl}" download class="btn btn-download-jpg">${t.btnDownload} JPG</a>
                     </div>
                     <div class="preview-container" id="trumpet-preview-${index}">
-                        <img src="${sheet.fileUrl}" alt="${sheet.title}">
+                        <img src="${fileUrl}" alt="${sheet.title}">
                     </div>
                 `;
                 container.appendChild(card);
@@ -899,6 +906,8 @@
                 if (sheet.difficulty === 'Łatwy') diffClass = 'easy';
                 if (sheet.difficulty === 'Zaawansowany' || sheet.difficulty === 'Trudny') diffClass = 'hard';
 
+                const fileUrl = encodePath(sheet.fileUrl);
+
                 const card = document.createElement('div');
                 card.className = 'sheet-card';
                 card.innerHTML = `
@@ -914,10 +923,10 @@
                     </div>
                     <div class="sheet-actions">
                         <button class="btn btn-preview" onclick="togglePreview('acc-preview-${index}')">${t.btnPreview}</button>
-                        <a href="${sheet.fileUrl}" download class="btn btn-download-pdf">${t.btnDownload} PDF</a>
+                        <a href="${fileUrl}" download class="btn btn-download-pdf">${t.btnDownload} PDF</a>
                     </div>
                     <div class="preview-container" id="acc-preview-${index}">
-                        <iframe src="${sheet.fileUrl}"></iframe>
+                        <iframe src="${fileUrl}"></iframe>
                     </div>
                 `;
                 container.appendChild(card);
