@@ -362,7 +362,7 @@
         </header>
 
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('piano')" id="tab-piano">Fortepian (6)</button>
+            <button class="tab-btn active" onclick="switchTab('piano')" id="tab-piano">Fortepian (7)</button>
             <button class="tab-btn" onclick="switchTab('sax')" id="tab-sax">Saksofon (18)</button>
             <button class="tab-btn" onclick="switchTab('trumpet')" id="tab-trumpet">Trąbka (6)</button>
             <button class="tab-btn" onclick="switchTab('accordion')" id="tab-accordion">Akordeon (5)</button>
@@ -449,6 +449,12 @@
 
     <script>
         const pianoSheets = [
+            {
+                title: "Wiązanka piosenek urodzinowych (Sto lat!, Niech mu gwiazdka, Sto lat, sto lat...)",
+                author: "Melodie tradycyjne (prosty układ)",
+                difficulty: "Łatwy",
+                image: "Screenshot 2026-09-25 142405.png"
+            },
             {
                 title: "Triumfy Króla Niebieskiego",
                 author: "Kolęda tradycyjna (prosty układ)",
@@ -735,9 +741,10 @@
                     `;
                     previewHTML = `<iframe src="${sheet.pdf}"></iframe>`;
                 } else if (sheet.image) {
+                    const ext = sheet.image.split('.').pop().toUpperCase();
                     actionsHTML = `
                         <button class="btn btn-preview" onclick="togglePreview('piano-preview-${index}')">👁 Podgląd</button>
-                        <a href="${sheet.image}" download class="btn btn-download-jpg">Pobierz JPG</a>
+                        <a href="${sheet.image}" download class="btn btn-download-jpg">Pobierz ${ext}</a>
                     `;
                     previewHTML = `<img src="${sheet.image}" alt="${sheet.title}">`;
                 }
