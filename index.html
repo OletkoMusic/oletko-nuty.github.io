@@ -533,7 +533,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        let allSheets = [];
         window.pianoSheets = [];
         window.saxSheets = [];
         window.trumpetSheets = [];
@@ -542,11 +541,12 @@
         async function loadSheetsFromFirebase() {
             try {
                 const querySnapshot = await getDocs(collection(db, "sheets"));
-                allSheets = [];
+                const allSheets = [];
                 querySnapshot.forEach((doc) => {
                     allSheets.push({ id: doc.id, ...doc.data() });
                 });
 
+                // Ścisłe rozdzielenie po polu "instrument" z bazy
                 window.pianoSheets = allSheets.filter(s => s.instrument === 'piano');
                 window.saxSheets = allSheets.filter(s => s.instrument === 'sax');
                 window.trumpetSheets = allSheets.filter(s => s.instrument === 'trumpet');
@@ -768,7 +768,7 @@
                 let actionsHTML = '';
                 let previewHTML = '';
 
-                if (sheet.fileUrl && sheet.fileUrl.endsWith('.pdf')) {
+                if (sheet.fileUrl && sheet.fileUrl.toLowerCase().endsWith('.pdf')) {
                     actionsHTML = `
                         <button class="btn btn-preview" onclick="togglePreview('piano-preview-${index}')">${t.btnPreview}</button>
                         <a href="${sheet.fileUrl}" download class="btn btn-download-pdf">${t.btnDownload} PDF</a>
@@ -861,6 +861,8 @@
                 card.className = 'sheet-card';
 
                 let tagsHTML = `<span class="tag trumpet">${getDiffTranslation(sheet.difficulty)}</span> `;
+                if (sheet.subCategory === 'b') tagsHTML += `<span class="tag trumpet">Trąbka B♭</span>`;
+                if (sheet.subCategory === 'es') tagsHTML += `<span class="tag trumpet">Trąbka E♭</span>`;
 
                 card.innerHTML = `
                     <div class="sheet-header">
