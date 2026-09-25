@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admina — Oletko Nuty</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+        body { background-color: #121212; color: #e0e0e0; padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 600px; background: #1e1e1e; padding: 25px; border-radius: 12px; border: 1px solid #333; }
+        h1 { text-align: center; margin-bottom: 20px; color: #007bff; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 10px; background: #2d2d2d; color: #fff; border: 1px solid #444; border-radius: 6px; }
+        .btn { width: 100%; padding: 12px; background: #28a745; color: white; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; margin-top: 10px; }
+        .btn:hover { background: #218838; }
+        .btn-danger { background: #dc3545; margin-top: 5px; padding: 6px 10px; font-size: 0.8rem; width: auto; }
+        .btn-danger:hover { background: #c82333; }
+        .sheet-item { display: flex; justify-content: space-between; align-items: center; background: #282828; padding: 10px; border-radius: 6px; margin-bottom: 8px; border: 1px solid #333; }
+        #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #121212; display: flex; justify-content: center; align-items: center; }
+        .login-box { background: #1e1e1e; padding: 30px; border-radius: 8px; border: 1px solid #333; text-align: center; width: 300px; }
+    </style>
+</head>
+<body>
+
+    <div id="login-overlay">
+        <div class="login-box">
+            <h2 style="margin-bottom: 15px;">Panel Admina</h2>
+            <input type="password" id="adminPass" placeholder="Wpisz hasło..." style="margin-bottom: 15px;">
+            <button class="btn" onclick="checkAuth()">Zaloguj się</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>⚙️ Zarządzanie Nutami</h1>
+        <p style="text-align: center; margin-bottom: 20px;"><a href="index.html" style="color: #007bff;">← Powrót do strony głównej</a></p>
+
+        <form id="addSheetForm">
+            <div class="form-group">
+                <label>Tytuł utworu:</label>
+                <input type="text" id="title" placeholder="np. Dla Elizy" required>
+            </div>
+            <div class="form-group">
+                <label>Kompozytor / Autor:</label>
+                <input type="text" id="author" placeholder="np. L. v. Beethoven" required>
+            </div>
+            <div class="form-group">
+                <label>Instrument:</label>
+                <select id="instrument" onchange="toggleSubCategory()">
+                    <option value="piano">Fortepian</option>
+                    <option value="sax">Saksofon</option>
+                    <option value="trumpet">Trąbka</option>
+                    <option value="accordion">Akordeon</option>
+                </select>
+            </div>
+            <div class="form-group" id="subCatGroup" style="display: none;">
+                <label>Kategoria podrzędna:</label>
+                <select id="subCategory">
+                    <option value="alt">Saksofon Altowy / B♭</option>
+                    <option value="tenor">Saksofon Tenorowy / E♭</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Poziom trudności:</label>
+                <select id="difficulty">
+                    <option value="Łatwy">Łatwy</option>
+                    <option value="Średnio-zaawansowany">Średnio-zaawansowany</option>
+                    <option value="Zaawansowany">Zaawansowany</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Nazwa pliku na GitHubie (np. `DlaElizy.pdf` lub `stolat.jpg`):</label>
+                <input type="text" id="fileUrl" placeholder="Wpisz pełną nazwę pliku opublikowanego na GitHub" required>
+            </div>
+            <button type="submit" class="btn">➕ Dodaj nowe nuty</button>
+        </form>
+
+        <h2 style="margin-top: 30px; margin-bottom: 15px;">Lista istniejących nut:</h2>
+        <div id="sheetsList">Ładowanie...</div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyCqT-Se0QudEnaHgImvFXSR2bEWONBKUoI",
+          authDomain: "oletko-nuty.firebaseapp.com",
+          projectId: "oletko-nuty",
+          storageBucket: "oletko-nuty.firebasestorage.app",
+          messagingSenderId: "1019311578281",
+          appId: "1:1019311578281:web:37924727b9fc316b632548",
+          measurementId: "G-PLTPXGX37V"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.checkAuth = function() {
+            const pass = document.getElementById('adminPass').value;
+            if (pass === 'oletko2026') {
+                document.getElementById('login-overlay').style.display = 'none';
+                loadAdminSheets();
+            } else {
+                alert('Błędne hasło!');
+            }
+        };
+
+        window.toggleSubCategory = function() {
+            const instr = document.getElementById('instrument').value;
+            const subGroup = document.getElementById('subCatGroup');
+            if (instr === 'sax' || instr === 'trumpet') {
+                subGroup.style.display = 'block';
+            } else {
+                subGroup.style.display = 'none';
+            }
+        };
+
+        async function loadAdminSheets() {
+            const listContainer = document.getElementById('sheetsList');
+            listContainer.innerHTML = 'Ładowanie...';
+            try {
+                const querySnapshot = await getDocs(collection(db, "sheets"));
+                listContainer.innerHTML = '';
+                querySnapshot.forEach((documentSnap) => {
+                    const data = documentSnap.data();
+                    const item = document.createElement('div');
+                    item.className = 'sheet-item';
+                    item.innerHTML = `
+                        <div>
+                            <strong>${data.title}</strong> (${data.instrument})
+                            <br><small>${data.author} • ${data.difficulty}</small>
+                        </div>
+                        <button class="btn btn-danger" onclick="deleteSheet('${documentSnap.id}')">Usuń</button>
+                    `;
+                    listContainer.appendChild(item);
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        window.deleteSheet = async function(id) {
+            if (confirm('Czy na pewno chcesz usunąć ten utwór z bazy?')) {
+                await deleteDoc(doc(db, "sheets", id));
+                loadAdminSheets();
+            }
+        };
+
+        document.getElementById('addSheetForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newSheet = {
+                title: document.getElementById('title').value,
+                author: document.getElementById('author').value,
+                instrument: document.getElementById('instrument').value,
+                subCategory: document.getElementById('subCategory').value,
+                difficulty: document.getElementById('difficulty').value,
+                fileUrl: document.getElementById('fileUrl').value
+            };
+
+            await addDoc(collection(db, "sheets"), newSheet);
+            alert('Dodano nuty!');
+            document.getElementById('addSheetForm').reset();
+            loadAdminSheets();
+        });
+    </script>
+</body>
+</html>
