@@ -7,16 +7,53 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
     
     <style>
+        :root {
+            --bg-color: #f4f4f9;
+            --container-bg: #ffffff;
+            --text-main: #333333;
+            --text-heading: #2c3e50;
+            --text-sub: #666666;
+            --border-color: #e2e2e2;
+            --card-bg: #fdfdfd;
+            --input-bg: #ffffff;
+            --badge-bg: #eef2f7;
+            --badge-border: #d0d7de;
+            --sub-btn-bg: #ffffff;
+            --sub-btn-text: #555555;
+            --sub-btn-border: #ccc;
+            --sub-btn-hover: #f0f0f0;
+            --form-bg: #fafafa;
+        }
+
+        body.dark-mode {
+            --bg-color: #121212;
+            --container-bg: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-heading: #e0e0e0;
+            --text-sub: #aaa;
+            --border-color: #333333;
+            --card-bg: #282828;
+            --input-bg: #2d2d2d;
+            --badge-bg: #2a2a2a;
+            --badge-border: #444444;
+            --sub-btn-bg: #2d2d2d;
+            --sub-btn-text: #ccc;
+            --sub-btn-border: #444;
+            --sub-btn-hover: #3a3a3a;
+            --form-bg: #242424;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
         }
 
         body {
-            background-color: #f4f4f9;
-            color: #333;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             display: flex;
             justify-content: center;
             padding: 20px;
@@ -25,10 +62,32 @@
         .container {
             width: 100%;
             max-width: 800px;
-            background: #ffffff;
+            background: var(--container-bg);
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .theme-toggle-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+
+        .theme-toggle-btn {
+            background: var(--badge-bg);
+            color: var(--text-main);
+            border: 1px solid var(--badge-border);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .theme-toggle-btn:hover {
+            opacity: 0.8;
         }
 
         header {
@@ -38,31 +97,35 @@
 
         header h1 {
             font-size: 2rem;
-            color: #2c3e50;
+            color: var(--text-heading);
         }
 
         header p {
             font-size: 0.95rem;
-            color: #666;
+            color: var(--text-sub);
             margin-top: 5px;
         }
 
         .stats-badge {
             display: inline-flex;
             gap: 10px;
-            background: #eef2f7;
-            border: 1px solid #d0d7de;
+            background: var(--badge-bg);
+            border: 1px solid var(--badge-border);
             padding: 8px 16px;
             border-radius: 20px;
             margin-top: 12px;
             font-size: 0.85rem;
-            color: #2c3e50;
+            color: var(--text-heading);
             flex-wrap: wrap;
             justify-content: center;
         }
 
         .stats-badge strong {
             color: #007bff;
+        }
+
+        body.dark-mode .stats-badge strong {
+            color: #4da3ff;
         }
 
         .tabs {
@@ -76,16 +139,15 @@
         .tab-btn {
             padding: 10px 18px;
             border: none;
-            background-color: #e0e0e0;
-            color: #333;
+            background-color: var(--sub-btn-bg);
+            color: var(--text-main);
             font-weight: bold;
             border-radius: 6px;
             cursor: pointer;
-            transition: background 0.3s, color 0.3s;
         }
 
         .tab-btn:hover {
-            background-color: #d0d0d0;
+            background-color: var(--sub-btn-hover);
         }
 
         .tab-btn.active {
@@ -111,18 +173,17 @@
 
         .sub-btn {
             padding: 6px 14px;
-            border: 1px solid #ccc;
-            background-color: #fff;
-            color: #555;
+            border: 1px solid var(--sub-btn-border);
+            background-color: var(--sub-btn-bg);
+            color: var(--sub-btn-text);
             font-size: 0.85rem;
             font-weight: bold;
             border-radius: 20px;
             cursor: pointer;
-            transition: all 0.2s;
         }
 
         .sub-btn:hover {
-            background-color: #f0f0f0;
+            background-color: var(--sub-btn-hover);
         }
 
         .sub-btn.active {
@@ -140,7 +201,9 @@
             width: 100%;
             padding: 12px 15px 12px 40px;
             font-size: 1rem;
-            border: 1px solid #ccc;
+            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            color: var(--text-main);
             border-radius: 8px;
             outline: none;
         }
@@ -150,26 +213,26 @@
             left: 15px;
             top: 50%;
             transform: translateY(-50%);
-            color: #888;
+            color: var(--text-sub);
         }
 
         .section-title {
             font-size: 1.2rem;
-            color: #444;
+            color: var(--text-heading);
             margin-bottom: 15px;
-            border-bottom: 2px solid #eee;
+            border-bottom: 2px solid var(--border-color);
             padding-bottom: 5px;
         }
 
         .sub-desc {
             font-size: 0.85rem;
-            color: #777;
+            color: var(--text-sub);
             margin-bottom: 15px;
         }
 
         .sheet-card {
-            background: #fdfdfd;
-            border: 1px solid #e2e2e2;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 15px;
             margin-bottom: 15px;
@@ -188,12 +251,12 @@
 
         .sheet-info h3 {
             font-size: 1.1rem;
-            color: #2c3e50;
+            color: var(--text-heading);
         }
 
         .sheet-info p {
             font-size: 0.85rem;
-            color: #666;
+            color: var(--text-sub);
             margin-top: 2px;
         }
 
@@ -218,6 +281,14 @@
         .tag.tenor { background: #e0f2f1; color: #00695c; }
         .tag.trumpet { background: #fff3e0; color: #e65100; }
         .tag.accordion { background: #f3e5f5; color: #7b1fa2; }
+
+        body.dark-mode .tag.easy { background: #1b3e20; color: #81c784; }
+        body.dark-mode .tag.medium { background: #3e3b1b; color: #ffd54f; }
+        body.dark-mode .tag.hard { background: #3e1b1b; color: #e57373; }
+        body.dark-mode .tag.alt { background: #1b2e3e; color: #64b5f6; }
+        body.dark-mode .tag.tenor { background: #1b3e39; color: #4db6ac; }
+        body.dark-mode .tag.trumpet { background: #3e2d1b; color: #ffb74d; }
+        body.dark-mode .tag.accordion { background: #341b3e; color: #ba68c8; }
 
         .sheet-actions {
             display: flex;
@@ -260,14 +331,14 @@
         .preview-container {
             display: none;
             margin-top: 10px;
-            border-top: 1px dashed #ccc;
+            border-top: 1px dashed var(--border-color);
             padding-top: 10px;
         }
 
         .preview-container img, .preview-container iframe {
             width: 100%;
             border-radius: 6px;
-            border: 1px solid #ddd;
+            border: 1px solid var(--border-color);
             margin-bottom: 10px;
         }
 
@@ -276,10 +347,10 @@
         }
 
         .request-form {
-            background: #fafafa;
+            background: var(--form-bg);
             padding: 20px;
             border-radius: 8px;
-            border: 1px solid #e0e0e0;
+            border: 1px solid var(--border-color);
         }
 
         .form-group {
@@ -291,13 +362,15 @@
             margin-bottom: 5px;
             font-size: 0.9rem;
             font-weight: bold;
-            color: #444;
+            color: var(--text-main);
         }
 
         .form-group input, .form-group textarea {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ccc;
+            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            color: var(--text-main);
             border-radius: 6px;
             font-size: 0.95rem;
         }
@@ -324,11 +397,16 @@
             text-align: center;
         }
 
+        body.dark-mode .form-message {
+            background: #1e3a24;
+            color: #81c784;
+        }
+
         footer {
             text-align: center;
             margin-top: 30px;
             font-size: 0.8rem;
-            color: #888;
+            color: var(--text-sub);
         }
 
         .tab-content {
@@ -343,6 +421,10 @@
 <body>
 
     <div class="container">
+        <div class="theme-toggle-container">
+            <button class="theme-toggle-btn" id="themeToggle" onclick="toggleTheme()">🌙 Ciemny tryb</button>
+        </div>
+
         <header>
             <h1>Oletko Nuty</h1>
             <p>Darmowe nuty na fortepian, saksofon, trąbkę i akordeon</p>
@@ -448,6 +530,25 @@
     </div>
 
     <script>
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('themeToggle');
+            body.classList.toggle('dark-mode');
+
+            if (body.classList.contains('dark-mode')) {
+                btn.textContent = '☀️ Jasny tryb';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                btn.textContent = '🌙 Ciemny tryb';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('themeToggle').textContent = '☀️ Jasny tryb';
+        }
+
         const pianoSheets = [
             {
                 title: "Wiązanka piosenek urodzinowych (Sto lat!, Niech mu gwiazdka, Sto lat, sto lat...)",
@@ -777,7 +878,7 @@
             container.innerHTML = '';
 
             if (sheets.length === 0) {
-                container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">Brak nut w tej kategorii.</p>';
+                container.innerHTML = '<p style="color: var(--text-sub); text-align: center; padding: 20px;">Brak nut w tej kategorii.</p>';
                 return;
             }
 
@@ -824,7 +925,7 @@
             container.innerHTML = '';
 
             if (sheets.length === 0) {
-                container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">Brak nut w tej kategorii.</p>';
+                container.innerHTML = '<p style="color: var(--text-sub); text-align: center; padding: 20px;">Brak nut w tej kategorii.</p>';
                 return;
             }
 
@@ -867,7 +968,7 @@
             container.innerHTML = '';
 
             if (sheets.length === 0) {
-                container.innerHTML = '<p style="color: #888; text-align: center; padding: 20px;">Brak nut dla akordeonu.</p>';
+                container.innerHTML = '<p style="color: var(--text-sub); text-align: center; padding: 20px;">Brak nut dla akordeonu.</p>';
                 return;
             }
 
