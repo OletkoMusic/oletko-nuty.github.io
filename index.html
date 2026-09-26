@@ -1,1009 +1,896 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oletko Nuty - Darmowe nuty na fortepian, saksofon, trąbkę i akordeon</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎵</text></svg>">
-    
-    <style>
-        :root {
-            --bg-color: #f4f4f9;
-            --container-bg: #ffffff;
-            --text-main: #333333;
-            --text-heading: #2c3e50;
-            --text-sub: #666666;
-            --border-color: #e2e2e2;
-            --card-bg: #fdfdfd;
-            --input-bg: #ffffff;
-            --badge-bg: #eef2f7;
-            --badge-border: #d0d7de;
-            --sub-btn-bg: #ffffff;
-            --sub-btn-text: #555555;
-            --sub-btn-border: #ccc;
-            --sub-btn-hover: #f0f0f0;
-            --form-bg: #fafafa;
-        }
-
-        body.dark-mode {
-            --bg-color: #121212;
-            --container-bg: #1e1e1e;
-            --text-main: #e0e0e0;
-            --text-heading: #e0e0e0;
-            --text-sub: #aaa;
-            --border-color: #333333;
-            --card-bg: #282828;
-            --input-bg: #2d2d2d;
-            --badge-bg: #2a2a2a;
-            --badge-border: #444444;
-            --sub-btn-bg: #2d2d2d;
-            --sub-btn-text: #ccc;
-            --sub-btn-border: #444;
-            --sub-btn-hover: #3a3a3a;
-            --form-bg: #242424;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 800px;
-            background: var(--container-bg);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            position: relative;
-        }
-
-        .top-controls {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .ctrl-btn {
-            background: var(--badge-bg);
-            color: var(--text-main);
-            border: 1px solid var(--badge-border);
-            padding: 6px 12px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: bold;
-            text-decoration: none;
-        }
-
-        .ctrl-btn:hover {
-            opacity: 0.8;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 25px;
-        }
-
-        header h1 {
-            font-size: 2rem;
-            color: var(--text-heading);
-        }
-
-        header p {
-            font-size: 0.95rem;
-            color: var(--text-sub);
-            margin-top: 5px;
-        }
-
-        .stats-badge {
-            display: inline-flex;
-            gap: 10px;
-            background: var(--badge-bg);
-            border: 1px solid var(--badge-border);
-            padding: 8px 16px;
-            border-radius: 20px;
-            margin-top: 12px;
-            font-size: 0.85rem;
-            color: var(--text-heading);
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .stats-badge strong {
-            color: #007bff;
-        }
-
-        body.dark-mode .stats-badge strong {
-            color: #4da3ff;
-        }
-
-        .tabs {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            padding: 10px 18px;
-            border: none;
-            background-color: var(--sub-btn-bg);
-            color: var(--text-main);
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .tab-btn:hover {
-            background-color: var(--sub-btn-hover);
-        }
-
-        .tab-btn.active {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .tab-btn.request-btn {
-            background-color: #ff9800;
-            color: white;
-        }
-
-        .tab-btn.request-btn:hover {
-            background-color: #e68a00;
-        }
-
-        .sub-filters {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .sub-btn {
-            padding: 6px 14px;
-            border: 1px solid var(--sub-btn-border);
-            background-color: var(--sub-btn-bg);
-            color: var(--sub-btn-text);
-            font-size: 0.85rem;
-            font-weight: bold;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-
-        .sub-btn:hover {
-            background-color: var(--sub-btn-hover);
-        }
-
-        .sub-btn.active {
-            background-color: #17a2b8;
-            color: white;
-            border-color: #17a2b8;
-        }
-
-        .search-box {
-            position: relative;
-            margin-bottom: 25px;
-        }
-
-        .search-box input {
-            width: 100%;
-            padding: 12px 15px 12px 40px;
-            font-size: 1rem;
-            border: 1px solid var(--border-color);
-            background-color: var(--input-bg);
-            color: var(--text-main);
-            border-radius: 8px;
-            outline: none;
-        }
-
-        .search-box span {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-sub);
-        }
-
-        .section-title {
-            font-size: 1.2rem;
-            color: var(--text-heading);
-            margin-bottom: 15px;
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 5px;
-        }
-
-        .sub-desc {
-            font-size: 0.85rem;
-            color: var(--text-sub);
-            margin-bottom: 15px;
-        }
-
-        .sheet-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .sheet-header {
-            display: flex;
-            justify-content: flex-start;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .sheet-info h3 {
-            font-size: 1.1rem;
-            color: var(--text-heading);
-        }
-
-        .sheet-info p {
-            font-size: 0.85rem;
-            color: var(--text-sub);
-            margin-top: 2px;
-        }
-
-        .tags {
-            display: flex;
-            gap: 6px;
-            margin-top: 6px;
-            flex-wrap: wrap;
-        }
-
-        .tag {
-            font-size: 0.75rem;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-
-        .tag.easy { background: #e8f5e9; color: #2e7d32; }
-        .tag.medium { background: #fffde7; color: #f57f17; }
-        .tag.hard { background: #ffebee; color: #c62828; }
-        .tag.alt { background: #e3f2fd; color: #1565c0; }
-        .tag.tenor { background: #e0f2f1; color: #00695c; }
-        .tag.trumpet { background: #fff3e0; color: #e65100; }
-        .tag.accordion { background: #f3e5f5; color: #7b1fa2; }
-
-        body.dark-mode .tag.easy { background: #1b3e20; color: #81c784; }
-        body.dark-mode .tag.medium { background: #3e3b1b; color: #ffd54f; }
-        body.dark-mode .tag.hard { background: #3e1b1b; color: #e57373; }
-        body.dark-mode .tag.alt { background: #1b2e3e; color: #64b5f6; }
-        body.dark-mode .tag.tenor { background: #1b3e39; color: #4db6ac; }
-        body.dark-mode .tag.trumpet { background: #3e2d1b; color: #ffb74d; }
-        body.dark-mode .tag.accordion { background: #341b3e; color: #ba68c8; }
-
-        .sheet-actions {
-            display: flex;
-            gap: 8px;
-            align-self: flex-end;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 8px 14px;
-            font-size: 0.85rem;
-            font-weight: bold;
-            border-radius: 6px;
-            text-decoration: none;
-            cursor: pointer;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .btn-preview { background-color: #6c757d; color: white; }
-        .btn-preview:hover { background-color: #5a6268; }
-
-        .btn-download-pdf, .btn-download-jpg, .btn-download-png {
-            background-color: #28a745;
-            color: white;
-        }
-
-        .btn-download-pdf:hover, .btn-download-jpg:hover, .btn-download-png:hover {
-            background-color: #218838;
-        }
-
-        .preview-container {
-            display: none;
-            margin-top: 10px;
-            border-top: 1px dashed var(--border-color);
-            padding-top: 10px;
-        }
-
-        .preview-container img, .preview-container iframe {
-            width: 100%;
-            border-radius: 6px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 10px;
-        }
-
-        .preview-container iframe {
-            height: 500px;
-        }
-
-        .request-form {
-            background: var(--form-bg);
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        .form-group { margin-bottom: 15px; }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: var(--text-main);
-        }
-
-        .form-group input, .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            background-color: var(--input-bg);
-            color: var(--text-main);
-            border-radius: 6px;
-            font-size: 0.95rem;
-        }
-
-        .btn-submit {
-            background-color: #ff9800;
-            color: white;
-            width: 100%;
-            padding: 12px;
-            font-size: 1rem;
-        }
-
-        .btn-submit:hover { background-color: #e68a00; }
-
-        .form-message {
-            margin-top: 15px;
-            padding: 10px;
-            background: #d4edda;
-            color: #155724;
-            border-radius: 6px;
-            display: none;
-            text-align: center;
-        }
-
-        body.dark-mode .form-message {
-            background: #1e3a24;
-            color: #81c784;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 0.8rem;
-            color: var(--text-sub);
-        }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .loading-text { text-align: center; padding: 20px; color: var(--text-sub); }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-        <div class="top-controls">
-            <a href="admin.html" class="ctrl-btn">⚙️ Admin</a>
-            <button class="ctrl-btn" id="langToggle" onclick="toggleLanguage()">🌐 EN</button>
-            <button class="ctrl-btn" id="themeToggle" onclick="toggleTheme()">🌙 Ciemny tryb</button>
-        </div>
-
-        <header>
-            <h1>Oletko Nuty</h1>
-            <p id="header-subtitle">Darmowe nuty na fortepian, saksofon, trąbkę i akordeon</p>
-            <p id="header-bio" style="margin-top: 8px; font-size: 0.85rem;">Cześć! Nazywam się <strong>Aleksander Frątczak</strong>. Tworzę i udostępniam darmowe opracowania nutowe dla pasjonatów muzyki. Pobieraj opracowania i graj swoje ulubione utwory!</p>
-            
-            <div class="stats-badge">
-                <span>📚 <span id="lbl-total">Łącznie</span>: <strong id="total-count">0</strong></span>
-                <span>•</span>
-                <span>🎹 <span id="lbl-piano">Fortepian</span>: <strong id="piano-count">0</strong></span>
-                <span>•</span>
-                <span>🎷 <span id="lbl-sax">Saksofon</span>: <strong id="sax-count">0</strong></span>
-                <span>•</span>
-                <span>🎺 <span id="lbl-trumpet">Trąbka</span>: <strong id="trumpet-count">0</strong></span>
-                <span>•</span>
-                <span>🪗 <span id="lbl-accordion">Akordeon</span>: <strong id="accordion-count">0</strong></span>
-            </div>
-        </header>
-
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('piano')" id="tab-piano">Fortepian (0)</button>
-            <button class="tab-btn" onclick="switchTab('sax')" id="tab-sax">Saksofon (0)</button>
-            <button class="tab-btn" onclick="switchTab('trumpet')" id="tab-trumpet">Trąbka (0)</button>
-            <button class="tab-btn" onclick="switchTab('accordion')" id="tab-accordion">Akordeon (0)</button>
-            <button class="tab-btn request-btn" onclick="switchTab('request')" id="tab-request">🎁 Poproś o nuty</button>
-        </div>
-
-        <div class="search-box" id="search-box-container">
-            <span>🔍</span>
-            <input type="text" id="searchInput" placeholder="Szukaj utworu lub kompozytora..." onkeyup="filterSheets()">
-        </div>
-
-        <div id="piano" class="tab-content active">
-            <h2 class="section-title" id="title-piano">Nuty na Fortepian</h2>
-            <p class="sub-desc" id="desc-piano">Pobieraj darmowe nuty lub rozwiń podgląd!</p>
-            <div id="piano-list" class="loading-text">Ładowanie nut z bazy danych...</div>
-        </div>
-
-        <div id="sax" class="tab-content">
-            <h2 class="section-title" id="title-sax">Nuty na Saksofon</h2>
-            <div class="sub-filters">
-                <button class="sub-btn active" onclick="filterSaxCategory('all', this)" id="sax-cat-all">Wszystkie</button>
-                <button class="sub-btn" onclick="filterSaxCategory('alt', this)" id="sax-cat-alt">Saksofon Altowy</button>
-                <button class="sub-btn" onclick="filterSaxCategory('tenor', this)" id="sax-cat-tenor">Saksofon Tenorowy</button>
-            </div>
-            <p class="sub-desc" id="desc-sax">Kliknij w grafikę lub pobierz nuty w formacie JPG/PNG.</p>
-            <div id="sax-list" class="loading-text">Ładowanie nut z bazy danych...</div>
-        </div>
-
-        <div id="trumpet" class="tab-content">
-            <h2 class="section-title" id="title-trumpet">Nuty na Trąbkę</h2>
-            <div class="sub-filters">
-                <button class="sub-btn active" onclick="filterTrumpetCategory('all', this)" id="trumpet-cat-all">Wszystkie</button>
-                <button class="sub-btn" onclick="filterTrumpetCategory('b', this)" id="trumpet-cat-b">Trąbka B♭</button>
-                <button class="sub-btn" onclick="filterTrumpetCategory('es', this)" id="trumpet-cat-es">Trąbka E♭</button>
-            </div>
-            <p class="sub-desc" id="desc-trumpet">Pobieraj darmowe nuty na trąbkę w formacie JPG.</p>
-            <div id="trumpet-list" class="loading-text">Ładowanie nut z bazy danych...</div>
-        </div>
-
-        <div id="accordion" class="tab-content">
-            <h2 class="section-title" id="title-accordion">Nuty na Akordeon</h2>
-            <p class="sub-desc" id="desc-accordion">Pobieraj darmowe nuty na akordeon w formacie PDF.</p>
-            <div id="accordion-list" class="loading-text">Ładowanie nut z bazy danych...</div>
-        </div>
-
-        <div id="request" class="tab-content">
-            <h2 class="section-title" id="title-request">Zaproponuj utwór!</h2>
-            <p class="sub-desc" id="desc-request">Chcesz, abym opracował i dodał nowe nuty? Wypełnij formularz poniżej.</p>
-            
-            <form class="request-form" id="sheetRequestForm" action="https://formspree.io/f/mqpzvrbg" method="POST">
-                <div class="form-group">
-                    <label for="userName" id="lbl-form-name">Twoje imię / Nick:</label>
-                    <input type="text" id="userName" name="name" placeholder="np. Aleksander" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="songTitle" id="lbl-form-song">Tytuł utworu i kompozytor:</label>
-                    <input type="text" id="songTitle" name="song" placeholder="np. Sto Lat" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="instrument" id="lbl-form-instr">Instrument:</label>
-                    <input type="text" id="instrument" name="instrument" placeholder="np. Saksofon / Fortepian / Trąbka / Akordeon" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="additionalInfo" id="lbl-form-msg">Dodatkowa wiadomość (opcjonalnie):</label>
-                    <textarea id="additionalInfo" name="message" rows="3" placeholder="np. Łatwe opracowanie"></textarea>
-                </div>
-
-                <button type="submit" class="btn btn-submit" id="btn-form-submit">✉️ Wyślij propozycję</button>
-                <div class="form-message" id="formMessage">Dziękuję! Twoja propozycja została pomyślnie wysłana.</div>
-            </form>
-        </div>
-
-        <footer>
-            © 2026 Oletko Nuty — <span id="footer-author">Twórca</span>: Aleksander Frątczak
-        </footer>
+<style>
+    :root {
+        --bg-color: #f4f4f9;
+        --container-bg: #ffffff;
+        --text-main: #333333;
+        --text-heading: #2c3e50;
+        --text-sub: #666666;
+        --border-color: #e2e2e2;
+        --card-bg: #fdfdfd;
+        --input-bg: #ffffff;
+        --badge-bg: #eef2f7;
+        --badge-border: #d0d7de;
+        --sub-btn-bg: #ffffff;
+        --sub-btn-text: #555555;
+        --sub-btn-border: #ccc;
+        --sub-btn-hover: #f0f0f0;
+        --form-bg: #fafafa;
+    }
+
+    body.dark-mode {
+        --bg-color: #121212;
+        --container-bg: #1e1e1e;
+        --text-main: #e0e0e0;
+        --text-heading: #e0e0e0;
+        --text-sub: #aaa;
+        --border-color: #333333;
+        --card-bg: #282828;
+        --input-bg: #2d2d2d;
+        --badge-bg: #2a2a2a;
+        --badge-border: #444444;
+        --sub-btn-bg: #2d2d2d;
+        --sub-btn-text: #ccc;
+        --sub-btn-border: #444;
+        --sub-btn-hover: #3a3a3a;
+        --form-bg: #242424;
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+    }
+
+    body {
+        background-color: var(--bg-color);
+        color: var(--text-main);
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 800px;
+        background: var(--container-bg);
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        position: relative;
+    }
+
+    .top-controls {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .ctrl-btn {
+        background: var(--badge-bg);
+        color: var(--text-main);
+        border: 1px solid var(--badge-border);
+        padding: 6px 12px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+    .ctrl-btn:hover {
+        opacity: 0.8;
+    }
+
+    header {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    header h1 {
+        font-size: 2rem;
+        color: var(--text-heading);
+    }
+
+    header p {
+        font-size: 0.95rem;
+        color: var(--text-sub);
+        margin-top: 5px;
+    }
+
+    .stats-badge {
+        display: inline-flex;
+        gap: 10px;
+        background: var(--badge-bg);
+        border: 1px solid var(--badge-border);
+        padding: 8px 16px;
+        border-radius: 20px;
+        margin-top: 12px;
+        font-size: 0.85rem;
+        color: var(--text-heading);
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .stats-badge strong {
+        color: #007bff;
+    }
+
+    body.dark-mode .stats-badge strong {
+        color: #4da3ff;
+    }
+
+    .tabs {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .tab-btn {
+        padding: 10px 18px;
+        border: none;
+        background-color: var(--sub-btn-bg);
+        color: var(--text-main);
+        font-weight: bold;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .tab-btn:hover {
+        background-color: var(--sub-btn-hover);
+    }
+
+    .tab-btn.active {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .tab-btn.request-btn {
+        background-color: #ff9800;
+        color: white;
+    }
+
+    .tab-btn.request-btn:hover {
+        background-color: #e68a00;
+    }
+
+    .sub-filters {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+    }
+
+    .sub-btn {
+        padding: 6px 14px;
+        border: 1px solid var(--sub-btn-border);
+        background-color: var(--sub-btn-bg);
+        color: var(--sub-btn-text);
+        font-size: 0.85rem;
+        font-weight: bold;
+        border-radius: 20px;
+        cursor: pointer;
+    }
+
+    .sub-btn:hover {
+        background-color: var(--sub-btn-hover);
+    }
+
+    .sub-btn.active {
+        background-color: #17a2b8;
+        color: white;
+        border-color: #17a2b8;
+    }
+
+    .search-box {
+        position: relative;
+        margin-bottom: 25px;
+    }
+
+    .search-box input {
+        width: 100%;
+        padding: 12px 15px 12px 40px;
+        font-size: 1rem;
+        border: 1px solid var(--border-color);
+        background-color: var(--input-bg);
+        color: var(--text-main);
+        border-radius: 8px;
+        outline: none;
+    }
+
+    .search-box span {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-sub);
+    }
+
+    .section-title {
+        font-size: 1.2rem;
+        color: var(--text-heading);
+        margin-bottom: 15px;
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 5px;
+    }
+
+    .sub-desc {
+        font-size: 0.85rem;
+        color: var(--text-sub);
+        margin-bottom: 15px;
+    }
+
+    .sheet-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .sheet-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .sheet-info h3 {
+        font-size: 1.1rem;
+        color: var(--text-heading);
+    }
+
+    .sheet-info p {
+        font-size: 0.85rem;
+        color: var(--text-sub);
+        margin-top: 2px;
+    }
+
+    .tags {
+        display: flex;
+        gap: 6px;
+        margin-top: 6px;
+        flex-wrap: wrap;
+    }
+
+    .tag {
+        font-size: 0.75rem;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+    }
+
+    .tag.easy { background: #e8f5e9; color: #2e7d32; }
+    .tag.medium { background: #fffde7; color: #f57f17; }
+    .tag.hard { background: #ffebee; color: #c62828; }
+    .tag.alt { background: #e3f2fd; color: #1565c0; }
+    .tag.tenor { background: #e0f2f1; color: #00695c; }
+    .tag.trumpet { background: #fff3e0; color: #e65100; }
+    .tag.accordion { background: #f3e5f5; color: #7b1fa2; }
+
+    body.dark-mode .tag.easy { background: #1b3e20; color: #81c784; }
+    body.dark-mode .tag.medium { background: #3e3b1b; color: #ffd54f; }
+    body.dark-mode .tag.hard { background: #3e1b1b; color: #e57373; }
+    body.dark-mode .tag.alt { background: #1b2e3e; color: #64b5f6; }
+    body.dark-mode .tag.tenor { background: #1b3e39; color: #4db6ac; }
+    body.dark-mode .tag.trumpet { background: #3e2d1b; color: #ffb74d; }
+    body.dark-mode .tag.accordion { background: #341b3e; color: #ba68c8; }
+
+    .sheet-actions {
+        display: flex;
+        gap: 8px;
+        align-self: flex-end;
+        flex-wrap: wrap;
+    }
+
+    .btn {
+        padding: 8px 14px;
+        font-size: 0.85rem;
+        font-weight: bold;
+        border-radius: 6px;
+        text-decoration: none;
+        cursor: pointer;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .btn-preview { background-color: #6c757d; color: white; }
+    .btn-preview:hover { background-color: #5a6268; }
+
+    .btn-download-pdf, .btn-download-jpg, .btn-download-png {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .btn-download-pdf:hover, .btn-download-jpg:hover, .btn-download-png:hover {
+        background-color: #218838;
+    }
+
+    .preview-container {
+        display: none;
+        margin-top: 10px;
+        border-top: 1px dashed var(--border-color);
+        padding-top: 10px;
+    }
+
+    .preview-container img, .preview-container iframe {
+        width: 100%;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+        margin-bottom: 10px;
+    }
+
+    .preview-container iframe {
+        height: 500px;
+    }
+
+    .request-form {
+        background: var(--form-bg);
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+    }
+
+    .form-group { margin-bottom: 15px; }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        color: var(--text-main);
+    }
+
+    .form-group input, .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid var(--border-color);
+        background-color: var(--input-bg);
+        color: var(--text-main);
+        border-radius: 6px;
+        font-size: 0.95rem;
+    }
+
+    .btn-submit {
+        background-color: #ff9800;
+        color: white;
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+    }
+
+    .btn-submit:hover { background-color: #e68a00; }
+
+    .form-message {
+        margin-top: 15px;
+        padding: 10px;
+        background: #d4edda;
+        color: #155724;
+        border-radius: 6px;
+        display: none;
+        text-align: center;
+    }
+
+    body.dark-mode .form-message {
+        background: #1e3a24;
+        color: #81c784;
+    }
+
+    footer {
+        text-align: center;
+        margin-top: 30px;
+        font-size: 0.8rem;
+        color: var(--text-sub);
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .loading-text { text-align: center; padding: 20px; color: var(--text-sub); }
+</style>
+
+
+<div class="container">
+    <div class="top-controls">
+        <a href="admin.html" class="ctrl-btn">⚙️ Admin</a>
+        <button class="ctrl-btn" id="langToggle" onclick="toggleLanguage()">🌐 EN</button>
+        <button class="ctrl-btn" id="themeToggle" onclick="toggleTheme()">🌙 Ciemny tryb</button>
     </div>
 
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    <header>
+        <h1>Oletko Nuty</h1>
+        <p id="header-subtitle">Darmowe nuty na fortepian, saksofon, trąbkę i akordeon</p>
+        <p id="header-bio" style="margin-top: 8px; font-size: 0.85rem;">Cześć! Nazywam się <strong>Aleksander Frątczak</strong>. Tworzę i udostępniam darmowe opracowania nutowe dla pasjonatów muzyki. Pobieraj opracowania i graj swoje ulubione utwory!</p>
+        
+        <div class="stats-badge">
+            <span>📚 <span id="lbl-total">Łącznie</span>: <strong id="total-count">0</strong></span>
+            <span>•</span>
+            <span>🎹 <span id="lbl-piano">Fortepian</span>: <strong id="piano-count">0</strong></span>
+            <span>•</span>
+            <span>🎷 <span id="lbl-sax">Saksofon</span>: <strong id="sax-count">0</strong></span>
+            <span>•</span>
+            <span>🎺 <span id="lbl-trumpet">Trąbka</span>: <strong id="trumpet-count">0</strong></span>
+            <span>•</span>
+            <span>🪗 <span id="lbl-accordion">Akordeon</span>: <strong id="accordion-count">0</strong></span>
+        </div>
+    </header>
 
-        const firebaseConfig = {
-          apiKey: "AIzaSyCqT-Se0QudEnaHgImvFXSR2bEWONBKUoI",
-          authDomain: "oletko-nuty.firebaseapp.com",
-          projectId: "oletko-nuty",
-          storageBucket: "oletko-nuty.firebasestorage.app",
-          messagingSenderId: "1019311578281",
-          appId: "1:1019311578281:web:37924727b9fc316b632548",
-          measurementId: "G-PLTPXGX37V"
-        };
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('piano')" id="tab-piano">Fortepian (0)</button>
+        <button class="tab-btn" onclick="switchTab('sax')" id="tab-sax">Saksofon (0)</button>
+        <button class="tab-btn" onclick="switchTab('trumpet')" id="tab-trumpet">Trąbka (0)</button>
+        <button class="tab-btn" onclick="switchTab('accordion')" id="tab-accordion">Akordeon (0)</button>
+        <button class="tab-btn request-btn" onclick="switchTab('request')" id="tab-request">🎁 Poproś o nuty</button>
+    </div>
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+    <div class="search-box" id="search-box-container">
+        <span>🔍</span>
+        <input type="text" id="searchInput" placeholder="Szukaj utworu lub kompozytora..." onkeyup="filterSheets()">
+    </div>
 
-        window.pianoSheets = [];
-        window.saxSheets = [];
-        window.trumpetSheets = [];
-        window.accordionSheets = [];
+    <div id="piano" class="tab-content active">
+        <h2 class="section-title" id="title-piano">Nuty na Fortepian</h2>
+        <p class="sub-desc" id="desc-piano">Pobieraj darmowe nuty lub rozwiń podgląd!</p>
+        <div id="piano-list" class="loading-text">Ładowanie nut z bazy danych...</div>
+    </div>
 
-        async function loadSheetsFromFirebase() {
-            try {
-                const querySnapshot = await getDocs(collection(db, "sheets"));
-                const allSheets = [];
-                querySnapshot.forEach((doc) => {
-                    allSheets.push({ id: doc.id, ...doc.data() });
-                });
+    <div id="sax" class="tab-content">
+        <h2 class="section-title" id="title-sax">Nuty na Saksofon</h2>
+        <div class="sub-filters">
+            <button class="sub-btn active" onclick="filterSaxCategory('all', this)" id="sax-cat-all">Wszystkie</button>
+            <button class="sub-btn" onclick="filterSaxCategory('alt', this)" id="sax-cat-alt">Saksofon Altowy</button>
+            <button class="sub-btn" onclick="filterSaxCategory('tenor', this)" id="sax-cat-tenor">Saksofon Tenorowy</button>
+        </div>
+        <p class="sub-desc" id="desc-sax">Kliknij w grafikę lub pobierz nuty w formacie JPG/PNG.</p>
+        <div id="sax-list" class="loading-text">Ładowanie nut z bazy danych...</div>
+    </div>
 
-                window.pianoSheets = allSheets.filter(s => s.instrument === 'piano');
-                window.saxSheets = allSheets.filter(s => s.instrument === 'sax');
-                window.trumpetSheets = allSheets.filter(s => s.instrument === 'trumpet');
-                window.accordionSheets = allSheets.filter(s => s.instrument === 'accordion');
+    <div id="trumpet" class="tab-content">
+        <h2 class="section-title" id="title-trumpet">Nuty na Trąbkę</h2>
+        <div class="sub-filters">
+            <button class="sub-btn active" onclick="filterTrumpetCategory('all', this)" id="trumpet-cat-all">Wszystkie</button>
+            <button class="sub-btn" onclick="filterTrumpetCategory('b', this)" id="trumpet-cat-b">Trąbka B♭</button>
+            <button class="sub-btn" onclick="filterTrumpetCategory('es', this)" id="trumpet-cat-es">Trąbka E♭</button>
+        </div>
+        <p class="sub-desc" id="desc-trumpet">Pobieraj darmowe nuty na trąbkę w formacie JPG.</p>
+        <div id="trumpet-list" class="loading-text">Ładowanie nut z bazy danych...</div>
+    </div>
 
-                updateCounts();
-                filterSheets();
-            } catch (error) {
-                console.error("Błąd podczas pobierania nut z Firebase:", error);
-            }
-        }
+    <div id="accordion" class="tab-content">
+        <h2 class="section-title" id="title-accordion">Nuty na Akordeon</h2>
+        <p class="sub-desc" id="desc-accordion">Pobieraj darmowe nuty na akordeon w formacie PDF.</p>
+        <div id="accordion-list" class="loading-text">Ładowanie nut z bazy danych...</div>
+    </div>
 
-        window.loadSheetsFromFirebase = loadSheetsFromFirebase;
-        loadSheetsFromFirebase();
-    </script>
+    <div id="request" class="tab-content">
+        <h2 class="section-title" id="title-request">Zaproponuj utwór!</h2>
+        <p class="sub-desc" id="desc-request">Chcesz, abym opracował i dodał nowe nuty? Wypełnij formularz poniżej.</p>
+        
+        <form class="request-form" id="sheetRequestForm" action="https://formspree.io/f/mqpzvrbg" method="POST">
+            <div class="form-group">
+                <label for="userName" id="lbl-form-name">Twoje imię / Nick:</label>
+                <input type="text" id="userName" name="name" placeholder="np. Aleksander" required>
+            </div>
 
-    <script>
-        let currentLang = localStorage.getItem('lang') || 'pl';
+            <div class="form-group">
+                <label for="songTitle" id="lbl-form-song">Tytuł utworu i kompozytor:</label>
+                <input type="text" id="songTitle" name="song" placeholder="np. Sto Lat" required>
+            </div>
 
-        const translations = {
-            pl: {
-                subtitle: "Darmowe nuty na fortepian, saksofon, trąbkę i akordeon",
-                bio: "Cześć! Nazywam się <strong>Aleksander Frątczak</strong>. Tworzę i udostępniam darmowe opracowania nutowe dla pasjonatów muzyki. Pobieraj opracowania i graj swoje ulubione utwory!",
-                total: "Łącznie",
-                piano: "Fortepian",
-                sax: "Saksofon",
-                trumpet: "Trąbka",
-                accordion: "Akordeon",
-                requestTab: "🎁 Poproś o nuty",
-                searchPlaceholder: "Szukaj utworu lub kompozytora...",
-                titlePiano: "Nuty na Fortepian",
-                descPiano: "Pobieraj darmowe nuty lub rozwiń podgląd!",
-                titleSax: "Nuty na Saksofon",
-                descSax: "Kliknij w grafikę lub pobierz nuty w formacie JPG/PNG.",
-                titleTrumpet: "Nuty na Trąbkę",
-                descTrumpet: "Pobieraj darmowe nuty na trąbkę w formacie JPG.",
-                titleAccordion: "Nuty na Akordeon",
-                descAccordion: "Pobieraj darmowe nuty na akordeon w formacie PDF.",
-                titleRequest: "Zaproponuj utwór!",
-                descRequest: "Chcesz, abym opracował i dodał nowe nuty? Wypełnij formularz poniżej.",
-                catAll: "Wszystkie",
-                catAlt: "Saksofon Altowy",
-                catTenor: "Saksofon Tenorowy",
-                catBb: "Trąbka B♭",
-                catEb: "Trąbka E♭",
-                formName: "Twoje imię / Nick:",
-                formSong: "Tytuł utworu i kompozytor:",
-                formInstr: "Instrument:",
-                formMsg: "Dodatkowa wiadomość (opcjonalnie):",
-                btnSubmit: "✉️ Wyślij propozycję",
-                formSuccess: "Dziękuję! Twoja propozycja została pomyślnie wysłana.",
-                btnPreview: "👁 Podgląd",
-                btnDownload: "Pobierz",
-                footerAuthor: "Twórca",
-                darkMode: "🌙 Ciemny tryb",
-                lightMode: "☀️ Jasny tryb",
-                noResults: "Brak nut w tej kategorii.",
-                diffEasy: "Łatwy",
-                diffMedium: "Średnio-zaawansowany",
-                diffHard: "Zaawansowany"
-            },
-            en: {
-                subtitle: "Free sheet music for piano, saxophone, trumpet, and accordion",
-                bio: "Hi! My name is <strong>Aleksander Frątczak</strong>. I create and share free sheet music arrangements for music enthusiasts. Download sheet music and play your favorite songs!",
-                total: "Total",
-                piano: "Piano",
-                sax: "Saxophone",
-                trumpet: "Trumpet",
-                accordion: "Accordion",
-                requestTab: "🎁 Request Sheet",
-                searchPlaceholder: "Search song or composer...",
-                titlePiano: "Piano Sheet Music",
-                descPiano: "Download free sheet music or toggle preview!",
-                titleSax: "Saxophone Sheet Music",
-                descSax: "Click on image or download sheet music as JPG/PNG.",
-                titleTrumpet: "Trumpet Sheet Music",
-                descTrumpet: "Download free trumpet sheet music as JPG.",
-                titleAccordion: "Accordion Sheet Music",
-                descAccordion: "Download free accordion sheet music as PDF.",
-                titleRequest: "Suggest a Song!",
-                descRequest: "Want me to arrange and add new sheet music? Fill out the form below.",
-                catAll: "All",
-                catAlt: "Alto Saxophone",
-                catTenor: "Tenor Saxophone",
-                catBb: "B♭ Trumpet",
-                catEb: "E♭ Trumpet",
-                formName: "Your Name / Nick:",
-                formSong: "Song Title & Composer:",
-                formInstr: "Instrument:",
-                formMsg: "Additional Message (optional):",
-                btnSubmit: "✉️ Send Suggestion",
-                formSuccess: "Thank you! Your suggestion has been sent successfully.",
-                btnPreview: "👁 Preview",
-                btnDownload: "Download",
-                footerAuthor: "Created by",
-                darkMode: "🌙 Dark Mode",
-                lightMode: "☀️ Light Mode",
-                noResults: "No sheet music found in this category.",
-                diffEasy: "Easy",
-                diffMedium: "Intermediate",
-                diffHard: "Advanced"
-            }
-        };
+            <div class="form-group">
+                <label for="instrument" id="lbl-form-instr">Instrument:</label>
+                <input type="text" id="instrument" name="instrument" placeholder="np. Saksofon / Fortepian / Trąbka / Akordeon" required>
+            </div>
 
-        function toggleLanguage() {
-            currentLang = currentLang === 'pl' ? 'en' : 'pl';
-            localStorage.setItem('lang', currentLang);
-            applyLanguage();
-        }
+            <div class="form-group">
+                <label for="additionalInfo" id="lbl-form-msg">Dodatkowa wiadomość (opcjonalnie):</label>
+                <textarea id="additionalInfo" name="message" rows="3" placeholder="np. Łatwe opracowanie"></textarea>
+            </div>
 
-        function applyLanguage() {
-            const t = translations[currentLang];
-            document.getElementById('langToggle').textContent = currentLang === 'pl' ? '🌐 EN' : '🌐 PL';
-            document.getElementById('header-subtitle').textContent = t.subtitle;
-            document.getElementById('header-bio').innerHTML = t.bio;
-            document.getElementById('lbl-total').textContent = t.total;
-            document.getElementById('lbl-piano').textContent = t.piano;
-            document.getElementById('lbl-sax').textContent = t.sax;
-            document.getElementById('lbl-trumpet').textContent = t.trumpet;
-            document.getElementById('lbl-accordion').textContent = t.accordion;
+            <button type="submit" class="btn btn-submit" id="btn-form-submit">✉️ Wyślij propozycję</button>
+            <div class="form-message" id="formMessage">Dziękuję! Twoja propozycja została pomyślnie wysłana.</div>
+        </form>
+    </div>
 
-            document.getElementById('searchInput').placeholder = t.searchPlaceholder;
+    <footer>
+        © 2026 Oletko Nuty — <span id="footer-author">Twórca</span>: Aleksander Frątczak
+    </footer>
+</div>
 
-            document.getElementById('title-piano').textContent = t.titlePiano;
-            document.getElementById('desc-piano').textContent = t.descPiano;
-            document.getElementById('title-sax').textContent = t.titleSax;
-            document.getElementById('desc-sax').textContent = t.descSax;
-            document.getElementById('title-trumpet').textContent = t.titleTrumpet;
-            document.getElementById('desc-trumpet').textContent = t.descTrumpet;
-            document.getElementById('title-accordion').textContent = t.titleAccordion;
-            document.getElementById('desc-accordion').textContent = t.descAccordion;
-            document.getElementById('title-request').textContent = t.titleRequest;
-            document.getElementById('desc-request').textContent = t.descRequest;
+<!-- Firebase SDK -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-            document.getElementById('sax-cat-all').textContent = t.catAll;
-            document.getElementById('sax-cat-alt').textContent = t.catAlt;
-            document.getElementById('sax-cat-tenor').textContent = t.catTenor;
-            document.getElementById('trumpet-cat-all').textContent = t.catAll;
-            document.getElementById('trumpet-cat-b').textContent = t.catBb;
-            document.getElementById('trumpet-cat-es').textContent = t.catEb;
+    const firebaseConfig = {
+      apiKey: "AIzaSyCqT-Se0QudEnaHgImvFXSR2bEWONBKUoI",
+      authDomain: "oletko-nuty.firebaseapp.com",
+      projectId: "oletko-nuty",
+      storageBucket: "oletko-nuty.firebasestorage.app",
+      messagingSenderId: "1019311578281",
+      appId: "1:1019311578281:web:37924727b9fc316b632548",
+      measurementId: "G-PLTPXGX37V"
+    };
 
-            document.getElementById('lbl-form-name').textContent = t.formName;
-            document.getElementById('lbl-form-song').textContent = t.formSong;
-            document.getElementById('lbl-form-instr').textContent = t.formInstr;
-            document.getElementById('lbl-form-msg').textContent = t.formMsg;
-            document.getElementById('btn-form-submit').textContent = t.btnSubmit;
-            document.getElementById('formMessage').textContent = t.formSuccess;
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-            document.getElementById('footer-author').textContent = t.footerAuthor;
+    window.pianoSheets = [];
+    window.saxSheets = [];
+    window.trumpetSheets = [];
+    window.accordionSheets = [];
 
-            const isDark = document.body.classList.contains('dark-mode');
-            document.getElementById('themeToggle').textContent = isDark ? t.lightMode : t.darkMode;
+    async function loadSheetsFromFirebase() {
+        try {
+            const querySnapshot = await getDocs(collection(db, "sheets"));
+            const allSheets = [];
+            querySnapshot.forEach((doc) => {
+                allSheets.push({ id: doc.id, ...doc.data() });
+            });
+
+            window.pianoSheets = allSheets.filter(s => s.instrument === 'piano');
+            window.saxSheets = allSheets.filter(s => s.instrument === 'sax');
+            window.trumpetSheets = allSheets.filter(s => s.instrument === 'trumpet');
+            window.accordionSheets = allSheets.filter(s => s.instrument === 'accordion');
 
             updateCounts();
             filterSheets();
+        } catch (error) {
+            console.error("Błąd podczas pobierania nut z Firebase:", error);
+        }
+    }
+
+    window.loadSheetsFromFirebase = loadSheetsFromFirebase;
+    loadSheetsFromFirebase();
+</script>
+
+<script>
+    let currentLang = localStorage.getItem('lang') || 'pl';
+
+    const translations = {
+        pl: {
+            subtitle: "Darmowe nuty na fortepian, saksofon, trąbkę i akordeon",
+            bio: "Cześć! Nazywam się <strong>Aleksander Frątczak</strong>. Tworzę i udostępniam darmowe opracowania nutowe dla pasjonatów muzyki. Pobieraj opracowania i graj swoje ulubione utwory!",
+            total: "Łącznie",
+            piano: "Fortepian",
+            sax: "Saksofon",
+            trumpet: "Trąbka",
+            accordion: "Akordeon",
+            requestTab: "🎁 Poproś o nuty",
+            searchPlaceholder: "Szukaj utworu lub kompozytora...",
+            titlePiano: "Nuty na Fortepian",
+            descPiano: "Pobieraj darmowe nuty lub rozwiń podgląd!",
+            titleSax: "Nuty na Saksofon",
+            descSax: "Kliknij w grafikę lub pobierz nuty w formacie JPG/PNG.",
+            titleTrumpet: "Nuty na Trąbkę",
+            descTrumpet: "Pobieraj darmowe nuty na trąbkę w formacie JPG.",
+            titleAccordion: "Nuty na Akordeon",
+            descAccordion: "Pobieraj darmowe nuty na akordeon w formacie PDF.",
+            titleRequest: "Zaproponuj utwór!",
+            descRequest: "Chcesz, abym opracował i dodał nowe nuty? Wypełnij formularz poniżej.",
+            catAll: "Wszystkie",
+            catAlt: "Saksofon Altowy",
+            catTenor: "Saksofon Tenorowy",
+            catBb: "Trąbka B♭",
+            catEb: "Trąbka E♭",
+            formName: "Twoje imię / Nick:",
+            formSong: "Tytuł utworu i kompozytor:",
+            formInstr: "Instrument:",
+            formMsg: "Dodatkowa wiadomość (opcjonalnie):",
+            btnSubmit: "✉️ Wyślij propozycję",
+            formSuccess: "Dziękuję! Twoja propozycja została pomyślnie wysłana.",
+            btnPreview: "👁 Podgląd",
+            btnDownload: "Pobierz",
+            footerAuthor: "Twórca",
+            darkMode: "🌙 Ciemny tryb",
+            lightMode: "☀️ Jasny tryb",
+            noResults: "Brak nut w tej kategorii.",
+            diffEasy: "Łatwy",
+            diffMedium: "Średnio-zaawansowany",
+            diffHard: "Zaawansowany"
+        },
+        en: {
+            subtitle: "Free sheet music for piano, saxophone, trumpet, and accordion",
+            bio: "Hi! My name is <strong>Aleksander Frątczak</strong>. I create and share free sheet music arrangements for music enthusiasts. Download sheet music and play your favorite songs!",
+            total: "Total",
+            piano: "Piano",
+            sax: "Saxophone",
+            trumpet: "Trumpet",
+            accordion: "Accordion",
+            requestTab: "🎁 Request Sheet",
+            searchPlaceholder: "Search song or composer...",
+            titlePiano: "Piano Sheet Music",
+            descPiano: "Download free sheet music or toggle preview!",
+            titleSax: "Saxophone Sheet Music",
+            descSax: "Click on image or download sheet music as JPG/PNG.",
+            titleTrumpet: "Trumpet Sheet Music",
+            descTrumpet: "Download free trumpet sheet music as JPG.",
+            titleAccordion: "Accordion Sheet Music",
+            descAccordion: "Download free accordion sheet music as PDF.",
+            titleRequest: "Suggest a Song!",
+            descRequest: "Want me to arrange and add new sheet music? Fill out the form below.",
+            catAll: "All",
+            catAlt: "Alto Saxophone",
+            catTenor: "Tenor Saxophone",
+            catBb: "B♭ Trumpet",
+            catEb: "E♭ Trumpet",
+            formName: "Your Name / Nick:",
+            formSong: "Song Title & Composer:",
+            formInstr: "Instrument:",
+            formMsg: "Additional Message (optional):",
+            btnSubmit: "✉️ Send Suggestion",
+            formSuccess: "Thank you! Your suggestion has been sent successfully.",
+            btnPreview: "👁 Preview",
+            btnDownload: "Download",
+            footerAuthor: "Created by",
+            darkMode: "🌙 Dark Mode",
+            lightMode: "☀️ Light Mode",
+            noResults: "No sheet music found in this category.",
+            diffEasy: "Easy",
+            diffMedium: "Intermediate",
+            diffHard: "Advanced"
+        }
+    };
+
+    function toggleLanguage() {
+        currentLang = currentLang === 'pl' ? 'en' : 'pl';
+        localStorage.setItem('lang', currentLang);
+        applyLanguage();
+    }
+
+    function applyLanguage() {
+        const t = translations[currentLang];
+        document.getElementById('langToggle').textContent = currentLang === 'pl' ? '🌐 EN' : '🌐 PL';
+        document.getElementById('header-subtitle').textContent = t.subtitle;
+        document.getElementById('header-bio').innerHTML = t.bio;
+        document.getElementById('lbl-total').textContent = t.total;
+        document.getElementById('lbl-piano').textContent = t.piano;
+        document.getElementById('lbl-sax').textContent = t.sax;
+        document.getElementById('lbl-trumpet').textContent = t.trumpet;
+        document.getElementById('lbl-accordion').textContent = t.accordion;
+
+        document.getElementById('searchInput').placeholder = t.searchPlaceholder;
+
+        document.getElementById('title-piano').textContent = t.titlePiano;
+        document.getElementById('desc-piano').textContent = t.descPiano;
+        document.getElementById('title-sax').textContent = t.titleSax;
+        document.getElementById('desc-sax').textContent = t.descSax;
+        document.getElementById('title-trumpet').textContent = t.titleTrumpet;
+        document.getElementById('desc-trumpet').textContent = t.descTrumpet;
+        document.getElementById('title-accordion').textContent = t.titleAccordion;
+        document.getElementById('desc-accordion').textContent = t.descAccordion;
+        document.getElementById('title-request').textContent = t.titleRequest;
+        document.getElementById('desc-request').textContent = t.descRequest;
+
+        document.getElementById('sax-cat-all').textContent = t.catAll;
+        document.getElementById('sax-cat-alt').textContent = t.catAlt;
+        document.getElementById('sax-cat-tenor').textContent = t.catTenor;
+        document.getElementById('trumpet-cat-all').textContent = t.catAll;
+        document.getElementById('trumpet-cat-b').textContent = t.catBb;
+        document.getElementById('trumpet-cat-es').textContent = t.catEb;
+
+        document.getElementById('lbl-form-name').textContent = t.formName;
+        document.getElementById('lbl-form-song').textContent = t.formSong;
+        document.getElementById('lbl-form-instr').textContent = t.formInstr;
+        document.getElementById('lbl-form-msg').textContent = t.formMsg;
+        document.getElementById('btn-form-submit').textContent = t.btnSubmit;
+        document.getElementById('formMessage').textContent = t.formSuccess;
+
+        document.getElementById('footer-author').textContent = t.footerAuthor;
+
+        const isDark = document.body.classList.contains('dark-mode');
+        document.getElementById('themeToggle').textContent = isDark ? t.lightMode : t.darkMode;
+
+        updateCounts();
+        filterSheets();
+    }
+
+    function toggleTheme() {
+        const body = document.body;
+        body.classList.toggle('dark-mode');
+        const isDark = body.classList.contains('dark-mode');
+        const t = translations[currentLang];
+
+        document.getElementById('themeToggle').textContent = isDark ? t.lightMode : t.darkMode;
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
+    if (localStorage.getItem('theme') === 'dark') {
+        document.body.classList.add('dark-mode');
+    }
+
+    let currentSaxCategory = 'all';
+    let currentTrumpetCategory = 'all';
+
+    function getDiffTranslation(diffStr) {
+        const t = translations[currentLang];
+        if (diffStr === 'Łatwy') return t.diffEasy;
+        if (diffStr === 'Średnio-zaawansowany') return t.diffMedium;
+        if (diffStr === 'Zaawansowany' || diffStr === 'Trudny') return t.diffHard;
+        return diffStr;
+    }
+
+    function getDiffClass(diffStr) {
+        if (diffStr === 'Łatwy') return 'easy';
+        if (diffStr === 'Średnio-zaawansowany') return 'medium';
+        if (diffStr === 'Zaawansowany' || diffStr === 'Trudny') return 'hard';
+        return 'easy';
+    }
+
+    function updateCounts() {
+        const t = translations[currentLang];
+        const pianoCount = (window.pianoSheets || []).length;
+        const saxCount = (window.saxSheets || []).length;
+        const trumpetCount = (window.trumpetSheets || []).length;
+        const accordionCount = (window.accordionSheets || []).length;
+        const totalCount = pianoCount + saxCount + trumpetCount + accordionCount;
+
+        document.getElementById('piano-count').textContent = pianoCount;
+        document.getElementById('sax-count').textContent = saxCount;
+        document.getElementById('trumpet-count').textContent = trumpetCount;
+        document.getElementById('accordion-count').textContent = accordionCount;
+        document.getElementById('total-count').textContent = totalCount;
+
+        document.getElementById('tab-piano').textContent = `${t.piano} (${pianoCount})`;
+        document.getElementById('tab-sax').textContent = `${t.sax} (${saxCount})`;
+        document.getElementById('tab-trumpet').textContent = `${t.trumpet} (${trumpetCount})`;
+        document.getElementById('tab-accordion').textContent = `${t.accordion} (${accordionCount})`;
+        document.getElementById('tab-request').textContent = t.requestTab;
+    }
+
+    function resolveFilePath(sheet) {
+        if (!sheet.fileUrl) return '';
+        let path = sheet.fileUrl;
+        if (!path.includes('/')) {
+            if (sheet.instrument === 'piano') path = 'piano/' + path;
+            else if (sheet.instrument === 'accordion') path = 'Akordeon/' + path;
+            else if (sheet.instrument === 'sax') {
+                path = (sheet.subCategory === 'tenor') ? 'saxtenor/' + path : 'saxalto/' + path;
+            }
+            else if (sheet.instrument === 'trumpet') {
+                path = (sheet.subCategory === 'es') ? 'trumpetinEs/' + path : 'trumpetinB/' + path;
+            }
+        }
+        return encodeURI(path);
+    }
+
+    function switchTab(tabId) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+        document.getElementById(tabId).classList.add('active');
+        
+        const btn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
+        if (btn) btn.classList.add('active');
+
+        const searchContainer = document.getElementById('search-box-container');
+        if (tabId === 'request') {
+            searchContainer.style.display = 'none';
+        } else {
+            searchContainer.style.display = 'block';
+        }
+    }
+
+    function filterSaxCategory(cat, btn) {
+        currentSaxCategory = cat;
+        document.querySelectorAll('#sax .sub-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        filterSheets();
+    }
+
+    function filterTrumpetCategory(cat, btn) {
+        currentTrumpetCategory = cat;
+        document.querySelectorAll('#trumpet .sub-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        filterSheets();
+    }
+
+    function filterSheets() {
+        const query = document.getElementById('searchInput').value.toLowerCase().trim();
+
+        const pianoFiltered = (window.pianoSheets || []).filter(s => 
+            s.title.toLowerCase().includes(query) || s.author.toLowerCase().includes(query)
+        );
+
+        const saxFiltered = (window.saxSheets || []).filter(s => {
+            const matchQuery = s.title.toLowerCase().includes(query) || s.author.toLowerCase().includes(query);
+            const matchCat = (currentSaxCategory === 'all') || (s.subCategory === currentSaxCategory);
+            return matchQuery && matchCat;
+        });
+
+        const trumpetFiltered = (window.trumpetSheets || []).filter(s => {
+            const matchQuery = s.title.toLowerCase().includes(query) || s.author.toLowerCase().includes(query);
+            const matchCat = (currentTrumpetCategory === 'all') || (s.subCategory === currentTrumpetCategory);
+            return matchQuery && matchCat;
+        });
+
+        const accordionFiltered = (window.accordionSheets || []).filter(s => 
+            s.title.toLowerCase().includes(query) || s.author.toLowerCase().includes(query)
+        );
+
+        renderSheetsList('piano-list', pianoFiltered);
+        renderSheetsList('sax-list', saxFiltered);
+        renderSheetsList('trumpet-list', trumpetFiltered);
+        renderSheetsList('accordion-list', accordionFiltered);
+    }
+
+    function renderSheetsList(elementId, sheets) {
+        const container = document.getElementById(elementId);
+        container.innerHTML = '';
+        const t = translations[currentLang];
+
+        if (sheets.length === 0) {
+            container.innerHTML = `<p style="color: var(--text-sub); text-align: center; padding: 20px;">${t.noResults}</p>`;
+            return;
         }
 
-        function toggleTheme() {
-            const body = document.body;
-            body.classList.toggle('dark-mode');
-            const isDark = body.classList.contains('dark-mode');
-            const t = translations[currentLang];
+        sheets.forEach((sheet, index) => {
+            const diffClass = getDiffClass(sheet.difficulty);
+            const fileUrl = resolveFilePath(sheet);
+            let actionsHTML = '';
+            let previewHTML = '';
 
-            document.getElementById('themeToggle').textContent = isDark ? t.lightMode : t.darkMode;
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        }
-
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark-mode');
-        }
-
-        let currentSaxCategory = 'all';
-        let currentTrumpetCategory = 'all';
-
-        function getDiffTranslation(diffStr) {
-            const t = translations[currentLang];
-            if (diffStr === 'Łatwy') return t.diffEasy;
-            if (diffStr === 'Średnio-zaawansowany') return t.diffMedium;
-            if (diffStr === 'Zaawansowany' || diffStr === 'Trudny') return t.diffHard;
-            return diffStr;
-        }
-
-        function getDiffClass(diffStr) {
-            if (diffStr === 'Łatwy') return 'easy';
-            if (diffStr === 'Średnio-zaawansowany') return 'medium';
-            if (diffStr === 'Zaawansowany' || diffStr === 'Trudny') return 'hard';
-            return 'easy';
-        }
-
-        function updateCounts() {
-            const t = translations[currentLang];
-            const pianoCount = (window.pianoSheets || []).length;
-            const saxCount = (window.saxSheets || []).length;
-            const trumpetCount = (window.trumpetSheets || []).length;
-            const accordionCount = (window.accordionSheets || []).length;
-            const totalCount = pianoCount + saxCount + trumpetCount + accordionCount;
-
-            document.getElementById('piano-count').textContent = pianoCount;
-            document.getElementById('sax-count').textContent = saxCount;
-            document.getElementById('trumpet-count').textContent = trumpetCount;
-            document.getElementById('accordion-count').textContent = accordionCount;
-            document.getElementById('total-count').textContent = totalCount;
-
-            document.getElementById('tab-piano').textContent = `${t.piano} (${pianoCount})`;
-            document.getElementById('tab-sax').textContent = `${t.sax} (${saxCount})`;
-            document.getElementById('tab-trumpet').textContent = `${t.trumpet} (${trumpetCount})`;
-            document.getElementById('tab-accordion').textContent = `${t.accordion} (${accordionCount})`;
-            document.getElementById('tab-request').textContent = t.requestTab;
-        }
-
-        function encodePath(url) {
-            return encodeURIComponent(url).replace(/%2F/g, "/");
-        }
-
-        function renderPianoSheets(sheets) {
-            const container = document.getElementById('piano-list');
-            container.innerHTML = '';
-            const t = translations[currentLang];
-
-            if (sheets.length === 0) {
-                container.innerHTML = `<p style="color: var(--text-sub); text-align: center; padding: 20px;">${t.noResults}</p>`;
-                return;
+            if (fileUrl.toLowerCase().endsWith('.pdf')) {
+                actionsHTML = `
+                    <button class="btn btn-preview" onclick="togglePreview('${elementId}-preview-${index}')">${t.btnPreview}</button>
+                    <a href="${fileUrl}" download class="btn btn-download-pdf">${t.btnDownload} PDF</a>
+                `;
+                previewHTML = `<iframe src="${fileUrl}"></iframe>`;
+            } else if (fileUrl) {
+                const ext = fileUrl.split('.').pop().toUpperCase();
+                actionsHTML = `
+                    <button class="btn btn-preview" onclick="togglePreview('${elementId}-preview-${index}')">${t.btnPreview}</button>
+                    <a href="${fileUrl}" download class="btn btn-download-jpg">${t.btnDownload} ${ext}</a>
+                `;
+                previewHTML = `<img src="${fileUrl}" alt="${sheet.title}">`;
             }
 
-            sheets.forEach((sheet, index) => {
-                const diffClass = getDiffClass(sheet.difficulty);
-                const fileUrl = encodePath(sheet.fileUrl);
-                let actionsHTML = '';
-                let previewHTML = '';
+            let subTagHTML = '';
+            if (sheet.subCategory === 'alt') subTagHTML = `<span class="tag alt">Saksofon Altowy</span>`;
+            else if (sheet.subCategory === 'tenor') subTagHTML = `<span class="tag tenor">Saksofon Tenorowy</span>`;
+            else if (sheet.subCategory === 'b') subTagHTML = `<span class="tag trumpet">Trąbka B♭</span>`;
+            else if (sheet.subCategory === 'es') subTagHTML = `<span class="tag trumpet">Trąbka E♭</span>`;
 
-                if (sheet.fileUrl && sheet.fileUrl.toLowerCase().endsWith('.pdf')) {
-                    actionsHTML = `
-                        <button class="btn btn-preview" onclick="togglePreview('piano-preview-${index}')">${t.btnPreview}</button>
-                        <a href="${fileUrl}" download class="btn btn-download-pdf">${t.btnDownload} PDF</a>
-                    `;
-                    previewHTML = `<iframe src="${fileUrl}"></iframe>`;
-                } else if (sheet.fileUrl) {
-                    const ext = sheet.fileUrl.split('.').pop().toUpperCase();
-                    actionsHTML = `
-                        <button class="btn btn-preview" onclick="togglePreview('piano-preview-${index}')">${t.btnPreview}</button>
-                        <a href="${fileUrl}" download class="btn btn-download-jpg">${t.btnDownload} ${ext}</a>
-                    `;
-                    previewHTML = `<img src="${fileUrl}" alt="${sheet.title}">`;
-                }
-
-                const card = document.createElement('div');
-                card.className = 'sheet-card';
-                card.innerHTML = `
-                    <div class="sheet-header">
-                        <div class="sheet-info">
-                            <h3>${sheet.title}</h3>
-                            <p>${sheet.author}</p>
-                            <div class="tags">
-                                <span class="tag ${diffClass}">${getDiffTranslation(sheet.difficulty)}</span>
-                            </div>
+            const card = document.createElement('div');
+            card.className = 'sheet-card';
+            card.innerHTML = `
+                <div class="sheet-header">
+                    <div class="sheet-info">
+                        <h3>${sheet.title}</h3>
+                        <p>${sheet.author}</p>
+                        <div class="tags">
+                            <span class="tag ${diffClass}">${getDiffTranslation(sheet.difficulty)}</span>
+                            ${subTagHTML}
                         </div>
                     </div>
                     <div class="sheet-actions">
                         ${actionsHTML}
                     </div>
-                    <div class="preview-container" id="piano-preview-${index}">
-                        ${previewHTML}
-                    </div>
-                `;
-                container.appendChild(card);
-            });
+                </div>
+                <div class="preview-container" id="${elementId}-preview-${index}">
+                    ${previewHTML}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function togglePreview(id) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.style.display = el.style.display === 'block' ? 'none' : 'block';
         }
+    }
 
-        function renderSaxSheets(sheets) {
-            const container = document.getElementById('sax-list');
-            container.innerHTML = '';
-            const t = translations[currentLang];
-
-            if (sheets.length === 0) {
-                container.innerHTML = `<p style="color: var(--text-sub); text-align: center; padding: 20px;">${t.noResults}</p>`;
-                return;
-            }
-
-            sheets.forEach((sheet, index) => {
-                const card = document.createElement('div');
-                card.className = 'sheet-card';
-
-                const diffClass = getDiffClass(sheet.difficulty);
-                let tagsHTML = `<span class="tag ${diffClass}">${getDiffTranslation(sheet.difficulty)}</span> `;
-                if (sheet.subCategory === 'alt') tagsHTML += `<span class="tag alt">Saksofon Altowy</span>`;
-                if (sheet.subCategory === 'tenor') tagsHTML += `<span class="tag tenor">Saksofon Tenorowy</span>`;
-
-                const fileUrl = encodePath(sheet.fileUrl);
-                const ext = sheet.fileUrl ? sheet.fileUrl.split('.').pop().toUpperCase() : 'JPG';
-
-                card.innerHTML = `
-                    <div class="sheet-header">
-                        <div class="sheet-info">
-                            <h3>${sheet.title}</h3>
-                            <p>${sheet.author}</p>
-                            <div class="tags">${tagsHTML}</div>
-                        </div>
-                    </div>
-                    <div class="sheet-actions">
-                        <button class="btn btn-preview" onclick="togglePreview('sax-preview-${index}')">${t.btnPreview}</button>
-                        <a href="${fileUrl}" download class="btn btn-download-jpg">${t.btnDownload} ${ext}</a>
-                    </div>
-                    <div class="preview-container" id="sax-preview-${index}">
-                        <img src="${fileUrl}" alt="${sheet.title}">
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function renderTrumpetSheets(sheets) {
-            const container = document.getElementById('trumpet-list');
-            container.innerHTML = '';
-            const t = translations[currentLang];
-
-            if (sheets.length === 0) {
-                container.innerHTML = `<p style="color: var(--text-sub); text-align: center; padding: 20px;">${t.noResults}</p>`;
-                return;
-            }
-
-            sheets.forEach((sheet, index) => {
-                const card = document.createElement('div');
-                card.className = 'sheet-card';
-
-                const diffClass = getDiffClass(sheet.difficulty);
-                let tagsHTML = `<span class="tag ${diffClass}">${getDiffTranslation(sheet.difficulty)}</span> `;
-                if (sheet.subCategory === 'b') tagsHTML += `<span class="tag trumpet">Trąbka B♭</span>`;
-                if (sheet.subCategory === 'es') tagsHTML += `<span class="tag trumpet">Trąbka E♭</span>`;
-
-                const fileUrl = encodePath(sheet.fileUrl);
-
-                card.innerHTML = `
-                    <div class="sheet-header">
-                        <div class="sheet-info">
-                            <h3>${sheet.title}</h3>
-                            <p>${sheet.author}</p>
-                            <div class="tags">${tagsHTML}</div>
-                        </div>
-                    </div>
-                    <div class="sheet-actions">
-                        <button class="btn btn-preview" onclick="togglePreview('trumpet-preview-${index}')">${t.btnPreview}</button>
-                        <a href="${fileUrl}" download class="btn btn-download-jpg">${t.btnDownload} JPG</a>
-                    </div>
-                    <div class="preview-container" id="trumpet-preview-${index}">
-                        <img src="${fileUrl}" alt="${sheet.title}">
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function renderAccordionSheets(sheets) {
-            const container = document.getElementById('accordion-list');
-            container.innerHTML = '';
-            const t = translations[currentLang];
-
-            if (sheets.length === 0) {
-                container.innerHTML = `<p style="color: var(--text-sub); text-align: center; padding: 20px;">${t.noResults}</p>`;
-                return;
-            }
-
-            sheets.forEach((sheet, index) => {
-                const diffClass = getDiffClass(sheet.difficulty);
-                const fileUrl = encodePath(sheet.fileUrl);
-
-                const card = document.createElement('div');
-                card.className = 'sheet-card';
-                card.innerHTML = `
-                    <div class="sheet-header">
-                        <div class="sheet-info">
-                            <h3>${sheet.title}</h3>
-                            <p>${sheet.author}</p>
-                            <div class="tags">
-                                <span class="tag accordion">${t.accordion}</span>
-                                <span class="tag ${diffClass}">${getDiffTranslation(sheet.difficulty)}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="sheet-actions">
-                        <button class="btn btn-preview" onclick="togglePreview('acc-preview-${index}')">${t.btnPreview}</button>
-                        <a href="${fileUrl}" download class="btn btn-download-pdf">${t.btnDownload} PDF</a>
-                    </div>
-                    <div class="preview-container" id="acc-preview-${index}">
-                        <iframe src="${fileUrl}"></iframe>
-                    </div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function filterSaxCategory(category, btnElement) {
-            currentSaxCategory = category;
-            btnElement.parentElement.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('active'));
-            btnElement.classList.add('active');
-            filterSheets();
-        }
-
-        function filterTrumpetCategory(category, btnElement) {
-            currentTrumpetCategory = category;
-            btnElement.parentElement.querySelectorAll('.sub-btn').forEach(btn => btn.classList.remove('active'));
-            btnElement.classList.add('active');
-            filterSheets();
-        }
-
-        function togglePreview(id) {
-            const preview = document.getElementById(id);
-            if (preview.style.display === 'block') {
-                preview.style.display = 'none';
-            } else {
-                preview.style.display = 'block';
-            }
-        }
-
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-
-            document.getElementById(tabName).classList.add('active');
-            document.getElementById('tab-' + tabName).classList.add('active');
-
-            const searchBox = document.getElementById('search-box-container');
-            if (tabName === 'request') {
-                searchBox.style.display = 'none';
-            } else {
-                searchBox.style.display = 'block';
-            }
-        }
-
-        function filterSheets() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-
-            const filteredPiano = (window.pianoSheets || []).filter(s => 
-                s.title.toLowerCase().includes(query) || s.author.toLowerCase().includes(query)
-            );
-
-            const filteredSax = (window.saxSheets || []).filter(s => {
-                const matchesQuery = s.title.toLowerCase().includes(query) || s.author.toLowerCase().includes(query);
-                const matchesCategory = currentSaxCategory === 'all' || s.subCategory === currentSaxCategory;
-                return matchesQuery && matchesCategory;
-            });
-
-            const filteredTrumpet = (window.trumpetSheets || []).filter(s => {
-                const matchesQuery = s.title.toLowerCase().includes(query) || s.author.toLowerCase().includes(query);
-                const matchesCategory = currentTrumpetCategory === 'all' || s.subCategory === currentTrumpetCategory;
-                return matchesQuery && matchesCategory;
-            });
-
-            const filteredAccordion = (window.accordionSheets || []).filter(s => 
-                s.title.toLowerCase().includes(query) || s.author.toLowerCase().includes(query)
-            );
-
-            renderPianoSheets(filteredPiano);
-            renderSaxSheets(filteredSax);
-            renderTrumpetSheets(filteredTrumpet);
-            renderAccordionSheets(filteredAccordion);
-        }
-
-        applyLanguage();
-    </script>
-</body>
-</html>
+    // Inicjalizacja języka
+    applyLanguage();
+</script>
