@@ -76,6 +76,7 @@
         .top-controls {
             display: flex;
             justify-content: flex-end;
+            align-items: center;
             gap: 10px;
             margin-bottom: 10px;
         }
@@ -90,10 +91,26 @@
             font-size: 0.85rem;
             font-weight: bold;
             text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
 
         .ctrl-btn:hover {
-            opacity: 0.8;
+            opacity: 0.85;
+        }
+
+        /* Stylizacja wyboru języków z flagami */
+        .lang-select {
+            background: var(--badge-bg);
+            color: var(--text-main);
+            border: 1px solid var(--badge-border);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: bold;
+            outline: none;
         }
 
         header {
@@ -416,7 +433,13 @@
     <div class="container">
         <div class="top-controls">
             <a href="admin.html" class="ctrl-btn">⚙️ Admin</a>
-            <button class="ctrl-btn" id="langToggle" onclick="toggleLanguage()">🌐 EN</button>
+            
+            <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
+                <option value="pl">🇵🇱 PL</option>
+                <option value="en">🇬🇧 EN</option>
+                <option value="es">🇪🇸 ES</option>
+            </select>
+
             <button class="ctrl-btn" id="themeToggle" onclick="toggleTheme()">🌙 Ciemny tryb</button>
         </div>
 
@@ -666,18 +689,60 @@
                 diffEasy: "Easy",
                 diffMedium: "Intermediate",
                 diffHard: "Advanced"
+            },
+            es: {
+                subtitle: "Partituras gratis para piano, saxofón, trompeta y acordeón",
+                bio: "¡Hola! Mi nombre es <strong>Aleksander Frątczak</strong>. Creo y comparto arreglos de partituras gratuitos para entusiastas de la música. ¡Descarga partituras y toca tus canciones favoritas!",
+                total: "Total",
+                piano: "Piano",
+                sax: "Saxofón",
+                trumpet: "Trompeta",
+                accordion: "Acordeón",
+                requestTab: "🎁 Pedir partitura",
+                searchPlaceholder: "Buscar canción o compositor...",
+                titlePiano: "Partituras de Piano",
+                descPiano: "¡Descarga partituras gratis o despliega la vista previa!",
+                titleSax: "Partituras de Saxofón",
+                descSax: "Haz clic en la imagen o descarga las partituras en JPG/PNG.",
+                titleTrumpet: "Partituras de Trompeta",
+                descTrumpet: "Descarga partituras de trompeta gratis en formato JPG.",
+                titleAccordion: "Partituras de Acordeón",
+                descAccordion: "Descarga partituras de acordeón gratis en formato PDF.",
+                titleRequest: "¡Sugiere una canción!",
+                descRequest: "¿Quieres que arregle y añada nueva música? Completa el siguiente formulario.",
+                catAll: "Todas",
+                catAlt: "Saxofón Alto",
+                catTenor: "Saxofón Tenor",
+                catBb: "Trompeta Si♭",
+                catEb: "Trompeta Mi♭",
+                formName: "Tu nombre / Apodo:",
+                formSong: "Título de la canción y compositor:",
+                formInstr: "Instrumento:",
+                formMsg: "Mensaje adicional (opcional):",
+                btnSubmit: "✉️ Enviar sugerencia",
+                formSuccess: "¡Gracias! Tu sugerencia ha sido enviada con éxito.",
+                btnPreview: "👁 Vista previa",
+                btnDownload: "Descargar",
+                footerAuthor: "Creado por",
+                darkMode: "🌙 Modo oscuro",
+                lightMode: "☀️ Modo claro",
+                noResults: "No se encontraron partituras en esta categoría.",
+                diffEasy: "Fácil",
+                diffMedium: "Intermedio",
+                diffHard: "Avanzado"
             }
         };
 
-        function toggleLanguage() {
-            currentLang = currentLang === 'pl' ? 'en' : 'pl';
+        function changeLanguage(langKey) {
+            currentLang = langKey;
             localStorage.setItem('lang', currentLang);
             applyLanguage();
         }
 
         function applyLanguage() {
-            const t = translations[currentLang];
-            document.getElementById('langToggle').textContent = currentLang === 'pl' ? '🌐 EN' : '🌐 PL';
+            const t = translations[currentLang] || translations['pl'];
+            document.getElementById('langSelect').value = currentLang;
+            
             document.getElementById('header-subtitle').textContent = t.subtitle;
             document.getElementById('header-bio').innerHTML = t.bio;
             document.getElementById('lbl-total').textContent = t.total;
@@ -726,7 +791,7 @@
             const body = document.body;
             body.classList.toggle('dark-mode');
             const isDark = body.classList.contains('dark-mode');
-            const t = translations[currentLang];
+            const t = translations[currentLang] || translations['pl'];
 
             document.getElementById('themeToggle').textContent = isDark ? t.lightMode : t.darkMode;
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
@@ -740,7 +805,7 @@
         let currentTrumpetCategory = 'all';
 
         function getDiffTranslation(diffStr) {
-            const t = translations[currentLang];
+            const t = translations[currentLang] || translations['pl'];
             if (diffStr === 'Łatwy') return t.diffEasy;
             if (diffStr === 'Średnio-zaawansowany') return t.diffMedium;
             if (diffStr === 'Zaawansowany' || diffStr === 'Trudny') return t.diffHard;
@@ -755,7 +820,7 @@
         }
 
         function updateCounts() {
-            const t = translations[currentLang];
+            const t = translations[currentLang] || translations['pl'];
             const pianoCount = (window.pianoSheets || []).length;
             const saxCount = (window.saxSheets || []).length;
             const trumpetCount = (window.trumpetSheets || []).length;
@@ -793,7 +858,7 @@
         function renderPianoSheets(sheets) {
             const container = document.getElementById('piano-list');
             container.innerHTML = '';
-            const t = translations[currentLang];
+            const t = translations[currentLang] || translations['pl'];
 
             if (sheets.length === 0) {
                 container.innerHTML = `<p style="color: var(--text-sub); text-align: center; padding: 20px;">${t.noResults}</p>`;
@@ -847,7 +912,7 @@
         function renderSaxSheets(sheets) {
             const container = document.getElementById('sax-list');
             container.innerHTML = '';
-            const t = translations[currentLang];
+            const t = translations[currentLang] || translations['pl'];
 
             if (sheets.length === 0) {
                 container.innerHTML = `<p style="color: var(--text-sub); text-align: center; padding: 20px;">${t.noResults}</p>`;
@@ -860,8 +925,8 @@
 
                 const diffClass = getDiffClass(sheet.difficulty);
                 let tagsHTML = `<span class="tag ${diffClass}">${getDiffTranslation(sheet.difficulty)}</span> `;
-                if (sheet.subCategory === 'alt') tagsHTML += `<span class="tag alt">Saksofon Altowy</span>`;
-                if (sheet.subCategory === 'tenor') tagsHTML += `<span class="tag tenor">Saksofon Tenorowy</span>`;
+                if (sheet.subCategory === 'alt') tagsHTML += `<span class="tag alt">${t.catAlt}</span>`;
+                if (sheet.subCategory === 'tenor') tagsHTML += `<span class="tag tenor">${t.catTenor}</span>`;
 
                 const fileUrl = encodePath(sheet.fileUrl, 'sax', sheet.subCategory);
                 const ext = sheet.fileUrl ? sheet.fileUrl.split('.').pop().toUpperCase() : 'JPG';
@@ -889,7 +954,7 @@
         function renderTrumpetSheets(sheets) {
             const container = document.getElementById('trumpet-list');
             container.innerHTML = '';
-            const t = translations[currentLang];
+            const t = translations[currentLang] || translations['pl'];
 
             if (sheets.length === 0) {
                 container.innerHTML = `<p style="color: var(--text-sub); text-align: center; padding: 20px;">${t.noResults}</p>`;
@@ -902,8 +967,8 @@
 
                 const diffClass = getDiffClass(sheet.difficulty);
                 let tagsHTML = `<span class="tag ${diffClass}">${getDiffTranslation(sheet.difficulty)}</span> `;
-                if (sheet.subCategory === 'b') tagsHTML += `<span class="tag trumpet">Trąbka B♭</span>`;
-                if (sheet.subCategory === 'es') tagsHTML += `<span class="tag trumpet">Trąbka E♭</span>`;
+                if (sheet.subCategory === 'b') tagsHTML += `<span class="tag trumpet">${t.catBb}</span>`;
+                if (sheet.subCategory === 'es') tagsHTML += `<span class="tag trumpet">${t.catEb}</span>`;
 
                 const fileUrl = encodePath(sheet.fileUrl, 'trumpet', sheet.subCategory);
 
@@ -930,7 +995,7 @@
         function renderAccordionSheets(sheets) {
             const container = document.getElementById('accordion-list');
             container.innerHTML = '';
-            const t = translations[currentLang];
+            const t = translations[currentLang] || translations['pl'];
 
             if (sheets.length === 0) {
                 container.innerHTML = `<p style="color: var(--text-sub); text-align: center; padding: 20px;">${t.noResults}</p>`;
