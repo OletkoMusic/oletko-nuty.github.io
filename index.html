@@ -61,7 +61,7 @@
             padding: 20px;
         }
 
-        /* Estetyczny Toast / Komunikat na stronie */
+        /* Powiadomienia Toast na stronie */
         #toast-container {
             position: fixed;
             top: 20px;
@@ -173,7 +173,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             z-index: 100;
             overflow: hidden;
-            min-width: 130px;
+            min-width: 140px;
         }
 
         .lang-dropdown-menu.show { display: block; }
@@ -501,6 +501,15 @@
                     <div class="lang-option" onclick="selectLanguage('es', 'flaga-es.png', 'Español')">
                         <img src="flaga-es.png" alt="ES" class="lang-flag-img"> Español
                     </div>
+                    <div class="lang-option" onclick="selectLanguage('it', 'flaga-it.png', 'Italiano')">
+                        <img src="flaga-it.png" alt="IT" class="lang-flag-img"> Italiano
+                    </div>
+                    <div class="lang-option" onclick="selectLanguage('de', 'flaga-de.png', 'Deutsch')">
+                        <img src="flaga-de.png" alt="DE" class="lang-flag-img"> Deutsch
+                    </div>
+                    <div class="lang-option" onclick="selectLanguage('ru', 'flaga-ru.png', 'Русский')">
+                        <img src="flaga-ru.png" alt="RU" class="lang-flag-img"> Русский
+                    </div>
                 </div>
             </div>
 
@@ -681,7 +690,7 @@
             }, 3500);
         }
 
-        // Obsługa wysyłania formularza bez przeładowania/przekierowania strony
+        // Formularz wysyłany bez przeładowania strony
         document.getElementById('sheetRequestForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const form = this;
@@ -717,7 +726,10 @@
         const langData = {
             pl: { flag: 'flaga-pl.png', text: 'Polski' },
             en: { flag: 'flaga-en.png', text: 'English' },
-            es: { flag: 'flaga-es.png', text: 'Español' }
+            es: { flag: 'flaga-es.png', text: 'Español' },
+            it: { flag: 'flaga-it.png', text: 'Italiano' },
+            de: { flag: 'flaga-de.png', text: 'Deutsch' },
+            ru: { flag: 'flaga-ru.png', text: 'Русский' }
         };
 
         const translations = {
@@ -843,6 +855,129 @@
                 diffEasy: "Fácil",
                 diffMedium: "Intermedio",
                 diffHard: "Avanzado"
+            },
+            it: {
+                subtitle: "Spartiti gratuiti per pianoforte, sassofono, tromba e fisarmonica",
+                bio: "Ciao! Mi chiamo <strong>Aleksander Frątczak</strong>. Creo e condivido arrangiamenti di spartiti gratuiti per gli appassionati di musica. Scarica gli spartiti e suona le tue canzoni preferite!",
+                total: "Totale",
+                piano: "Pianoforte",
+                sax: "Sassofono",
+                trumpet: "Tromba",
+                accordion: "Fisarmonica",
+                requestTab: "🎁 Richiedi spartito",
+                searchPlaceholder: "Cerca brano o compositore...",
+                titlePiano: "Spartiti per Pianoforte",
+                descPiano: "Scarica spartiti gratuiti o apri l'anteprima!",
+                titleSax: "Spartiti per Sassofono",
+                descSax: "Clicca sull'immagine o scarica lo spartito in formato JPG/PNG.",
+                titleTrumpet: "Spartiti per Tromba",
+                descTrumpet: "Scarica spartiti gratuiti per tromba in formato JPG.",
+                titleAccordion: "Spartiti per Fisarmonica",
+                descAccordion: "Scarica spartiti gratuiti per fisarmonica in formato PDF.",
+                titleRequest: "Suggerisci un brano!",
+                descRequest: "Vuoi che arrangi e aggiunga nuovi spartiti? Compila il modulo sottostante.",
+                catAll: "Tutti",
+                catAlt: "Sassofono Contralto",
+                catTenor: "Sassofono Tenore",
+                catBb: "Tromba Si♭",
+                catEb: "Tromba Mi♭",
+                formName: "Il tuo nome / Nick:",
+                formSong: "Titolo del brano e compositore:",
+                formInstr: "Strumento:",
+                formMsg: "Messaggio aggiuntivo (opzionale):",
+                btnSubmit: "✉️ Invia suggerimento",
+                formSuccess: "Grazie! Il tuo suggerimento è stato inviato con successo.",
+                btnPreview: "👁 Anteprima",
+                btnDownload: "Scarica",
+                footerAuthor: "Creato da",
+                darkMode: "🌙 Modalità scura",
+                lightMode: "☀️ Modalità chiara",
+                noResults: "Nessuno spartito trovato in questa categoria.",
+                diffEasy: "Facile",
+                diffMedium: "Intermedio",
+                diffHard: "Avanzato"
+            },
+            de: {
+                subtitle: "Kostenlose Noten für Klavier, Saxophon, Trompete und Akkordeon",
+                bio: "Hallo! Mein Name ist <strong>Aleksander Frątczak</strong>. Ich erstelle und teile kostenlose Notenarrangements für Musikliebhaber. Lade Noten herunter und spiele deine Lieblingssongs!",
+                total: "Gesamt",
+                piano: "Klavier",
+                sax: "Saxophon",
+                trumpet: "Trompete",
+                accordion: "Akkordeon",
+                requestTab: "🎁 Noten anfordern",
+                searchPlaceholder: "Suche nach Stück oder Komponist...",
+                titlePiano: "Klaviernoten",
+                descPiano: "Lade kostenlose Noten herunter oder öffne die Vorschau!",
+                titleSax: "Saxophonnoten",
+                descSax: "Klicke auf das Bild oder lade die Noten im JPG/PNG-Format herunter.",
+                titleTrumpet: "Trompetennoten",
+                descTrumpet: "Lade kostenlose Trompetennoten im JPG-Format herunter.",
+                titleAccordion: "Akkordeonnoten",
+                descAccordion: "Lade kostenlose Akkordeonnoten im PDF-Format herunter.",
+                titleRequest: "Schlage ein Lied vor!",
+                descRequest: "Möchtest du, dass ich neue Noten arrangiere und hinzufüge? Fülle das Formular unten aus.",
+                catAll: "Alle",
+                catAlt: "Altsaxophon",
+                catTenor: "Tenorsaxophon",
+                catBb: "B♭-Trompete",
+                catEb: "E♭-Trompete",
+                formName: "Dein Name / Spitzname:",
+                formSong: "Songtitel & Komponist:",
+                formInstr: "Instrument:",
+                formMsg: "Zusätzliche Nachricht (optional):",
+                btnSubmit: "✉️ Vorschlag senden",
+                formSuccess: "Vielen Dank! Dein Vorschlag wurde erfolgreich gesendet.",
+                btnPreview: "👁 Vorschau",
+                btnDownload: "Herunterladen",
+                footerAuthor: "Erstellt von",
+                darkMode: "🌙 Dunkler Modus",
+                lightMode: "☀️ Heller Modus",
+                noResults: "Keine Noten in dieser Kategorie gefunden.",
+                diffEasy: "Leicht",
+                diffMedium: "Mittel",
+                diffHard: "Schwer"
+            },
+            ru: {
+                subtitle: "Бесплатные ноты для фортепиано, саксофона, трубы и аккордеона",
+                bio: "Привет! Меня зовут <strong>Александр Фронтчак</strong>. Я создаю и делюсь бесплатными аранжировками нот для любителей музыки. Скачивайте ноты и играйте свои любимые песни!",
+                total: "Всего",
+                piano: "Фортепиано",
+                sax: "Саксофон",
+                trumpet: "Труба",
+                accordion: "Аккордеон",
+                requestTab: "🎁 Запросить ноты",
+                searchPlaceholder: "Поиск произведения или композитора...",
+                titlePiano: "Ноты для фортепиано",
+                descPiano: "Скачивайте бесплатные ноты или откройте предварительный просмотр!",
+                titleSax: "Ноты для саксофона",
+                descSax: "Нажмите на изображение или скачайте ноты в формате JPG/PNG.",
+                titleTrumpet: "Ноты для трубы",
+                descTrumpet: "Скачивайте бесплатные ноты для трубы в формате JPG.",
+                titleAccordion: "Ноты для аккордеона",
+                descAccordion: "Скачивайте бесплатные ноты для аккордеона в формате PDF.",
+                titleRequest: "Предложить композицию!",
+                descRequest: "Хотите, чтобы я сделал аранжировку и добавил новые ноты? Заполните форму ниже.",
+                catAll: "Все",
+                catAlt: "Альт-саксофон",
+                catTenor: "Тенор-саксофон",
+                catBb: "Труба B♭",
+                catEb: "Труба E♭",
+                formName: "Ваше имя / Ник:",
+                formSong: "Название произведения и композитор:",
+                formInstr: "Инструмент:",
+                formMsg: "Дополнительное сообщение (необязательно):",
+                btnSubmit: "✉️ Отправить предложение",
+                formSuccess: "Спасибо! Ваше предложение успешно отправлено.",
+                btnPreview: "👁 Просмотр",
+                btnDownload: "Скачать",
+                footerAuthor: "Создатель",
+                darkMode: "🌙 Темный режим",
+                lightMode: "☀️ Светлый режим",
+                noResults: "В этой категории нот не найдено.",
+                diffEasy: "Легкий",
+                diffMedium: "Средний",
+                diffHard: "Сложный"
             }
         };
 
