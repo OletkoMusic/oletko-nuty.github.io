@@ -61,6 +61,41 @@
             padding: 20px;
         }
 
+        /* Estetyczny Toast / Komunikat */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            min-width: 280px;
+            padding: 14px 20px;
+            border-radius: 10px;
+            background: var(--container-bg);
+            color: var(--text-main);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border-left: 5px solid #007bff;
+            font-size: 0.9rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: slideIn 0.3s ease-out forwards;
+        }
+
+        .toast.success { border-left-color: #28a745; }
+        .toast.error { border-left-color: #dc3545; }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
         .container {
             width: 100%;
             max-width: 800px;
@@ -100,7 +135,6 @@
             opacity: 0.85;
         }
 
-        /* Własne rozwijane menu języków z obrazkami flag */
         .lang-dropdown {
             position: relative;
             display: inline-block;
@@ -142,9 +176,7 @@
             min-width: 130px;
         }
 
-        .lang-dropdown-menu.show {
-            display: block;
-        }
+        .lang-dropdown-menu.show { display: block; }
 
         .lang-option {
             padding: 8px 12px;
@@ -157,9 +189,7 @@
             color: var(--text-main);
         }
 
-        .lang-option:hover {
-            background-color: var(--sub-btn-hover);
-        }
+        .lang-option:hover { background-color: var(--sub-btn-hover); }
 
         header {
             text-align: center;
@@ -191,13 +221,8 @@
             justify-content: center;
         }
 
-        .stats-badge strong {
-            color: #007bff;
-        }
-
-        body.dark-mode .stats-badge strong {
-            color: #4da3ff;
-        }
+        .stats-badge strong { color: #007bff; }
+        body.dark-mode .stats-badge strong { color: #4da3ff; }
 
         .tabs {
             display: flex;
@@ -217,9 +242,7 @@
             cursor: pointer;
         }
 
-        .tab-btn:hover {
-            background-color: var(--sub-btn-hover);
-        }
+        .tab-btn:hover { background-color: var(--sub-btn-hover); }
 
         .tab-btn.active {
             background-color: #007bff;
@@ -231,9 +254,7 @@
             color: white;
         }
 
-        .tab-btn.request-btn:hover {
-            background-color: #e68a00;
-        }
+        .tab-btn.request-btn:hover { background-color: #e68a00; }
 
         .sub-filters {
             display: flex;
@@ -253,9 +274,7 @@
             cursor: pointer;
         }
 
-        .sub-btn:hover {
-            background-color: var(--sub-btn-hover);
-        }
+        .sub-btn:hover { background-color: var(--sub-btn-hover); }
 
         .sub-btn.active {
             background-color: #17a2b8;
@@ -407,9 +426,7 @@
             margin-bottom: 10px;
         }
 
-        .preview-container iframe {
-            height: 500px;
-        }
+        .preview-container iframe { height: 500px; }
 
         .request-form {
             background: var(--form-bg);
@@ -448,21 +465,6 @@
 
         .btn-submit:hover { background-color: #e68a00; }
 
-        .form-message {
-            margin-top: 15px;
-            padding: 10px;
-            background: #d4edda;
-            color: #155724;
-            border-radius: 6px;
-            display: none;
-            text-align: center;
-        }
-
-        body.dark-mode .form-message {
-            background: #1e3a24;
-            color: #81c784;
-        }
-
         footer {
             text-align: center;
             margin-top: auto;
@@ -478,11 +480,12 @@
 </head>
 <body>
 
+    <div id="toast-container"></div>
+
     <div class="container">
         <div class="top-controls">
             <a href="admin.html" class="ctrl-btn">⚙️ Admin</a>
             
-            <!-- Własne menu z obrazkami flag -->
             <div class="lang-dropdown">
                 <button class="lang-dropdown-btn" onclick="toggleLangDropdown()">
                     <img id="current-flag" src="flaga-pl.png" alt="Plaga" class="lang-flag-img">
@@ -595,7 +598,6 @@
                 </div>
 
                 <button type="submit" class="btn btn-submit" id="btn-form-submit">✉️ Wyślij propozycję</button>
-                <div class="form-message" id="formMessage">Dziękuję! Twoja propozycja została pomyślnie wysłana.</div>
             </form>
         </div>
     </div>
@@ -658,6 +660,7 @@
                 filterSheets();
             } catch (error) {
                 console.error("Błąd podczas pobierania nut z Firebase:", error);
+                showToast("Błąd podczas pobierania nut!", "error");
             }
         }
 
@@ -666,6 +669,40 @@
     </script>
 
     <script>
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s ease-out reverse forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        document.getElementById('sheetRequestForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const form = this;
+            try {
+                const response = await fetch(form.action, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: { 'Accept': 'application/json' }
+                });
+                const t = translations[currentLang] || translations['pl'];
+                if (response.ok) {
+                    showToast(t.formSuccess, 'success');
+                    form.reset();
+                } else {
+                    showToast('Wystąpił błąd podczas wysyłania.', 'error');
+                }
+            } catch (err) {
+                showToast('Błąd połączenia z serwerem.', 'error');
+            }
+        });
+
         let currentLang = localStorage.getItem('lang') || 'pl';
 
         const langData = {
@@ -787,7 +824,6 @@
                 formInstr: "Instrumento:",
                 formMsg: "Mensaje adicional (opcional):",
                 btnSubmit: "✉️ Enviar sugerencia",
-                formSuccess: "¡Gracias! Tu sugerencia ha sido enviada con éxito.",
                 btnPreview: "👁 Vista previa",
                 btnDownload: "Descargar",
                 footerAuthor: "Creado por",
@@ -860,7 +896,6 @@
             document.getElementById('lbl-form-instr').textContent = t.formInstr;
             document.getElementById('lbl-form-msg').textContent = t.formMsg;
             document.getElementById('btn-form-submit').textContent = t.btnSubmit;
-            document.getElementById('formMessage').textContent = t.formSuccess;
 
             document.getElementById('footer-author').textContent = t.footerAuthor;
 
