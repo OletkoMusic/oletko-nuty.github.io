@@ -36,7 +36,7 @@
         <p style="text-align: center; margin-bottom: 20px;"><a href="index.html" style="color: #007bff;">← Powrót do strony głównej</a></p>
 
         <div style="margin-bottom: 20px; text-align: center;">
-            <button class="btn" style="background: #dc3545;" onclick="resetAndUploadData()">🔄 Zaktualizuj bazę i ścieżki do folderów (36 nut)</button>
+            <button class="btn" style="background: #dc3545;" onclick="resetAndUploadData()">🔄 Wyczyść duplikaty i przywróć bazę nut</button>
         </div>
 
         <form id="addSheetForm">
@@ -76,12 +76,12 @@
             </div>
             <div class="form-group">
                 <label>Ścieżka do pliku (np. `piano/DlaElizy.pdf` lub sam plik `DlaElizy.pdf`):</label>
-                <input type="text" id="fileUrl" placeholder="Wpisz nazwę pliku lub pełną ścieżkę" required>
+                <input type="text" id="fileUrl" placeholder="Wpisz nazwę pliku" required>
             </div>
             <button type="submit" class="btn">➕ Dodaj nowe nuty</button>
         </form>
 
-        <h2 style="margin-top: 30px; margin-bottom: 15px;">Lista istniejących nut:</h2>
+        <h2 style="margin-top: 30px; margin-bottom: 15px;">Lista i usuwanie nut:</h2>
         <div id="sheetsList">Ładowanie...</div>
     </div>
 
@@ -103,131 +103,134 @@
         const db = getFirestore(app);
 
         const initialSheets = [
-            // FORTEPIAN (folder: piano/)
-            { title: "Wiązanka piosenek urodzinowych (Sto lat!, Niech mu gwiazdka, Sto lat, sto lat...)", author: "Melodie tradycyjne (prosty układ)", difficulty: "Łatwy", instrument: "piano", fileUrl: "piano/Screenshot 2026-09-25 142405.png" },
-            { title: "Triumfy Króla Niebieskiego", author: "Kolęda tradycyjna (prosty układ)", difficulty: "Łatwy", instrument: "piano", fileUrl: "piano/Kolędy w prostym układzie na fortepian_page-0013.jpg" },
-            { title: "Mędrcy świata, Monarchowie", author: "Kolęda tradycyjna (prosty układ)", difficulty: "Łatwy", instrument: "piano", fileUrl: "piano/Kolędy w prostym układzie na fortepian_page-0014.jpg" },
-            { title: "Pirates Of The Caribbean - He's aŻeby napisać dla Ciebie kompletny kod panelu administracyjnego, potrzebuję znać kilka szczegółów dotyczących Twojego projektu. Panel admina składa się zazwyczaj z **frontendu** (interfejs użytkownika) oraz **backendu** (obsługa bazy danych i logiki).
+            // FORTEPIAN (piano/)
+            { title: "Wiązanka piosenek urodzinowych (Sto lat!, Niech mu gwiazdka...)", author: "Melodie tradycyjne", difficulty: "Łatwy", instrument: "piano", fileUrl: "piano/Screenshot 2026-09-25 142405.png" },
+            { title: "Triumfy Króla Niebieskiego", author: "Kolęda tradycyjna", difficulty: "Łatwy", instrument: "piano", fileUrl: "piano/Kolędy w prostym układzie na fortepian_page-0013.jpg" },
+            { title: "Mędrcy świata, Monarchowie", author: "Kolęda tradycyjna", difficulty: "Łatwy", instrument: "piano", fileUrl: "piano/Kolędy w prostym układzie na fortepian_page-0014.jpg" },
+            { title: "Pirates Of The Caribbean - He's a Pirate", author: "Klaus Badelt", difficulty: "Średnio-zaawansowany", instrument: "piano", fileUrl: "piano/Pirates Of The Caraibben - Hes A Pirate.pdf" },
+            { title: "Fly Me To The Moon", author: "arr. Thomas L.S. Pang / Bart Howard", difficulty: "Średnio-zaawansowany", instrument: "piano", fileUrl: "piano/FlyMeToTheMoon-Fortepian.pdf" },
+            { title: "Dla Elizy (Für Elise)", author: "Ludwig van Beethoven", difficulty: "Średnio-zaawansowany", instrument: "piano", fileUrl: "piano/DlaElizy-Fortepian.pdf" },
+            { title: "Mazurek Dąbrowskiego (Hymn Polski)", author: "Józef Wybicki", difficulty: "Łatwy", instrument: "piano", fileUrl: "piano/MazurekDabrowskiego-Fortepian.pdf" },
 
-Oto najważniejsze pytania:
+            // SAKSOFON (saxalto/ & saxtenor/)
+            { title: "Sto lat", author: "melodia tradycyjna", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "saxalto/stolat-saxalt.png" },
+            { title: "Wlazł kotek na płotek", author: "melodia ludowa", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "saxalto/wlazłkoteknapłotek.png" },
+            { title: "Fly Me To The Moon (Alt)", author: "arr. Bart Howard", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "saxalto/Flymetothemoon.jpg" },
+            { title: "Fly Me To The Moon (Tenor)", author: "arr. Bart Howard", difficulty: "Łatwy", instrument: "sax", subCategory: "tenor", fileUrl: "saxtenor/FlyMetothemoon-saxtenor.png" },
+            { title: "One Note Samba (Tenor)", author: "Antônio Carlos Jobim", difficulty: "Łatwy", instrument: "sax", subCategory: "tenor", fileUrl: "saxtenor/Sax Tenor - Solo_page-0026.jpg" },
+            { title: "Czerwone Maki na Monte Cassino", author: "Alfred Schütz / Feliks Konarski", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "saxalto/CzerwoneMakiNaMonteCasino.jpg" },
+            { title: "Pałacyk Michla", author: "Józef Szczepański \"Ziutek\"", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "saxalto/PałacykMichla.jpg" },
+            { title: "Bogurodzica", author: "pieśń religijna", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "saxalto/Bogurodzica.jpg" },
+            { title: "My, Pierwsza Brygada", author: "Andrzej Hałaciński", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "saxalto/MyPierwszaBrygada.jpg" },
+            { title: "Deszcz, jesienny deszcz", author: "Marian Matuszkiewicz", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "saxalto/Deszczjesiennydeszcz.jpg" },
+            { title: "Idzie żołnierz", author: "melodia ludowa", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "saxalto/Idziezolnierz.jpg" },
+            { title: "Piechota (Maszerują strzelcy)", author: "Bolesław Lubicz-Zahorski", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "saxalto/Piechota.jpg" },
+            { title: "Przybyli ułani pod okienko", author: "Feliks Gwiżdż", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "saxalto/Przybyliulanipodokienko.jpg" },
+            { title: "O mój Rozmarynie", author: "Wacław Denhoff-Czarnocki", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "saxalto/Rozmaryn.jpg" },
+            { title: "Serce w plecaku", author: "Michał Zieliński", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "saxalto/Sercewplecaku.jpg" },
+            { title: "Wojenko, wojenko", author: "pieśń legionowa", difficulty: "Łatwy", instrument: "sax", subCategory: "alt", fileUrl: "saxalto/Wojenkowojenko.jpg" },
+            { title: "Misty (Tenor)", author: "Erroll Garner", difficulty: "Łatwy", instrument: "sax", subCategory: "tenor", fileUrl: "saxtenor/Misty-Saxtenor.jpg" },
+            { title: "The Entertainer (Tenor)", author: "Scott Joplin", difficulty: "Średnio-zaawansowany", instrument: "sax", subCategory: "tenor", fileUrl: "saxtenor/TheEnterTainer-SaxTenor.jpg" },
 
-1. **Jakich technologii chcesz użyć?**
-   * **Frontend:** Czysty HTML/CSS/JS, React, Vue, Svelte, czy może gotowy szablon (np. Bootstrap/Tailwind)?
-   * **Backend:** Node.js (Express), Python (Django/Flask), PHP (Laravel/czysty PHP), czy może Firebase/Supabase?
-   * **Baza danych:** MySQL, PostgreSQL, MongoDB?
+            // TRĄBKA (trumpetinB/ & trumpetinEs/)
+            { title: "Wlazł kotek na płotek", author: "melodia ludowa", difficulty: "Łatwy", instrument: "trumpet", subCategory: "b", fileUrl: "trumpetinB/wlazlkotek.jpg" },
+            { title: "Back To The Future", author: "Alan Silvestri", difficulty: "Łatwy", instrument: "trumpet", subCategory: "b", fileUrl: "trumpetinB/Najlepsze kawałki muzyki filmowej Trąbka Bb_page-0002.jpg" },
+            { title: "Forrest Gump - Main Title", author: "Alan Silvestri", difficulty: "Łatwy", instrument: "trumpet", subCategory: "b", fileUrl: "trumpetinB/Najlepsze kawałki muzyki filmowej Trąbka Bb_page-0003.jpg" },
+            { title: "The John Dunbar Theme", author: "John Barry", difficulty: "Łatwy", instrument: "trumpet", subCategory: "b", fileUrl: "trumpetinB/Najlepsze kawałki muzyki filmowej Trąbka Bb_page-0005.jpg" },
+            { title: "Rozkwitały pęki białych róż", author: "Mieczysław Kozar-Słobódzki", difficulty: "Łatwy", instrument: "trumpet", subCategory: "b", fileUrl: "trumpetinB/G Rozkwitały pęki białych róż.jpg" },
+            { title: "Piechota (Maszerują strzelcy)", author: "Bolesław Lubicz-Zahorski", difficulty: "Łatwy", instrument: "trumpet", subCategory: "b", fileUrl: "trumpetinB/G Piechota.jpg" },
+            { title: "Czerwone Maki na Monte Cassino", author: "Alfred Schütz / Feliks Konarski", difficulty: "Łatwy", instrument: "trumpet", subCategory: "b", fileUrl: "trumpetinB/Czerwone maki.jpg" },
 
-2. **Jakie funkcje ma posiadać ten panel?**
-   * Logowanie i rejestracja admina (autoryzacja JWT/sesje)?
-   * Tabela z danymi (np. zarządzanie użytkownikami, produktami, wpisami) z opcją Dodaj / Edytuj / Usuń (CRUD)?
-   * Statystyki / Wykresy (Dashboard)?
+            // AKORDEON (Akordeon/)
+            { title: "Fale Dunaju (Donau-Wellen Walzer)", author: "Iosif Ivanovici", difficulty: "Średnio-zaawansowany", instrument: "accordion", fileUrl: "Akordeon/Fale dunaju akordeon.pdf" },
+            { title: "La Valse à Margaux (Walc Margaux)", author: "Richard Galliano", difficulty: "Zaawansowany", instrument: "accordion", fileUrl: "Akordeon/Galliano - La valse a Margaux.pdf" },
+            { title: "Indifférence (Valse Musette)", author: "Tony Murena & Joseph Colombo", difficulty: "Średnio-zaawansowany", instrument: "accordion", fileUrl: "Akordeon/Galliano - Indifference.pdf" },
+            { title: "Divertissement (Дивертисмент)", author: "André Astier & Maurice Denoux", difficulty: "Zaawansowany", instrument: "accordion", fileUrl: "Akordeon/Astier - Divertisment.pdf" },
+            { title: "Asturia (Preludium)", author: "Isaac Albéniz / arr. Friedrich Lips", difficulty: "Zaawansowany", instrument: "accordion", fileUrl: "Akordeon/Asturia.pdf" }
+        ];
 
----
+        // Przypisanie funkcji logowania do okna globalnego (window)
+        window.checkAuth = function() {
+            const pass = document.getElementById('adminPass').value;
+            if (pass === 'oletko2026') {
+                document.getElementById('login-overlay').style.display = 'none';
+                loadAdminSheets();
+            } else {
+                alert('Błędne hasło!');
+            }
+        };
 
-### Szybki start: Prosty panel w HTML + Tailwind CSS + JavaScript (Frontend)
+        window.resetAndUploadData = async function() {
+            if (confirm("Czy na pewno chcesz wyczyszczać całą bazę i załadować nuty ponownie bez duplikatów?")) {
+                const querySnapshot = await getDocs(collection(db, "sheets"));
+                for (const documentSnap of querySnapshot.docs) {
+                    await deleteDoc(doc(db, "sheets", documentSnap.id));
+                }
+                for (const item of initialSheets) {
+                    await addDoc(collection(db, "sheets"), item);
+                }
+                alert("Baza danych została odświeżona!");
+                loadAdminSheets();
+            }
+        };
 
-Jeśli potrzebujesz na już **gotowego szablonu interfejsu (frontendu)** z dashboardem, tabelą danych i formularzem, poniżej znajduje się kompletny plik HTML:
+        window.toggleSubCategory = function() {
+            const instr = document.getElementById('instrument').value;
+            const subGroup = document.getElementById('subCatGroup');
+            if (instr === 'sax' || instr === 'trumpet') {
+                subGroup.style.display = 'block';
+            } else {
+                subGroup.style.display = 'none';
+            }
+        };
 
-```html
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Administracyjny</title>
-    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-    <script src="[https://cdn.jsdelivr.net/npm/chart.js](https://cdn.jsdelivr.net/npm/chart.js)"></script>
-</head>
-<body class="bg-gray-100 font-sans antialiased">
+        async function loadAdminSheets() {
+            const listContainer = document.getElementById('sheetsList');
+            listContainer.innerHTML = 'Ładowanie...';
+            try {
+                const querySnapshot = await getDocs(collection(db, "sheets"));
+                listContainer.innerHTML = '';
+                querySnapshot.forEach((documentSnap) => {
+                    const data = documentSnap.data();
+                    const item = document.createElement('div');
+                    item.className = 'sheet-item';
+                    item.innerHTML = `
+                        <div>
+                            <strong>${data.title}</strong> (${data.instrument})
+                            <br><small>${data.fileUrl}</small>
+                        </div>
+                        <button class="btn btn-danger" onclick="deleteSheet('${documentSnap.id}')">Usuń</button>
+                    `;
+                    listContainer.appendChild(item);
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        }
 
-    <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar / Pasek boczny -->
-        <aside class="w-64 bg-slate-900 text-white flex flex-col">
-            <div class="p-5 text-xl font-bold border-b border-slate-800">
-                ⚡ AdminPanel
-            </div>
-            <nav class="flex-1 p-4 space-y-2">
-                <a href="#" class="block py-2.5 px-4 rounded bg-blue-600 text-white font-medium">Dashboard</a>
-                <a href="#" class="block py-2.5 px-4 rounded hover:bg-slate-800 text-gray-300 transition">Użytkownicy</a>
-                <a href="#" class="block py-2.5 px-4 rounded hover:bg-slate-800 text-gray-300 transition">Produkty</a>
-                <a href="#" class="block py-2.5 px-4 rounded hover:bg-slate-800 text-gray-300 transition">Ustawienia</a>
-            </nav>
-            <div class="p-4 border-t border-slate-800">
-                <button class="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded transition">Wyloguj</button>
-            </div>
-        </aside>
+        window.deleteSheet = async function(id) {
+            if (confirm('Czy na pewno chcesz usunąć ten utwór z bazy?')) {
+                await deleteDoc(doc(db, "sheets", id));
+                loadAdminSheets();
+            }
+        };
 
-        <!-- Main Content / Główna zawartość -->
-        <div class="flex-1 flex flex-col overflow-y-auto">
-            <!-- Header -->
-            <header class="bg-white shadow p-4 flex justify-between items-center">
-                <h1 class="text-xl font-semibold text-gray-800">Dashboard</h1>
-                <div class="flex items-center gap-3">
-                    <span class="text-gray-600 text-sm">Zalogowany jako: <strong>Admin</strong></span>
-                    <div class="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold">A</div>
-                </div>
-            </header>
+        document.getElementById('addSheetForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newSheet = {
+                title: document.getElementById('title').value,
+                author: document.getElementById('author').value,
+                instrument: document.getElementById('instrument').value,
+                subCategory: document.getElementById('subCategory').value,
+                difficulty: document.getElementById('difficulty').value,
+                fileUrl: document.getElementById('fileUrl').value
+            };
 
-            <!-- Dashboard Content -->
-            <main class="p-6 space-y-6">
-                <!-- Karty ze statystykami -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
-                        <p class="text-sm text-gray-500 font-medium">Użytkownicy</p>
-                        <p class="text-2xl font-bold text-gray-800 mt-1">1,248</p>
-                    </div>
-                    <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
-                        <p class="text-sm text-gray-500 font-medium">Przychód</p>
-                        <p class="text-2xl font-bold text-green-600 mt-1">45,210 PLN</p>
-                    </div>
-                    <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-100">
-                        <p class="text-sm text-gray-500 font-medium">Aktywne zamówienia</p>
-                        <p class="text-2xl font-bold text-blue-600 mt-1">89</p>
-                    </div>
-                </div>
-
-                <!-- Tabela z danymi -->
-                <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="p-4 border-b border-gray-100 flex justify-between items-center">
-                        <h2 class="font-semibold text-gray-800">Ostatni Użytkownicy</h2>
-                        <button class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded transition">+ Dodaj</button>
-                    </div>
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-gray-50 text-gray-500 text-xs uppercase border-b border-gray-100">
-                                <th class="p-3">ID</th>
-                                <th class="p-3">Imię i Nazwisko</th>
-                                <th class="p-3">Email</th>
-                                <th class="p-3">Rola</th>
-                                <th class="p-3">Akcje</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100 text-sm text-gray-700">
-                            <tr>
-                                <td class="p-3">#1</td>
-                                <td class="p-3 font-medium">Jan Kowalski</td>
-                                <td class="p-3">jan.kowalski@example.com</td>
-                                <td class="p-3"><span class="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">Admin</span></td>
-                                <td class="p-3">
-                                    <button class="text-blue-600 hover:underline text-xs mr-2">Edytuj</button>
-                                    <button class="text-red-600 hover:underline text-xs">Usuń</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="p-3">#2</td>
-                                <td class="p-3 font-medium">Anna Nowak</td>
-                                <td class="p-3">anna.nowak@example.com</td>
-                                <td class="p-3"><span class="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs">Użytkownik</span></td>
-                                <td class="p-3">
-                                    <button class="text-blue-600 hover:underline text-xs mr-2">Edytuj</button>
-                                    <button class="text-red-600 hover:underline text-xs">Usuń</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </main>
-        </div>
-    </div>
-
+            await addDoc(collection(db, "sheets"), newSheet);
+            alert('Dodano nuty!');
+            document.getElementById('addSheetForm').reset();
+            loadAdminSheets();
+        });
+    </script>
 </body>
 </html>
