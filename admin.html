@@ -24,11 +24,11 @@
 <body>
 
     <div id="login-overlay">
-        <div class="login-box">
+        <form class="login-box" id="loginForm">
             <h2 style="margin-bottom: 15px;">Panel Admina</h2>
-            <input type="password" id="adminPass" placeholder="Wpisz hasło..." style="margin-bottom: 15px;">
-            <button class="btn" onclick="checkAuth()">Zaloguj się</button>
-        </div>
+            <input type="password" id="adminPass" placeholder="Wpisz hasło..." style="margin-bottom: 15px;" required>
+            <button type="submit" class="btn" id="loginBtn">Zaloguj się</button>
+        </form>
     </div>
 
     <div class="container">
@@ -36,7 +36,7 @@
         <p style="text-align: center; margin-bottom: 20px;"><a href="index.html" style="color: #007bff;">← Powrót do strony głównej</a></p>
 
         <div style="margin-bottom: 20px; text-align: center;">
-            <button class="btn" style="background: #dc3545;" onclick="resetAndUploadData()">🔄 Wyczyść duplikaty i przywróć bazę nut</button>
+            <button class="btn" style="background: #dc3545;" id="resetBtn">🔄 Wyczyść duplikaty i przywróć bazę nut</button>
         </div>
 
         <form id="addSheetForm">
@@ -50,7 +50,7 @@
             </div>
             <div class="form-group">
                 <label>Instrument:</label>
-                <select id="instrument" onchange="toggleSubCategory()">
+                <select id="instrument">
                     <option value="piano">Fortepian</option>
                     <option value="sax">Saksofon</option>
                     <option value="trumpet">Trąbka</option>
@@ -149,8 +149,8 @@
             { title: "Asturia (Preludium)", author: "Isaac Albéniz / arr. Friedrich Lips", difficulty: "Zaawansowany", instrument: "accordion", fileUrl: "Akordeon/Asturia.pdf" }
         ];
 
-        // Przypisanie funkcji logowania do okna globalnego (window)
-        window.checkAuth = function() {
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
             const pass = document.getElementById('adminPass').value;
             if (pass === 'oletko2026') {
                 document.getElementById('login-overlay').style.display = 'none';
@@ -158,9 +158,9 @@
             } else {
                 alert('Błędne hasło!');
             }
-        };
+        });
 
-        window.resetAndUploadData = async function() {
+        document.getElementById('resetBtn').addEventListener('click', async () => {
             if (confirm("Czy na pewno chcesz wyczyszczać całą bazę i załadować nuty ponownie bez duplikatów?")) {
                 const querySnapshot = await getDocs(collection(db, "sheets"));
                 for (const documentSnap of querySnapshot.docs) {
@@ -172,9 +172,9 @@
                 alert("Baza danych została odświeżona!");
                 loadAdminSheets();
             }
-        };
+        });
 
-        window.toggleSubCategory = function() {
+        document.getElementById('instrument').addEventListener('change', () => {
             const instr = document.getElementById('instrument').value;
             const subGroup = document.getElementById('subCatGroup');
             if (instr === 'sax' || instr === 'trumpet') {
@@ -182,7 +182,7 @@
             } else {
                 subGroup.style.display = 'none';
             }
-        };
+        });
 
         async function loadAdminSheets() {
             const listContainer = document.getElementById('sheetsList');
@@ -199,21 +199,24 @@
                             <strong>${data.title}</strong> (${data.instrument})
                             <br><small>${data.fileUrl}</small>
                         </div>
-                        <button class="btn btn-danger" onclick="deleteSheet('${documentSnap.id}')">Usuń</button>
+                        <button class="btn btn-danger" data-id="${documentSnap.id}">Usuń</button>
                     `;
                     listContainer.appendChild(item);
+                });
+
+                document.querySelectorAll('.btn-danger').forEach(button => {
+                    button.addEventListener('click', async (e) => {
+                        const id = e.target.getAttribute('data-id');
+                        if (confirm('Czy na pewno chcesz usunąć ten utwór z bazy?')) {
+                            await deleteDoc(doc(db, "sheets", id));
+                            loadAdminSheets();
+                        }
+                    });
                 });
             } catch (e) {
                 console.error(e);
             }
         }
-
-        window.deleteSheet = async function(id) {
-            if (confirm('Czy na pewno chcesz usunąć ten utwór z bazy?')) {
-                await deleteDoc(doc(db, "sheets", id));
-                loadAdminSheets();
-            }
-        };
 
         document.getElementById('addSheetForm').addEventListener('submit', async (e) => {
             e.preventDefault();
