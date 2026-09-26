@@ -172,8 +172,9 @@
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             z-index: 100;
-            overflow: hidden;
-            min-width: 140px;
+            overflow-y: auto;
+            max-height: 250px;
+            min-width: 150px;
         }
 
         .lang-dropdown-menu.show { display: block; }
@@ -507,6 +508,12 @@
                     <div class="lang-option" onclick="selectLanguage('de', 'flaga-de.png', 'Deutsch')">
                         <img src="flaga-de.png" alt="DE" class="lang-flag-img"> Deutsch
                     </div>
+                    <div class="lang-option" onclick="selectLanguage('uk', 'flaga-uk.png', 'Українська')">
+                        <img src="flaga-uk.png" alt="UK" class="lang-flag-img"> Українська
+                    </div>
+                    <div class="lang-option" onclick="selectLanguage('pt', 'flaga-pt.png', 'Português')">
+                        <img src="flaga-pt.png" alt="PT" class="lang-flag-img"> Português
+                    </div>
                     <div class="lang-option" onclick="selectLanguage('ru', 'flaga-ru.png', 'Русский')">
                         <img src="flaga-ru.png" alt="RU" class="lang-flag-img"> Русский
                     </div>
@@ -690,7 +697,6 @@
             }, 3500);
         }
 
-        // Formularz wysyłany bez przeładowania strony
         document.getElementById('sheetRequestForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const form = this;
@@ -729,6 +735,8 @@
             es: { flag: 'flaga-es.png', text: 'Español' },
             it: { flag: 'flaga-it.png', text: 'Italiano' },
             de: { flag: 'flaga-de.png', text: 'Deutsch' },
+            uk: { flag: 'flaga-uk.png', text: 'Українська' },
+            pt: { flag: 'flaga-pt.png', text: 'Português' },
             ru: { flag: 'flaga-ru.png', text: 'Русский' }
         };
 
@@ -937,6 +945,88 @@
                 diffEasy: "Leicht",
                 diffMedium: "Mittel",
                 diffHard: "Schwer"
+            },
+            uk: {
+                subtitle: "Безплатні ноти для фортепіано, саксофона, труби та акордеона",
+                bio: "Привіт! Мене звати <strong>Олександр Фронтчак</strong>. Я створюю та ділюся безплатними аранжуваннями нот для любителів музики. Завантажуйте ноти та грайте свої улюблені пісні!",
+                total: "Всього",
+                piano: "Фортепіано",
+                sax: "Саксофон",
+                trumpet: "Труба",
+                accordion: "Акордеон",
+                requestTab: "🎁 Замовити ноти",
+                searchPlaceholder: "Пошук твору чи композитора...",
+                titlePiano: "Ноти для фортепіано",
+                descPiano: "Завантажуйте безплатні ноти або відкрийте попередній перегляд!",
+                titleSax: "Ноти для саксофона",
+                descSax: "Натисніть на зображення або завантажте ноти у форматі JPG/PNG.",
+                titleTrumpet: "Ноти для труби",
+                descTrumpet: "Завантажуйте безплатні ноти для труби у форматі JPG.",
+                titleAccordion: "Ноти для акордеона",
+                descAccordion: "Завантажуйте безплатні ноти для акордеона у форматі PDF.",
+                titleRequest: "Запропонувати твір!",
+                descRequest: "Хочете, щоб я зробив аранжування та додав нові ноти? Заповніть форму нижче.",
+                catAll: "Всі",
+                catAlt: "Альт-саксофон",
+                catTenor: "Тенор-саксофон",
+                catBb: "Труба B♭",
+                catEb: "Труба E♭",
+                formName: "Ваше ім'я / Нік:",
+                formSong: "Назва твору та композитор:",
+                formInstr: "Інструмент:",
+                formMsg: "Додаткове повідомлення (необов'язково):",
+                btnSubmit: "✉️ Надіслати пропозицію",
+                formSuccess: "Дякую! Вашу пропозицію успішно надіслано.",
+                btnPreview: "👁 Перегляд",
+                btnDownload: "Завантажити",
+                footerAuthor: "Створив",
+                darkMode: "🌙 Темний режим",
+                lightMode: "☀️ Світлий режим",
+                noResults: "У цій категорії нот не знайдено.",
+                diffEasy: "Легкий",
+                diffMedium: "Середній",
+                diffHard: "Складний"
+            },
+            pt: {
+                subtitle: "Partituras gratuitas para piano, saxofone, trompete e acordeão",
+                bio: "Olá! Meu nome é <strong>Aleksander Frątczak</strong>. Crio e compartilho arranjos de partituras gratuitos para entusiastas da música. Baixe partituras e toque suas músicas favoritas!",
+                total: "Total",
+                piano: "Piano",
+                sax: "Saxofone",
+                trumpet: "Trompete",
+                accordion: "Acordeão",
+                requestTab: "🎁 Pedir partitura",
+                searchPlaceholder: "Pesquisar música ou compositor...",
+                titlePiano: "Partituras de Piano",
+                descPiano: "Baixe partituras gratuitas ou abra a visualização!",
+                titleSax: "Partituras de Saxofone",
+                descSax: "Clique na imagem ou baixe a partitura em formato JPG/PNG.",
+                titleTrumpet: "Partituras de Trompete",
+                descTrumpet: "Baixe partituras de trompete gratuitas em formato JPG.",
+                titleAccordion: "Partituras de Acordeão",
+                descAccordion: "Baixe partituras de acordeão gratuitas em formato PDF.",
+                titleRequest: "Sugerir uma música!",
+                descRequest: "Quer que eu faça o arranjo e adicione novas partituras? Preencha o formulário abaixo.",
+                catAll: "Todas",
+                catAlt: "Saxofone Alto",
+                catTenor: "Saxofone Tenor",
+                catBb: "Trompete Si♭",
+                catEb: "Trompete Mi♭",
+                formName: "Seu nome / Apelido:",
+                formSong: "Título da música e compositor:",
+                formInstr: "Instrumento:",
+                formMsg: "Mensagem adicional (opcional):",
+                btnSubmit: "✉️ Enviar sugestão",
+                formSuccess: "Obrigado! Sua sugestão foi enviada com sucesso.",
+                btnPreview: "👁 Visualizar",
+                btnDownload: "Baixar",
+                footerAuthor: "Criado por",
+                darkMode: "🌙 Modo escuro",
+                lightMode: "☀️ Modo claro",
+                noResults: "Nenhuma partitura encontrada nesta categoria.",
+                diffEasy: "Fácil",
+                diffMedium: "Intermediário",
+                diffHard: "Avançado"
             },
             ru: {
                 subtitle: "Бесплатные ноты для фортепиано, саксофона, трубы и аккордеона",
