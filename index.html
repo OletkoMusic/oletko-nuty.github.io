@@ -100,7 +100,13 @@
             opacity: 0.85;
         }
 
-        .lang-select {
+        /* Własne rozwijane menu języków z obrazkami flag */
+        .lang-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .lang-dropdown-btn {
             background: var(--badge-bg);
             color: var(--text-main);
             border: 1px solid var(--badge-border);
@@ -109,7 +115,50 @@
             cursor: pointer;
             font-size: 0.85rem;
             font-weight: bold;
-            outline: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lang-flag-img {
+            width: 20px;
+            height: 14px;
+            object-fit: cover;
+            border-radius: 2px;
+            border: 1px solid rgba(0,0,0,0.15);
+        }
+
+        .lang-dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 110%;
+            background: var(--container-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 100;
+            overflow: hidden;
+            min-width: 130px;
+        }
+
+        .lang-dropdown-menu.show {
+            display: block;
+        }
+
+        .lang-option {
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--text-main);
+        }
+
+        .lang-option:hover {
+            background-color: var(--sub-btn-hover);
         }
 
         header {
@@ -433,11 +482,24 @@
         <div class="top-controls">
             <a href="admin.html" class="ctrl-btn">⚙️ Admin</a>
             
-            <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
-                <option value="pl">🇵🇱 Polski</option>
-                <option value="en">🇬🇧 English</option>
-                <option value="es">🇪🇸 Español</option>
-            </select>
+            <!-- Własne menu z obrazkami flag -->
+            <div class="lang-dropdown">
+                <button class="lang-dropdown-btn" onclick="toggleLangDropdown()">
+                    <img id="current-flag" src="flaga-pl.png" alt="Plaga" class="lang-flag-img">
+                    <span id="current-lang-text">Polski</span> ▾
+                </button>
+                <div class="lang-dropdown-menu" id="langMenu">
+                    <div class="lang-option" onclick="selectLanguage('pl', 'flaga-pl.png', 'Polski')">
+                        <img src="flaga-pl.png" alt="PL" class="lang-flag-img"> Polski
+                    </div>
+                    <div class="lang-option" onclick="selectLanguage('en', 'flaga-en.png', 'English')">
+                        <img src="flaga-en.png" alt="EN" class="lang-flag-img"> English
+                    </div>
+                    <div class="lang-option" onclick="selectLanguage('es', 'flaga-es.png', 'Español')">
+                        <img src="flaga-es.png" alt="ES" class="lang-flag-img"> Español
+                    </div>
+                </div>
+            </div>
 
             <button class="ctrl-btn" id="themeToggle" onclick="toggleTheme()">🌙 Ciemny tryb</button>
         </div>
@@ -606,6 +668,12 @@
     <script>
         let currentLang = localStorage.getItem('lang') || 'pl';
 
+        const langData = {
+            pl: { flag: 'flaga-pl.png', text: 'Polski' },
+            en: { flag: 'flaga-en.png', text: 'English' },
+            es: { flag: 'flaga-es.png', text: 'Español' }
+        };
+
         const translations = {
             pl: {
                 subtitle: "Darmowe nuty na fortepian, saksofon, trąbkę i akordeon",
@@ -732,16 +800,33 @@
             }
         };
 
-        function changeLanguage(langKey) {
+        function toggleLangDropdown() {
+            document.getElementById('langMenu').classList.toggle('show');
+        }
+
+        window.addEventListener('click', function(e) {
+            if (!e.target.closest('.lang-dropdown')) {
+                const menu = document.getElementById('langMenu');
+                if (menu) menu.classList.remove('show');
+            }
+        });
+
+        function selectLanguage(langKey, flagImg, langText) {
             currentLang = langKey;
             localStorage.setItem('lang', currentLang);
+            document.getElementById('current-flag').src = flagImg;
+            document.getElementById('current-lang-text').textContent = langText;
+            document.getElementById('langMenu').classList.remove('show');
             applyLanguage();
         }
 
         function applyLanguage() {
             const t = translations[currentLang] || translations['pl'];
-            document.getElementById('langSelect').value = currentLang;
-            
+            const info = langData[currentLang] || langData['pl'];
+
+            document.getElementById('current-flag').src = info.flag;
+            document.getElementById('current-lang-text').textContent = info.text;
+
             document.getElementById('header-subtitle').textContent = t.subtitle;
             document.getElementById('header-bio').innerHTML = t.bio;
             document.getElementById('lbl-total').textContent = t.total;
