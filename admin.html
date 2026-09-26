@@ -16,12 +16,88 @@
         .btn:hover { background: #218838; }
         .btn-danger { background: #dc3545; margin-top: 5px; padding: 6px 10px; font-size: 0.8rem; width: auto; }
         .btn-danger:hover { background: #c82333; }
+        .btn-secondary { background: #6c757d; }
+        .btn-secondary:hover { background: #5a6268; }
         .sheet-item { display: flex; justify-content: space-between; align-items: center; background: #282828; padding: 10px; border-radius: 6px; margin-bottom: 8px; border: 1px solid #333; }
+        
         #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #121212; display: flex; justify-content: center; align-items: center; z-index: 999; }
         .login-box { background: #1e1e1e; padding: 30px; border-radius: 8px; border: 1px solid #333; text-align: center; width: 300px; }
+
+        /* Własny system powiadomień Toast */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            min-width: 280px;
+            padding: 14px 20px;
+            border-radius: 10px;
+            background: #1e1e1e;
+            color: #ffffff;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            border-left: 5px solid #007bff;
+            font-size: 0.9rem;
+            font-weight: bold;
+            animation: slideIn 0.3s ease-out forwards;
+        }
+
+        .toast.success { border-left-color: #28a745; }
+        .toast.error { border-left-color: #dc3545; }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Własny Modal Potwierdzenia */
+        #confirm-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10001;
+        }
+
+        .modal-box {
+            background: #1e1e1e;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid #333;
+            width: 320px;
+            text-align: center;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
+
+    <div id="toast-container"></div>
+
+    <div id="confirm-modal">
+        <div class="modal-box">
+            <h3 id="modal-text" style="margin-bottom: 10px;">Czy na pewno?</h3>
+            <div class="modal-buttons">
+                <button class="btn btn-danger" id="confirm-yes">Tak</button>
+                <button class="btn btn-secondary" id="confirm-no">Anuluj</button>
+            </div>
+        </div>
+    </div>
 
     <div id="login-overlay">
         <form class="login-box" id="loginForm">
@@ -149,19 +225,57 @@
             { title: "Asturia (Preludium)", author: "Isaac Albéniz / arr. Friedrich Lips", difficulty: "Zaawansowany", instrument: "accordion", fileUrl: "Akordeon/Asturia.pdf" }
         ];
 
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `<span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s ease-out reverse forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function customConfirm(text) {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('confirm-modal');
+                document.getElementById('modal-text').textContent = text;
+                modal.style.display = 'flex';
+
+                const btnYes = document.getElementById('confirm-yes');
+                const btnNo = document.getElementById('confirm-no');
+
+                const cleanup = () => {
+                    modal.style.display = 'none';
+                    btnYes.removeEventListener('click', onYes);
+                    btnNo.removeEventListener('click', onNo);
+                };
+
+                const onYes = () => { cleanup(); resolve(true); };
+                const onNo = () => { cleanup(); resolve(false); };
+
+                btnYes.addEventListener('click', onYes);
+                btnNo.addEventListener('click', onNo);
+            });
+        }
+
         document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
             const pass = document.getElementById('adminPass').value;
             if (pass === 'oletko2026') {
                 document.getElementById('login-overlay').style.display = 'none';
+                showToast("Zalogowano pomyślnie!", "success");
                 loadAdminSheets();
             } else {
-                alert('Błędne hasło!');
+                showToast("Błędne hasło!", "error");
             }
         });
 
         document.getElementById('resetBtn').addEventListener('click', async () => {
-            if (confirm("Czy na pewno chcesz wyczyszczać całą bazę i załadować nuty ponownie bez duplikatów?")) {
+            const confirmed = await customConfirm("Wyczyścić bazę i załadować nuty ponownie?");
+            if (confirmed) {
                 const querySnapshot = await getDocs(collection(db, "sheets"));
                 for (const documentSnap of querySnapshot.docs) {
                     await deleteDoc(doc(db, "sheets", documentSnap.id));
@@ -169,7 +283,7 @@
                 for (const item of initialSheets) {
                     await addDoc(collection(db, "sheets"), item);
                 }
-                alert("Baza danych została odświeżona!");
+                showToast("Baza danych odświeżona!", "success");
                 loadAdminSheets();
             }
         });
@@ -207,14 +321,17 @@
                 document.querySelectorAll('.btn-danger').forEach(button => {
                     button.addEventListener('click', async (e) => {
                         const id = e.target.getAttribute('data-id');
-                        if (confirm('Czy na pewno chcesz usunąć ten utwór z bazy?')) {
+                        const confirmed = await customConfirm('Usunąć ten utwór z bazy?');
+                        if (confirmed) {
                             await deleteDoc(doc(db, "sheets", id));
+                            showToast("Usunięto utwór", "success");
                             loadAdminSheets();
                         }
                     });
                 });
             } catch (e) {
                 console.error(e);
+                showToast("Błąd ładowania danych", "error");
             }
         }
 
@@ -230,7 +347,7 @@
             };
 
             await addDoc(collection(db, "sheets"), newSheet);
-            alert('Dodano nuty!');
+            showToast("Dodano nowe nuty!", "success");
             document.getElementById('addSheetForm').reset();
             loadAdminSheets();
         });
