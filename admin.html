@@ -163,7 +163,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyCqT-Se0QudEnaHgImvFXSR2bEWONBKUoI",
@@ -261,15 +261,31 @@
             });
         }
 
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
+        // Zmieniona obsługa logowania – pobieranie hasła z bazy (settings/admin)
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const pass = document.getElementById('adminPass').value;
-            if (pass === 'oletko2026') {
-                document.getElementById('login-overlay').style.display = 'none';
-                showToast("Zalogowano pomyślnie!", "success");
-                loadAdminSheets();
-            } else {
-                showToast("Błędne hasło!", "error");
+            const enteredPass = document.getElementById('adminPass').value;
+
+            try {
+                const docRef = doc(db, "settings", "admin");
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    const correctPass = docSnap.data().password;
+
+                    if (enteredPass === correctPass) {
+                        document.getElementById('login-overlay').style.display = 'none';
+                        showToast("Zalogowano pomyślnie!", "success");
+                        loadAdminSheets();
+                    } else {
+                        showToast("Błędne hasło!", "error");
+                    }
+                } else {
+                    showToast("Błąd: Brak konfiguracji hasła w bazie.", "error");
+                }
+            } catch (error) {
+                console.error("Błąd logowania:", error);
+                showToast("Błąd połączenia z bazą danych.", "error");
             }
         });
 
