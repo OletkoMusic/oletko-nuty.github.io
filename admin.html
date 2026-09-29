@@ -12,7 +12,7 @@
         .form-group { margin-bottom: 15px; }
         label { display: block; margin-bottom: 5px; font-weight: bold; }
         input, select { width: 100%; padding: 10px; background: #2d2d2d; color: #fff; border: 1px solid #444; border-radius: 6px; }
-        .btn { width: 100%; padding: 12px; background: #28a745; color: white; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; margin-top: 10px; }
+        .btn { width: 100%; padding: 12px; background: #28a745; color: white; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; margin-top: 10px; text-decoration: none; display: inline-block; text-align: center; }
         .btn:hover { background: #218838; }
         .btn-danger { background: #dc3545; margin-top: 5px; padding: 6px 10px; font-size: 0.8rem; width: auto; }
         .btn-danger:hover { background: #c82333; }
@@ -21,7 +21,7 @@
         .sheet-item { display: flex; justify-content: space-between; align-items: center; background: #282828; padding: 10px; border-radius: 6px; margin-bottom: 8px; border: 1px solid #333; }
         
         #login-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #121212; display: flex; justify-content: center; align-items: center; z-index: 999; }
-        .login-box { background: #1e1e1e; padding: 30px; border-radius: 8px; border: 1px solid #333; text-align: center; width: 300px; }
+        .login-box { background: #1e1e1e; padding: 30px; border-radius: 8px; border: 1px solid #333; text-align: center; width: 320px; }
 
         /* Własny system powiadomień Toast z płynnym powstawaniem i chowaniem */
         #toast-container {
@@ -60,7 +60,7 @@
         }
 
         @keyframes slideOut {
-            from { transform: translateX(0) scale(1); opacity: 1; }
+            from { transform: translateX(0) scale(0.9); opacity: 0; }
             to { transform: translateX(120%) scale(0.9); opacity: 0; }
         }
 
@@ -113,6 +113,7 @@
             <h2 style="margin-bottom: 15px;">Panel Admina</h2>
             <input type="password" id="adminPass" placeholder="Wpisz hasło..." style="margin-bottom: 15px;" required>
             <button type="submit" class="btn" id="loginBtn">Zaloguj się</button>
+            <a href="index.html" class="btn btn-secondary" style="margin-top: 10px;">← Powrót do strony głównej</a>
         </form>
     </div>
 
@@ -241,10 +242,8 @@
             toast.innerHTML = `<span>${message}</span>`;
             container.appendChild(toast);
 
-            // Po 2.8s dodajemy klasę 'hide' uruchamiającą płynną animację schowania
             setTimeout(() => {
                 toast.classList.add('hide');
-                // Po zakończeniu animacji schowania (400ms) usuwamy element z drzewa DOM
                 setTimeout(() => toast.remove(), 400);
             }, 2800);
         }
