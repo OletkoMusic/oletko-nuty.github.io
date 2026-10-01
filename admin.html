@@ -167,7 +167,13 @@
             <button type="submit" class="btn">➕ Dodaj nowe nuty</button>
         </form>
 
-        <h2 style="margin-top: 30px; margin-bottom: 15px;">Lista i usuwanie nut:</h2>
+        <h2 style="margin-top: 30px; margin-bottom: 10px;">Lista i usuwanie nut:</h2>
+        
+        <!-- Pole Wyszukiwarki -->
+        <div class="form-group">
+            <input type="text" id="searchSheet" placeholder="🔍 Szukaj utworu po tytule lub autorze..." style="border-color: #007bff;">
+        </div>
+
         <div id="sheetsList">Ładowanie...</div>
     </div>
 
@@ -323,6 +329,21 @@
             }
         });
 
+        // Obsługa wyszukiwarki na żywo
+        document.getElementById('searchSheet').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase().trim();
+            const items = document.querySelectorAll('.sheet-item');
+
+            items.forEach(item => {
+                const text = item.getAttribute('data-search').toLowerCase();
+                if (text.includes(query)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
         async function loadAdminSheets() {
             const listContainer = document.getElementById('sheetsList');
             listContainer.innerHTML = 'Ładowanie...';
@@ -333,10 +354,15 @@
                     const data = documentSnap.data();
                     const item = document.createElement('div');
                     item.className = 'sheet-item';
+                    
+                    // Przypisanie tekstu do wyszukiwania
+                    const searchText = `${data.title} ${data.author || ''} ${data.instrument || ''}`;
+                    item.setAttribute('data-search', searchText);
+
                     item.innerHTML = `
                         <div>
                             <strong>${data.title}</strong> (${data.instrument})
-                            <br><small>${data.fileUrl}</small>
+                            <br><small>${data.author ? data.author + ' | ' : ''}${data.fileUrl}</small>
                         </div>
                         <button class="btn btn-danger" data-id="${documentSnap.id}">Usuń</button>
                     `;
@@ -354,6 +380,13 @@
                         }
                     });
                 });
+
+                // Przefiltruj ponownie, jeśli użytkownik miał coś wpisane w wyszukiwarce
+                const currentSearch = document.getElementById('searchSheet').value.toLowerCase().trim();
+                if (currentSearch) {
+                    document.getElementById('searchSheet').dispatchEvent(new Event('input'));
+                }
+
             } catch (e) {
                 console.error(e);
                 showToast("Błąd ładowania danych", "error");
